@@ -182,13 +182,17 @@ begin
 	r_Rst_L <= 1'b1;
   	repeat(10) @(posedge r_Clk);
 	//$display("reset aL %d\n reset aH %d\n", r_Rst_L, nr_Rst_L);
-  	dataPayload[0]  <= 8'h00;
-  	dataPayload[1]  <= 8'h01;
-  	dataPayload[2]  <= 8'h80;
-  	dataPayload[3]  <= 8'hFF;
-  	dataPayload[4]  <= 8'h55;
-  	dataPayload[5]  <= 8'hAA;
-  	dataLength  	<= 6;
+
+
+  	dataPayload[0]  <= 8'h55;
+  	dataPayload[1]  <= 8'h00;
+  	dataPayload[2]  <= 8'h23;
+  	dataPayload[3]  <= 8'h00;
+  	dataPayload[4]  <= 8'hFF;
+  	dataPayload[5]  <= 8'h00;
+  	dataPayload[6]  <= 8'h00;
+  	dataPayload[7]  <= 8'hA4;
+  	dataLength  	<= 8;
 	CS_high();
   	repeat(10) @(posedge r_Clk);
   	for (cnt=0; cnt<dataLength; cnt++)

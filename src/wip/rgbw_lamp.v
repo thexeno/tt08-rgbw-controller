@@ -58,13 +58,14 @@ module rgbw_lamp (
     assign green_pwr = green_pin;
     assign blue_pwr = blue_pin;
     assign white_pwr = white_pin;
+    assign clkSys_shared = clk12;
 
-    // Components instantiation
-    clockDividerPwm clockFeeder (
-        .clk(clk12),
-        .clkPresc(clkSys_shared),
-        .reset(reset_sync)
-    ) /* synthesis syn_noprune=1 */;
+    // // Components instantiation
+    // clockDividerPwm clockFeeder (
+    //     .clk(clk12),
+    //     .clkPresc(clkSys_shared),
+    //     .reset(reset_sync)
+    // ) /* synthesis syn_noprune=1 */;
 
     pwmGen pwm (
         .clk(clkSys_shared),
