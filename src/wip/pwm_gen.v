@@ -127,13 +127,15 @@ always @(posedge clk)
       end
    else
       begin
-      duty0_buff <= duty0;   
-      duty1_buff <= duty1;   
-      duty2_buff <= duty2;   
-      duty3_buff <= duty3;   
+
       if (counter === 8'h ff)
          begin
-         counter <= {8{1'b 0}};   
+         counter <= {8{1'b 0}};  
+         // here are sync updates with pwm period 
+         duty0_buff <= duty0;   
+         duty1_buff <= duty1;   
+         duty2_buff <= duty2;   
+         duty3_buff <= duty3;   
          end
       else
          begin

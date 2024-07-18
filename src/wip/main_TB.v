@@ -42,7 +42,7 @@ module main_TB ();
 //   reg     	r_Slave_TX_DV;
 //   wire [7:0] w_Slave_RX_Byte;
 //   reg [7:0] r_Slave_TX_Byte;
-  integer cnt;
+  integer cnt, spi_iter;
 
 // RGBW application specific OUTPUTs
 
@@ -78,21 +78,21 @@ wire w_whitePwrPin;
 
    rgbw_lamp rgbw_lamp_UUT
    (
-	input reset(r_Rst_L),
-    input clk12(r_Clk),
-    input sck0(w_SPI_Clk),
-    input mosi(w_SPI_MOSI),
-    input cs(r_Master_CS_n),
-    output wire red_pin(w_redPin),
-    output wire green_pin(w_greenPin),
-    output wire blue_pin,(w_bluePin),
-    output wire white_pin,(w_whitePin),
-    output wire dbg,(w_dbgPin),
-    output wire red_pwr(w_redPwrPin),
-    output wire green_pwr(w_redPwrPin),
-    output wire blue_pwr(w_redPwrPin),
-    output wire white_pwr(w_redPwrPin),
-   )
+		.reset(r_Rst_L),
+		.clk12(r_Clk),
+		.sck0(w_SPI_Clk),
+		.mosi(w_SPI_MOSI),
+		.cs(r_Master_CS_n),
+		.red_pin(w_redPin),
+		.green_pin(w_greenPin),
+		.blue_pin(w_bluePin),
+		.white_pin(w_whitePin),
+		.dbg(w_dbgPin),
+		.red_pwr(w_redPwrPin),
+		.green_pwr(w_redPwrPin),
+		.blue_pwr(w_redPwrPin),
+		.white_pwr(w_redPwrPin)
+   );
 
   // Instantiate Master to drive Slave
   SPI_Master
@@ -215,13 +215,46 @@ begin
 	r_Rst_L <= 1'b1;
   	repeat(10) @(posedge r_Clk);
 	//$display("reset aL %d\n reset aH %d\n", r_Rst_L, nr_Rst_L);
-  	dataPayload[0]  <= 8'h00;
-  	dataPayload[1]  <= 8'h01;
-  	dataPayload[2]  <= 8'h80;
-  	dataPayload[3]  <= 8'hFF;
-  	dataPayload[4]  <= 8'h55;
-  	dataPayload[5]  <= 8'hAA;
-  	dataLength  	<= 6;
+
+	for (spi_iter = 0; spi_iter < 20; spi_iter++)
+	begin
+  	dataPayload[0]  <= 8'h55;
+  	dataPayload[1]  <= 8'h00;
+  	dataPayload[2]  <= 8'h24;
+  	dataPayload[3]  <= 8'h00;
+  	dataPayload[4]  <= 8'hFF;
+  	dataPayload[5]  <= 8'h00;
+  	dataPayload[6]  <= 8'h00;
+  	dataPayload[7]  <= 8'hA4;
+  	dataLength  	<= 8;
+	CS_high();
+  	repeat(10) @(posedge r_Clk);
+  	for (cnt=0; cnt<dataLength; cnt++)
+  	begin
+  	$display("%d (1)\n", r_Master_CS_n);
+  	@(posedge r_Clk);
+	CS_low();
+  	$display("%d (0)\n", r_Master_CS_n);
+	@(posedge r_Clk);
+  	$display("%d (0)\n", r_Master_CS_n);
+  	SendSingleByteNoCS(dataPayload[cnt], dataLength);
+	repeat(10) @(posedge r_Clk);
+	CS_high();
+  	repeat(10) @(posedge r_Clk);
+   	end
+	end
+	repeat(10000) @(posedge r_Clk);
+
+
+  	dataPayload[0]  <= 8'h55;
+  	dataPayload[1]  <= 8'h00;
+  	dataPayload[2]  <= 8'h23;
+  	dataPayload[3]  <= 8'h00;
+  	dataPayload[4]  <= 8'hFF;
+  	dataPayload[5]  <= 8'h00;
+  	dataPayload[6]  <= 8'h00;
+  	dataPayload[7]  <= 8'hA4;
+  	dataLength  	<= 8;
 	CS_high();
   	repeat(10) @(posedge r_Clk);
   	for (cnt=0; cnt<dataLength; cnt++)
@@ -237,6 +270,9 @@ begin
 	CS_high();
   	repeat(10) @(posedge r_Clk);
               	end
+	repeat(10000) @(posedge r_Clk);
+
+
   	$display("Before  finish\n");
         	$finish(); 	 
 

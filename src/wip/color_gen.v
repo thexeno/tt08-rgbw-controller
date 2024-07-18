@@ -202,13 +202,13 @@ localparam stateApply = 4'd10;
                 end
 
                 finalAdj: begin
-                    if ({0, r} + {0, buff_white} > 9'b011111111) r <= 8'hFF;
+                    if ({1'b0, r} + {1'b0, buff_white} > 9'b011111111) r <= 8'hFF;
                     else r <= r + buff_white;
 
-                    if ({0, g} + {0, buff_white} > 9'b011111111) g <= 8'hFF;
+                    if ({1'b0, g} + {1'b0, buff_white} > 9'b011111111) g <= 8'hFF;
                     else g <= g + buff_white;
 
-                    if ({0, b} + {0, buff_white} > 9'b011111111) b <= 8'hFF;
+                    if ({1'b0, b} + {1'b0, buff_white} > 9'b011111111) b <= 8'hFF;
                     else b <= b + buff_white;
 
                     state <= stateApply;

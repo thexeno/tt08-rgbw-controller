@@ -37,7 +37,7 @@ input   reset;
 
 reg     clkPresc; 
 reg     [7:0] prescalerCnt = {8{1'b 0}}; 
-reg     clkPrescSig = 1'b 0;;
+reg     clkPrescSig = 1'b0;
 reg     reset_sig; 
 
 // initial 
