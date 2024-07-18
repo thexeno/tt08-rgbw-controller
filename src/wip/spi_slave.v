@@ -117,12 +117,10 @@ always @(posedge clk)
          begin
          rdy_sig <= 1'b 1;   
          bit_counter <= 8'h 00;   
-
-// data_byte <= data_reg;
          end
       else
          begin
-         rdy_sig <= 1'b 0;   
+      //   rdy_sig <= 1'b 0;   
          end
       data <= data_byte;   
       rdy <= rdy_sig;   
