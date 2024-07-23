@@ -68,7 +68,7 @@ module rgbw_lamp (
     // ) /* synthesis syn_noprune=1 */;
 
     pwmGen pwm (
-        .clk(clkSys_shared),
+        .clk(clk12),
         .reset(reset_sync),
         .duty0(rDuty),
         .duty1(gDuty),
@@ -102,7 +102,7 @@ module rgbw_lamp (
         .buffRx_spi(buffRx_spi),
         .reset(reset_sync),
         .rdy(rdy),
-        .clk(clkSys_shared),
+        .clk(clk12),
         .lint_sync(lint_sync),
         .red_sync(red_sync),
         .green_sync(green_sync),
@@ -115,7 +115,7 @@ module rgbw_lamp (
     spiSlave spi_rx (
         .sck(sck0),
         .cs(cs), 
-        .clk(clkSys_shared),
+        .clk(clk12),
         .mosi(mosi),
         .reset(reset_sync),
         .rdy(rdy),

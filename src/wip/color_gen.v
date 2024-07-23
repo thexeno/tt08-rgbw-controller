@@ -25,14 +25,14 @@ module colorGen (
 
 localparam init = 4'd0;
 localparam thr1 = 4'd1;
-localparam thr2 = 4'd3;
-localparam thr3 = 4'd4;
-localparam thr4 = 4'd5;
-localparam thr5 = 4'd6;
-localparam thr6 = 4'd7;
-localparam thr7 = 4'd8;
-localparam finalAdj = 4'd9;
-localparam stateApply = 4'd10;
+localparam thr2 = 4'd2;
+localparam thr3 = 4'd3;
+localparam thr4 = 4'd4;
+localparam thr5 = 4'd5;
+localparam thr6 = 4'd6;
+localparam thr7 = 4'd7;
+localparam finalAdj = 4'd8;
+localparam stateApply = 4'd9;
 
 
 
@@ -53,6 +53,9 @@ localparam stateApply = 4'd10;
     reg [7:0] r = 8'b00000000;
     reg [7:0] g = 8'b00000000;
     reg [7:0] b = 8'b00000000;
+    reg [7:0] r_temp = 8'b00000000;
+    reg [7:0] g_temp = 8'b00000000;
+    reg [7:0] b_temp = 8'b00000000;
     reg [7:0] w = 8'b00000000;
     reg [7:0] w_m = 8'b00000000;
     reg [7:0] lint_sig = 8'b00000000;
@@ -76,6 +79,9 @@ localparam stateApply = 4'd10;
             r <= 8'b00000000;
             g <= 8'b00000000;
             b <= 8'b00000000;
+            r_temp <= 8'b00000000;
+            g_temp <= 8'b00000000;
+            b_temp <= 8'b00000000;
             w <= 8'b00000000;
             buff_white <= 8'b00000000;
             mode_latch <= 8'b00000000;
@@ -111,21 +117,34 @@ localparam stateApply = 4'd10;
                 end
 
                 thr1: begin
+                      
                     r <= 8'b11111111;
                     g <= 8'b00000000;
-                    b <= b + 8'b00000111;
+                    b_temp = b + 8'b00000111;
+                    if (b_temp < 8'b00000111) begin // overflow
+                        b <= 8'hff;
+                    end 
+                    else begin
+                       b <= b_temp; 
+                    end
                     counter <= counter + 1;
-                    if (counter < 8'h24 && counter <= thr) begin
-                        state <= thr1;
-                    end else if (counter >= 8'h24 && counter <= thr) begin
-                        state <= thr2;
+                    if (counter < 8'h24 && counter < thr) begin                    
+                        state <= thr1;                       
+                    end else if (counter >= 8'h24 && counter < thr) begin
+                        state <= thr2;                               
                     end else begin
                         state <= finalAdj;
                     end
                 end
 
                 thr2: begin
-                    r <= r - 8'b00000111;
+                    r_temp = r - 8'b00000111;
+                    if (r_temp > 8'hF8) begin // underflow
+                        r <= 8'h00;
+                    end 
+                    else begin
+                       r <= r_temp; 
+                    end
                     g <= 8'b00000000;
                     b <= 8'b11111111;
                     counter <= counter + 1;
@@ -140,7 +159,13 @@ localparam stateApply = 4'd10;
 
                 thr3: begin
                     r <= 8'b00000000;
-                    g <= g + 8'b00000111;
+                    g_temp = g + 8'b00000111;
+                    if (g_temp <= 8'b00000111) begin // overflow
+                        g <= 8'hff;
+                    end 
+                    else begin
+                       g <= g_temp; 
+                    end                 
                     b <= 8'b11111111;
                     counter <= counter + 1;
                     if (counter < 8'h6c && counter <= thr) begin
@@ -155,7 +180,13 @@ localparam stateApply = 4'd10;
                 thr4: begin
                     r <= 8'b00000000;
                     g <= 8'b11111111;
-                    b <= b - 8'b00000111;
+                    b_temp = b - 8'b00000111;
+                    if (b_temp > 8'hF8) begin // underflow
+                        b <= 8'h00;
+                    end 
+                    else begin
+                       b <= b_temp; 
+                    end             
                     counter <= counter + 1;
                     if (counter < 8'h90 && counter <= thr) begin
                         state <= thr4;
@@ -167,7 +198,13 @@ localparam stateApply = 4'd10;
                 end
 
                 thr5: begin
-                    r <= r + 8'b00000111;
+                    r_temp = r + 8'b00000111;
+                    if (r_temp <= 8'b00000111) begin // overflow
+                        r <= 8'hff;
+                    end 
+                    else begin
+                       r <= r_temp; 
+                    end                           
                     g <= 8'b11111111;
                     b <= 8'b00000000;
                     counter <= counter + 1;
@@ -182,7 +219,13 @@ localparam stateApply = 4'd10;
 
                 thr6: begin
                     r <= 8'b11111111;
-                    g <= g - 8'b00000111;
+                    g_temp = g - 8'b00000111;
+                    if (g_temp > 8'hF8) begin // underflow
+                        g <= 8'h00;
+                    end 
+                    else begin
+                       g <= g_temp; 
+                    end     
                     b <= 8'b00000000;
                     counter <= counter + 1;
                     if (counter < 8'hd8 && counter <= thr) begin
