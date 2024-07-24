@@ -93,7 +93,7 @@ reg     reset_sig;
 always @(posedge clk)
    begin : mainprocess
    reset_sig <= reset;   
-   if (reset_sig == 1'b 0 | cs == 1'b 1)
+   if (reset_sig == 1'b 0 || cs == 1'b 1)
       begin
       bit_counter <= {8{1'b 0}};   
       //data_reg <= {8{1'b 0}};   
@@ -113,15 +113,15 @@ always @(posedge clk)
          data_byte <= {data_byte[6:0], mosi_latch};   
          bit_counter <= bit_counter + 8'h 01;   
          end
-      if (sck_latch == 1'b 0 & bit_counter == 8'h 08)
+      if (sck_latch == 1'b 0 && bit_counter == 8'h 08)
          begin
          rdy_sig <= 1'b 1;   
          bit_counter <= 8'h 00;   
          end
-      // else
-      //    begin
-      //    rdy_sig <= 1'b 0;   
-      //    end
+      else
+         begin
+         rdy_sig <= 1'b 0;   
+         end
       data <= data_byte;   
       rdy <= rdy_sig;   
       end

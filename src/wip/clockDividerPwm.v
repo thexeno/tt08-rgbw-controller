@@ -63,7 +63,7 @@ always @(posedge clk)
       end
    else
       begin
-      if (prescalerCnt == 8'h 09)
+      if (prescalerCnt == 8'h 02)
          begin
          clkPrescSig <= ~clkPrescSig;   
          prescalerCnt <= {8{1'b 0}};   

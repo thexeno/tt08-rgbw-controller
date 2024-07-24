@@ -22,7 +22,9 @@ module rgbw_lamp (
     output wire green_pwr,
     output wire blue_pwr,
     output wire white_pwr,
-    output wire [7:0] blue_sync_o
+    output wire [7:1] buffRx_spi_o,
+    output wire rdy_o
+
 );
 
     // Internal signals
@@ -59,15 +61,16 @@ module rgbw_lamp (
     assign green_pwr = green_pin;
     assign blue_pwr = blue_pin;
     assign white_pwr = white_pin;
-    assign clkSys_shared = clk12;
-    assign blue_sync_o = blue_sync;
+    //assign clkSys_shared = clk12;
+    assign buffRx_spi_o = buffRx_spi;
+    assign rdy_o = rdy;
 
-    // // Components instantiation
-    // clockDividerPwm clockFeeder (
-    //     .clk(clk12),
-    //     .clkPresc(clkSys_shared),
-    //     .reset(reset_sync)
-    // ) /* synthesis syn_noprune=1 */;
+    // Components instantiation
+    clockDividerPwm clockFeeder (
+        .clk(clk12),
+        .clkPresc(clkSys_shared),
+        .reset(reset_sync)
+    ) /* synthesis syn_noprune=1 */;
 
     pwmGen pwm (
         .clk(clk12),
@@ -117,7 +120,7 @@ module rgbw_lamp (
     spiSlave spi_rx (
         .sck(sck0),
         .cs(cs), 
-        .clk(clk12),
+        .clk(clkSys_shared),
         .mosi(mosi),
         .reset(reset_sync),
         .rdy(rdy),

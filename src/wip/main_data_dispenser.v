@@ -98,7 +98,7 @@ always @(posedge clk) begin
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h7: begin
-                        mode_sync <= buffRx_spi_latch;
+                        mode_sync <= buffRx_spi_latch; // rimani in questo stato sempre fino a nuovo RDY
                         byte_cnt_spi <= 4'h0;
                         lint_sync <= lint_spi;
                         colorIdx_sync <= colorIdx_spi;

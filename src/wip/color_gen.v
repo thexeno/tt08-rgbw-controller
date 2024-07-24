@@ -166,13 +166,7 @@ localparam stateApply = 4'd9;
 
                 thr3: begin
                     r <= 8'b00000000;
-                    g_temp = g + 8'b00000111;
-                    if (g_temp <= 8'b00000111) begin // overflow
-                        g <= 8'hff;
-                    end 
-                    else begin
-                       g <= g_temp; 
-                    end                 
+                    g <= g + 8'b00000111;           
                     b <= 8'b11111111;
                     counter <= counter + 1;
                     if (counter < 8'h6c && counter <= thr) begin
@@ -187,13 +181,7 @@ localparam stateApply = 4'd9;
                 thr4: begin
                     r <= 8'b00000000;
                     g <= 8'b11111111;
-                    b_temp = b - 8'b00000111;
-                    if (b_temp > 8'hF8) begin // underflow
-                        b <= 8'h00;
-                    end 
-                    else begin
-                       b <= b_temp; 
-                    end             
+                    b <= b - 8'b00000111;         
                     counter <= counter + 1;
                     if (counter < 8'h90 && counter <= thr) begin
                         state <= thr4;
@@ -205,13 +193,7 @@ localparam stateApply = 4'd9;
                 end
 
                 thr5: begin
-                    r_temp = r + 8'b00000111;
-                    if (r_temp <= 8'b00000111) begin // overflow
-                        r <= 8'hff;
-                    end 
-                    else begin
-                       r <= r_temp; 
-                    end                           
+                    r <= r + 8'b00000111;                       
                     g <= 8'b11111111;
                     b <= 8'b00000000;
                     counter <= counter + 1;
@@ -226,13 +208,7 @@ localparam stateApply = 4'd9;
 
                 thr6: begin
                     r <= 8'b11111111;
-                    g_temp = g - 8'b00000111;
-                    if (g_temp > 8'hF8) begin // underflow
-                        g <= 8'h00;
-                    end 
-                    else begin
-                       g <= g_temp; 
-                    end     
+                    g <= g - 8'b00000111;  
                     b <= 8'b00000000;
                     counter <= counter + 1;
                     if (counter < 8'hd8 && counter <= thr) begin
