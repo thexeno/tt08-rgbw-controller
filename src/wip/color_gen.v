@@ -53,9 +53,13 @@ localparam stateApply = 4'd9;
     reg [7:0] r = 8'b00000000;
     reg [7:0] g = 8'b00000000;
     reg [7:0] b = 8'b00000000;
-    reg [7:0] r_temp = 8'b00000000;
-    reg [7:0] g_temp = 8'b00000000;
+    integer r_temp = 8'b00000000;
+    integer g_temp = 8'b00000000;
     reg [7:0] b_temp = 8'b00000000;
+    wire [7:0] b_plus;
+    wire [7:0] r_plus;
+    wire [7:0] b_minus;
+    wire [7:0] r_minus;
     reg [7:0] w = 8'b00000000;
     reg [7:0] w_m = 8'b00000000;
     reg [7:0] lint_sig = 8'b00000000;
@@ -68,6 +72,11 @@ localparam stateApply = 4'd9;
     reg reset_sig;
 
     reg [3:0] state = 4'd0;
+
+    assign b_plus = b + 8'b00000111;
+    assign b_minus = b - 8'b00000111;
+    assign r_plus = r + 8'b00000111;
+    assign r_minus = r - 8'b00000111;
 
     always @(posedge clk) begin
         reset_sig <= reset;
@@ -120,12 +129,11 @@ localparam stateApply = 4'd9;
                       
                     r <= 8'b11111111;
                     g <= 8'b00000000;
-                    b_temp = b + 8'b00000111;
-                    if (b_temp < 8'b00000111) begin // overflow
+                    if (b_plus < 8'b00000111) begin // overflow EVENTUALLY SEPARAE COMB LOGICIN A DIFFERENT BLOCK
                         b <= 8'hff;
                     end 
                     else begin
-                       b <= b_temp; 
+                       b <= b_plus; 
                     end
                     counter <= counter + 1;
                     if (counter < 8'h24 && counter < thr) begin                    
@@ -138,12 +146,11 @@ localparam stateApply = 4'd9;
                 end
 
                 thr2: begin
-                    r_temp = r - 8'b00000111;
-                    if (r_temp > 8'hF8) begin // underflow
+                    if (r_minus > 8'hF8) begin // underflow
                         r <= 8'h00;
                     end 
                     else begin
-                       r <= r_temp; 
+                       r <= r_minus; 
                     end
                     g <= 8'b00000000;
                     b <= 8'b11111111;
