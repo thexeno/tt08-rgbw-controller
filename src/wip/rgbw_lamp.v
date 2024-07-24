@@ -21,7 +21,8 @@ module rgbw_lamp (
     output wire red_pwr,
     output wire green_pwr,
     output wire blue_pwr,
-    output wire white_pwr
+    output wire white_pwr,
+    output wire [7:0] blue_sync_o
 );
 
     // Internal signals
@@ -59,6 +60,7 @@ module rgbw_lamp (
     assign blue_pwr = blue_pin;
     assign white_pwr = white_pin;
     assign clkSys_shared = clk12;
+    assign blue_sync_o = blue_sync;
 
     // // Components instantiation
     // clockDividerPwm clockFeeder (
