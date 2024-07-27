@@ -251,10 +251,38 @@ localparam stateApply = 4'd9;
         if (buff_white[2]) temp_result = temp_result + (lint_sig << 2);
         if (buff_white[1]) temp_result = temp_result + (lint_sig << 1);
         if (buff_white[0]) temp_result = temp_result + lint_sig;
-
         // Shift the result right by 8 to fit it within 8 bits
-        buff_white <= (temp_result >> 8);
-       
+        whiteOut <= (temp_result >> 8);
+        if (buff_red[7]) temp_result 
+        if (buff_red[6]) temp_result 
+        if (buff_red[5]) temp_result 
+        if (buff_red[4]) temp_result 
+        if (buff_red[3]) temp_result 
+        if (buff_red[2]) temp_result 
+        if (buff_red[1]) temp_result 
+        if (buff_red[0]) temp_result 
+        // Shift the result right by 8 
+        redOut <= (temp_result >> 8);
+        if (buff_green[7]) temp_result 
+        if (buff_green[6]) temp_result 
+        if (buff_green[5]) temp_result 
+        if (buff_green[4]) temp_result 
+        if (buff_green[3]) temp_result 
+        if (buff_green[2]) temp_result 
+        if (buff_green[1]) temp_result 
+        if (buff_green[0]) temp_result 
+        // Shift the result right by 8 
+        greenOut <= (temp_result >> 8);
+        if (buff_blue[7]) temp_result 
+        if (buff_blue[6]) temp_result 
+        if (buff_blue[5]) temp_result 
+        if (buff_blue[4]) temp_result 
+        if (buff_blue[3]) temp_result 
+        if (buff_blue[2]) temp_result 
+        if (buff_blue[1]) temp_result 
+        if (buff_blue[0]) temp_result 
+        // Shift the result right by 8 
+        blueOut <= (temp_result >> 8);
 
                     // case (lint_comp)
                     //     3'b000: begin
