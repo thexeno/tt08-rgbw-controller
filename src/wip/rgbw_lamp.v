@@ -18,17 +18,17 @@ module rgbw_lamp (
     output wire blue_pin,
     output wire white_pin,
     output wire dbg,
-    output wire red_pwr,
-    output wire green_pwr,
-    output wire blue_pwr,
-    output wire white_pwr,
+    // output wire red_pwr,
+    // output wire green_pwr,
+    // output wire blue_pwr,
+    // output wire white_pwr,
     output wire [7:1] buffRx_spi_o,
     output wire rdy_o
 
 );
 
     // Internal signals
-    wire clkSys_shared;
+    //wire clkSys_shared;
     wire clkSys_pwm;
     wire clkSys_des;
     wire red_sig;
@@ -37,17 +37,17 @@ module rgbw_lamp (
     wire white_sig;
     wire rdy;
     reg reset_sync;
-    wire [7:0] rDuty;
-    wire [7:0] gDuty;
-    wire [7:0] bDuty;
-    wire [7:0] wDuty;
+    wire [15:0] rDuty;
+    wire [15:0] gDuty;
+    wire [15:0] bDuty;
+    wire [15:0] wDuty;
     wire [7:0] buffRx_spi;
     wire [3:0] byte_cnt_spi;
     wire [7:0] lint_sync;
-    wire [7:0] red_sync;
-    wire [7:0] green_sync;
-    wire [7:0] blue_sync;
-    wire [7:0] white_sync;
+    wire [15:0] red_sync;
+    wire [15:0] green_sync;
+    wire [15:0] blue_sync;
+    wire [15:0] white_sync;
     wire [7:0] colorIdx_sync;
     wire [7:0] mode_sync;
 
@@ -57,20 +57,20 @@ module rgbw_lamp (
     // assign green_pin = green_sig;
     // assign blue_pin = blue_sig;
     // assign white_pin = white_sig;
-    assign red_pwr = red_pin;
-    assign green_pwr = green_pin;
-    assign blue_pwr = blue_pin;
-    assign white_pwr = white_pin;
+    // assign red_pwr = red_pin;
+    // assign green_pwr = green_pin;
+    // assign blue_pwr = blue_pin;
+    // assign white_pwr = white_pin;
     //assign clkSys_shared = clk12;
     assign buffRx_spi_o = buffRx_spi;
     assign rdy_o = rdy;
 
-    // Components instantiation
-    clockDividerPwm clockFeeder (
-        .clk(clk12),
-        .clkPresc(clkSys_shared),
-        .reset(reset_sync)
-    ) /* synthesis syn_noprune=1 */;
+    // // Components instantiation
+    // clockDividerPwm clockFeeder (
+    //     .clk(clk12),
+    //     .clkPresc(clkSys_shared),
+    //     .reset(reset_sync)
+    // ) /* synthesis syn_noprune=1 */;
 
     pwmGen pwm (
         .clk(clk12),
@@ -120,20 +120,20 @@ module rgbw_lamp (
     spiSlave spi_rx (
         .sck(sck0),
         .cs(cs), 
-        .clk(clkSys_shared),
+        .clk(clk12),
         .mosi(mosi),
         .reset(reset_sync),
         .rdy(rdy),
         .data(buffRx_spi)
     ) /* synthesis syn_noprune=1 */;
 
-    // Process for synchronous reset
-    always @(posedge clk12) begin
-        if (clk12) begin
-            reset_sync <= reset;
-        end
-    end
-
+    // // Process for synchronous reset
+    // always @(posedge clk12) begin
+    //     if (clk12) begin
+    //         reset_sync <= reset;
+    //     end
+    // end
+    // not needed as all module have sync reset
 
 
 endmodule

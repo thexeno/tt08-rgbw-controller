@@ -13,14 +13,14 @@ module colorGen (
     input wire [7:0] mode,
     input wire [7:0] lint,
     input wire [7:0] colorIdx,
-    input wire [7:0] whiteIn,
-    input wire [7:0] redIn,
-    input wire [7:0] greenIn,
-    input wire [7:0] blueIn,
-    output reg [7:0] redOut,
-    output reg [7:0] greenOut,
-    output reg [7:0] blueOut,
-    output reg [7:0] whiteOut
+    input wire [15:0] whiteIn,
+    input wire [15:0] redIn,
+    input wire [15:0] greenIn,
+    input wire [15:0] blueIn,
+    output reg [15:0] redOut,
+    output reg [15:0] greenOut,
+    output reg [15:0] blueOut,
+    output reg [15:0] whiteOut
 );
 
 localparam init = 4'd0;
@@ -68,8 +68,7 @@ localparam stateApply = 4'd9;
     reg [7:0] counter = 8'b00000000;
     reg [7:0] w_sig = 8'b00000000;
     reg [7:0] mode_latch = 8'b00000000;
-    reg [7:0] buff_white = 8'b00000000;
-    reg [2:0] lint_comp = 3'b000;
+    //reg [2:0] lint_comp = 3'b000;
     reg reset_sig;
 
     reg [3:0] state = 4'd0;
@@ -89,27 +88,23 @@ localparam stateApply = 4'd9;
             r <= 8'b00000000;
             g <= 8'b00000000;
             b <= 8'b00000000;
-            r_temp <= 8'b00000000;
-            g_temp <= 8'b00000000;
-            b_temp <= 8'b00000000;
             w <= 8'b00000000;
-            buff_white <= 8'b00000000;
             mode_latch <= 8'b00000000;
-            whiteOut <= 8'b00000000;
-            redOut <= 8'b00000000;
-            greenOut <= 8'b00000000;
-            blueOut <= 8'b00000000;
-            lint_comp <= 3'b000;
+            whiteOut <= 16'h0000;
+            redOut <= 16'h0000;
+            greenOut <= 16'h0000;
+            blueOut <= 16'h0000;
+            //lint_comp <= 3'b000;
         end else begin
             mode_latch <= mode;
-            buff_white <= whiteIn;
+            //buff_white <= whiteIn;
             
             case (state)
                 init: begin
-                    r <= 8'b11111111;
+                    r <= 8'b00000000;
                     g <= 8'b00000000;
                     b <= 8'b00000000;
-                    w <= whiteIn;
+                    w <= 8'b00000000;
                     thr <= colorIdx;
                     lint_sig <= lint;
                     counter <= 8'b00000000;
@@ -229,106 +224,129 @@ localparam stateApply = 4'd9;
                 end
 
                 finalAdj: begin
-                    if ({1'b0, r} + {1'b0, buff_white} > 9'b011111111) r <= 8'hFF;
-                    else r <= r + buff_white;
+                    if ({1'b0, r} + {1'b0, w} > 9'b011111111) r <= 8'hFF;
+                    else r <= r + w;
 
-                    if ({1'b0, g} + {1'b0, buff_white} > 9'b011111111) g <= 8'hFF;
-                    else g <= g + buff_white;
+                    if ({1'b0, g} + {1'b0, w} > 9'b011111111) g <= 8'hFF;
+                    else g <= g + w;
 
-                    if ({1'b0, b} + {1'b0, buff_white} > 9'b011111111) b <= 8'hFF;
-                    else b <= b + buff_white;
+                    if ({1'b0, b} + {1'b0, w} > 9'b011111111) b <= 8'hFF;
+                    else b <= b + w;
 
                     state <= stateApply;
                 end
 
                 stateApply: begin 
                 
-        if (buff_white[7]) temp_result = temp_result + (lint_sig << 7);
-        if (buff_white[6]) temp_result = temp_result + (lint_sig << 6);
-        if (buff_white[5]) temp_result = temp_result + (lint_sig << 5);
-        if (buff_white[4]) temp_result = temp_result + (lint_sig << 4);
-        if (buff_white[3]) temp_result = temp_result + (lint_sig << 3);
-        if (buff_white[2]) temp_result = temp_result + (lint_sig << 2);
-        if (buff_white[1]) temp_result = temp_result + (lint_sig << 1);
-        if (buff_white[0]) temp_result = temp_result + lint_sig;
+        // if (buff_white[7]) temp_result = temp_result + (lint_sig << 7);
+        // if (buff_white[6]) temp_result = temp_result + (lint_sig << 6);
+        // if (buff_white[5]) temp_result = temp_result + (lint_sig << 5);
+        // if (buff_white[4]) temp_result = temp_result + (lint_sig << 4);
+        // if (buff_white[3]) temp_result = temp_result + (lint_sig << 3);
+        // if (buff_white[2]) temp_result = temp_result + (lint_sig << 2);
+        // if (buff_white[1]) temp_result = temp_result + (lint_sig << 1);
+        // if (buff_white[0]) temp_result = temp_result + lint_sig;
         // Shift the result right by 8 to fit it within 8 bits
-        whiteOut <= (temp_result >> 8);
-        if (buff_red[7]) temp_result 
-        if (buff_red[6]) temp_result 
-        if (buff_red[5]) temp_result 
-        if (buff_red[4]) temp_result 
-        if (buff_red[3]) temp_result 
-        if (buff_red[2]) temp_result 
-        if (buff_red[1]) temp_result 
-        if (buff_red[0]) temp_result 
-        // Shift the result right by 8 
-        redOut <= (temp_result >> 8);
-        if (buff_green[7]) temp_result 
-        if (buff_green[6]) temp_result 
-        if (buff_green[5]) temp_result 
-        if (buff_green[4]) temp_result 
-        if (buff_green[3]) temp_result 
-        if (buff_green[2]) temp_result 
-        if (buff_green[1]) temp_result 
-        if (buff_green[0]) temp_result 
-        // Shift the result right by 8 
-        greenOut <= (temp_result >> 8);
-        if (buff_blue[7]) temp_result 
-        if (buff_blue[6]) temp_result 
-        if (buff_blue[5]) temp_result 
-        if (buff_blue[4]) temp_result 
-        if (buff_blue[3]) temp_result 
-        if (buff_blue[2]) temp_result 
-        if (buff_blue[1]) temp_result 
-        if (buff_blue[0]) temp_result 
-        // Shift the result right by 8 
-        blueOut <= (temp_result >> 8);
+        //whiteOut <= (temp_result >> 8);
+        whiteOut = (lint_sig * w);
+        //whiteOut[7] <= (temp_result[15]);
+        //whiteOut[6] <= (temp_result[14]);
+       // whiteOut[5] <= (temp_result[13]);
+        //whiteOut[4] <= (temp_result[12]);
+        //whiteOut[3] <= (temp_result[11]);
+        //whiteOut[2] <= (temp_result[10]);
+        //whiteOut[1] <= (temp_result[9]);
+        //whiteOut[0] <= (temp_result[8]);
+
+
+        redOut = (lint_sig * r);
+        //redOut[7] <= (temp_result[15]);
+        //redOut[6] <= (temp_result[14]);
+        //redOut[5] <= (temp_result[13]);
+        //redOut[4] <= (temp_result[12]);
+       // redOut[3] <= (temp_result[11]);
+       // redOut[2] <= (temp_result[10]);
+       // redOut[1] <= (temp_result[9]);
+        //redOut[0] <= (temp_result[8]);
+
+                greenOut = (lint_sig * g);
+       // greenOut[7] <= (temp_result[15]);
+       // greenOut[6] <= (temp_result[14]);
+       // greenOut[5] <= (temp_result[13]);
+       // greenOut[4] <= (temp_result[12]);
+       // greenOut[3] <= (temp_result[11]);
+       // greenOut[2] <= (temp_result[10]);
+        //greenOut[1] <= (temp_result[9]);
+        //greenOut[0] <= (temp_result[8]);
+
+                blueOut = (lint_sig * b);
+       //blueOut[7] <= (temp_result[15]);
+       //blueOut[6] <= (temp_result[14]);
+       //blueOut[5] <= (temp_result[13]);
+       // blueOut[4] <= (temp_result[12]);
+       // blueOut[3] <= (temp_result[11]);
+       // blueOut[2] <= (temp_result[10]);
+       // blueOut[1] <= (temp_result[9]);
+        //blueOut[0] <= (temp_result[8]);
+        //         temp_result = (lint_sig * r);
+        // r = (temp_result >> 8);
+
+        //         temp_result = (lint_sig * g);
+        // g = (temp_result >> 8);
+
+        //         temp_result = (lint_sig * b);
+        // b = (temp_result >> 8);
+
+
+        //  redOut = r;
+        // greenOut = g;
+        // blueOut = b;
 
                     // case (lint_comp)
                     //     3'b000: begin
-                    //         whiteOut <= buff_white;
+                    //       //  whiteOut <= buff_white;
                     //         redOut <= r;
                     //         greenOut <= g;
                     //         blueOut <= b;
                     //     end
                     //     3'b001: begin
-                    //         whiteOut <= buff_white >> 1;
+                    //     //    whiteOut <= buff_white >> 1;
                     //         redOut <= r >> 1;
                     //         greenOut <= g >> 1;
                     //         blueOut <= b >> 1;
                     //     end
                     //     3'b010: begin
-                    //         whiteOut <= buff_white >> 2;
+                    //     //    whiteOut <= buff_white >> 2;
                     //         redOut <= r >> 2;
                     //         greenOut <= g >> 2;
                     //         blueOut <= b >> 2;
                     //     end
                     //     3'b011: begin
-                    //         whiteOut <= buff_white >> 3;
+                    //     //    whiteOut <= buff_white >> 3;
                     //         redOut <= r >> 3;
                     //         greenOut <= g >> 3;
                     //         blueOut <= b >> 3;
                     //     end
                     //     3'b100: begin
-                    //         whiteOut <= buff_white >> 4;
+                    //     //    whiteOut <= buff_white >> 4;
                     //         redOut <= r >> 4;
                     //         greenOut <= g >> 4;
                     //         blueOut <= b >> 4;
                     //     end
                     //     3'b101: begin
-                    //         whiteOut <= buff_white >> 5;
+                    //      //   whiteOut <= buff_white >> 5;
                     //         redOut <= r >> 5;
                     //         greenOut <= g >> 5;
                     //         blueOut <= b >> 5;
                     //     end
                     //     3'b110: begin
-                    //         whiteOut <= buff_white >> 6;
+                    //     //    whiteOut <= buff_white >> 6;
                     //         redOut <= r >> 6;
                     //         greenOut <= g >> 6;
                     //         blueOut <= b >> 6;
                     //     end
                     //     3'b111: begin
-                    //         whiteOut <= buff_white >> 7;
+                    //    //     whiteOut <= buff_white >> 7;
                     //         redOut <= r >> 7;
                     //         greenOut <= g >> 7;
                     //         blueOut <= b >> 7;

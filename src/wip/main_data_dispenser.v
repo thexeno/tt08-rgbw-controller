@@ -13,10 +13,10 @@ module rgbw_data_dispencer (
     input wire rdy,
     input wire clk,
     output reg [7:0] lint_sync,
-    output reg [7:0] red_sync,
-    output reg [7:0] green_sync,
-    output reg [7:0] blue_sync,
-    output reg [7:0] white_sync,
+    output reg [15:0] red_sync,
+    output reg [15:0] green_sync,
+    output reg [15:0] blue_sync,
+    output reg [15:0] white_sync,
     output reg [7:0] colorIdx_sync,
     output reg [7:0] mode_sync
 );
@@ -52,11 +52,11 @@ always @(posedge clk) begin
             //sync_char <= 1'b0;
             lint_sync <= 8'b00000000;
             colorIdx_sync <= 8'b00000000;
-            white_sync <= 8'b00000000;
-            red_sync <= 8'b00000000;
-            green_sync <= 8'b00000000;
-            blue_sync <= 8'b00000000;
-            mode_sync <= 8'b00000000;
+            white_sync <= 16'h0000;
+            red_sync <= 16'h0000;
+            green_sync <= 16'h0000;
+            blue_sync <= 16'h0000;
+            mode_sync <= 16'h0000;
             rdy_latch <= 1'b0;
         end 
         else 
@@ -102,10 +102,10 @@ always @(posedge clk) begin
                         byte_cnt_spi <= 4'h0;
                         lint_sync <= lint_spi;
                         colorIdx_sync <= colorIdx_spi;
-                        red_sync <= red_spi;
-                        green_sync <= green_spi;
-                        blue_sync <= blue_spi;
-                        white_sync <= white_spi;
+                        red_sync <= {red_spi, 8'b0};  //are 16bit for optimizing the reuslt of mult in color_Gen, works better with the synthesizer
+                        green_sync <= {green_spi, 8'b0};
+                        blue_sync <= {blue_spi, 8'b0};
+                        white_sync <= {white_spi, 8'b0};
                     end
                     default: byte_cnt_spi <= 4'h0;
                 endcase

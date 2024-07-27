@@ -40,10 +40,10 @@ module pwmGen (
 
 input   clk; 
 input   reset; 
-input   [7:0] duty0; 
-input   [7:0] duty1; 
-input   [7:0] duty2; 
-input   [7:0] duty3; 
+input   [15:0] duty0; 
+input   [15:0] duty1; 
+input   [15:0] duty2; 
+input   [15:0] duty3; 
 output   d0; 
 output   d1; 
 output   d2; 
@@ -53,15 +53,15 @@ reg     d0;
 reg     d1; 
 reg     d2; 
 reg     d3; 
-reg     [7:0] counter = {8{1'b 0}};
-reg     [7:0] duty0_buff = {8{1'b 0}}; 
-reg     [7:0] duty1_buff = {8{1'b 0}}; 
-reg     [7:0] duty2_buff = {8{1'b 0}}; 
-reg     [7:0] duty3_buff = {8{1'b 0}}; 
-reg     d0_sig = 1'b 0;  
-reg     d1_sig = 1'b 0;  
-reg     d2_sig = 1'b 0;  
-reg     d3_sig = 1'b 0;  
+reg     [7:0] counter;
+reg     [7:0] duty0_buff ;
+reg     [7:0] duty1_buff ;
+reg     [7:0] duty2_buff ;
+reg     [7:0] duty3_buff ;
+reg     d0_sig;
+reg     d1_sig;
+reg     d2_sig;
+reg     d3_sig;
 reg     reset_sig; 
 
 // initial 
@@ -113,29 +113,29 @@ reg     reset_sig;
 always @(posedge clk)
    begin : maincounter
    reset_sig <= reset;   
-   if (reset_sig === 1'b 0)
+   if (reset_sig == 1'b 0)
       begin
       counter <= {8{1'b 0}};   
       d0_sig <= 1'b 0;   
       d1_sig <= 1'b 0;   
       d2_sig <= 1'b 0;   
       d3_sig <= 1'b 0;   
-      duty0_buff <= {8{1'b 0}};   
-      duty1_buff <= {8{1'b 0}};   
-      duty2_buff <= {8{1'b 0}};   
-      duty3_buff <= {8{1'b 0}};   
+      // duty0_buff <= {8{1'b 0}};   
+      // duty1_buff <= {8{1'b 0}};   
+      // duty2_buff <= {8{1'b 0}};   
+      // duty3_buff <= {8{1'b 0}};   
       end
    else
       begin
 
-      if (counter === 8'h ff)
+      if (counter == 8'h ff)
          begin
          counter <= {8{1'b 0}};  
          // here are sync updates with pwm period 
-         duty0_buff <= duty0;   
-         duty1_buff <= duty1;   
-         duty2_buff <= duty2;   
-         duty3_buff <= duty3;   
+         duty0_buff <= duty0[15:8];   
+         duty1_buff <= duty1[15:8];   
+         duty2_buff <= duty2[15:8];   
+         duty3_buff <= duty3[15:8];   
          end
       else
          begin
@@ -173,10 +173,10 @@ always @(posedge clk)
          begin
          d3_sig <= 1'b 0;   
          end
-      d0 <= d0_sig;   
-      d1 <= d1_sig;   
-      d2 <= d2_sig;   
-      d3 <= d3_sig;   
+         d0 <= d0_sig;   
+         d1 <= d1_sig;   
+         d2 <= d2_sig;   
+         d3 <= d3_sig;   
       end
    end
 

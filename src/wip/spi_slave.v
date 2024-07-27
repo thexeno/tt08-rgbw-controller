@@ -53,7 +53,7 @@ reg     sck_latch = 1'b 0;
 reg     sck_prev = 1'b 0; 
 reg     mosi_latch = 1'b 0;
 reg     reset_sig; 
-
+reg clkPrescSig = 1'b0;
 // initial 
 //    begin : process_7
 //    mosi_latch = 1'b 0;   
@@ -88,9 +88,12 @@ reg     reset_sig;
 //    begin : process_1
 //    bit_counter = {8{1'b 0}};   
 //    end
-
-
 always @(posedge clk)
+   begin : spi_sys_clock
+            clkPrescSig <= ~clkPrescSig;   
+   end
+
+always @(posedge clkPrescSig)
    begin : mainprocess
    reset_sig <= reset;   
    if (reset_sig == 1'b 0 || cs == 1'b 1)
