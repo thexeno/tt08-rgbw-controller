@@ -89,7 +89,7 @@ try:
 
     print("Press 'y' to continue. Next test: color wheel")
     keyboard.wait('y')
-    params = ["00", "00", "00", "00", "00", "00", "00", "a4"]
+    params = ["00", "00", "00", "00", "00", "ff", "00", "a4"]
     create_message(params)
     i = 0
     for i in range(0xff):
@@ -103,20 +103,25 @@ try:
 
     print("Press 'y' to continue. Next test: white with random color 1")
     keyboard.wait('y')
-    params = ["00", "00", "00", "00", "00", "00", "00", "a4"]
+    params = ["00", "00", "00", "00", "00", "ff", "00", "a4"]
     create_message(params)
     i = 0
+    update_parameter(params, 6, int_to_hex_string(0xa0))
+    message = create_message(params)
+    ser.write(message.encode())
+    keyboard.wait('y')
     for i in range(0xff):      
         # Convert the loop counter to a two-character hexadecimal string
         update_parameter(params, 4, int_to_hex_string(i))
         print(f'Color wheel. Sending W: {message}')
-        update_parameter(params, 6, int_to_hex_string(0xff))
+        #update_parameter(params, 6, int_to_hex_string(0xaf))
         message = create_message(params)
-        ser.write(message.encode())        
+        ser.write(message.encode())
+        
 
     print("Press 'y' to continue. Next test: white with random color 2")
     keyboard.wait('y')
-    params = ["00", "00", "00", "00", "0x30", "00", "00", "a4"]
+    params = ["00", "00", "00", "00", "0x30", "ff", "00", "a4"]
     create_message(params)  
     for i in range(0xff):      
         # Convert the loop counter to a two-character hexadecimal string
