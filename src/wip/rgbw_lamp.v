@@ -74,7 +74,7 @@ module rgbw_lamp (
 
     pwmGen pwm (
         .clk(clk12),
-        .reset(reset_sync),
+        .reset(reset),
         .duty0(rDuty),
         .duty1(gDuty),
         .duty2(bDuty),
@@ -87,7 +87,7 @@ module rgbw_lamp (
 
     colorGen color (
         .clk(clk12),
-        .reset(reset_sync),
+        .reset(reset),
         .mode(mode_sync),
         .lint(lint_sync),
         .colorIdx(colorIdx_sync),
@@ -105,7 +105,7 @@ module rgbw_lamp (
 
     rgbw_data_dispencer deserializer (
         .buffRx_spi(buffRx_spi),
-        .reset(reset_sync),
+        .reset(reset),
         .rdy(rdy),
         .clk(clk12),
         .lint_sync(lint_sync),
@@ -122,7 +122,7 @@ module rgbw_lamp (
         .cs(cs), 
         .clk(clk12),
         .mosi(mosi),
-        .reset(reset_sync),
+        .reset(reset),
         .rdy(rdy),
         .data(buffRx_spi)
     ) /* synthesis syn_noprune=1 */;

@@ -51,10 +51,6 @@ wire w_greenPin;
 wire w_bluePin;
 wire w_whitePin;
 wire w_dbgPin;
-wire w_redPwrPin;
-wire w_greenPwrPin;
-wire w_bluePwrPin;
-wire w_whitePwrPin;
 
 
   // Clock Generators:
@@ -87,11 +83,7 @@ wire w_whitePwrPin;
 		.green_pin(w_greenPin),
 		.blue_pin(w_bluePin),
 		.white_pin(w_whitePin),
-		.dbg(w_dbgPin),
-		.red_pwr(w_redPwrPin),
-		.green_pwr(w_redPwrPin),
-		.blue_pwr(w_redPwrPin),
-		.white_pwr(w_redPwrPin)
+		.dbg(w_dbgPin)
    );
 
   // Instantiate Master to drive Slave
@@ -219,7 +211,7 @@ begin
 	for (spi_iter = 0; spi_iter < 20; spi_iter++)
 	begin
   	dataPayload[0]  <= 8'h55;
-  	dataPayload[1]  <= 8'h00;
+  	dataPayload[1]  <= 8'hff;
   	dataPayload[2]  <= 8'h24;
   	dataPayload[3]  <= 8'h00;
   	dataPayload[4]  <= 8'hFF;
@@ -247,7 +239,7 @@ begin
 
 
   	dataPayload[0]  <= 8'h55;
-  	dataPayload[1]  <= 8'h00;
+  	dataPayload[1]  <= 8'hff;
   	dataPayload[2]  <= 8'h23;
   	dataPayload[3]  <= 8'h00;
   	dataPayload[4]  <= 8'hFF;
