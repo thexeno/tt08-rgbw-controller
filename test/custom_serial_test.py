@@ -42,14 +42,14 @@ def create_messageColorWheel(value):
     return f'$00.00.ff.00.00.00.{value}.a4#'
 
 # Configure the serial port (update 'COM3' to your port)
-ser = serial.Serial('COM5', 115200, timeout=1)
+ser = serial.Serial('COM5', 115200, timeout=5)
 
 
 try:
-    print(f'Next test: single color control.')
+    print(f'Next test: single color cyyontrol.')
     keyboard.wait('y')
     # Initial parameters
-    params = ["00", "00", "ff", "00", "00", "00", "00", "21"]
+    params = ["00", "00", "00", "00", "00", "00", "00", "21"]
     
     for j in range(5):
         if (j == 4):
@@ -73,8 +73,8 @@ try:
                 update_parameter(params, 4, hex_value)
                 message = create_message(params)
             elif j == 4:
-                update_parameter(params, 4, 0x35)
-                update_parameter(params, 3, 0x94)
+                update_parameter(params, 4, int_to_hex_string(0x35))
+                update_parameter(params, 3, int_to_hex_string(0x94))
                 update_parameter(params, 5, hex_value) # luminosity test with a random color, in single color mode. Nothing should happen
                 message = create_message(params)
 
@@ -100,6 +100,7 @@ try:
         # Send the message over serial
         print(f'Sending: {message}')
         ser.write(message.encode())
+        #time.sleep(0.1)
 
     print("Press 'y' to continue. Next test: white with random color 1")
     keyboard.wait('y')
@@ -132,7 +133,14 @@ try:
         # Convert the loop counter to a two-character hexadecimal string
         update_parameter(params, 4, int_to_hex_string(i))
         print(f'Color wheel. Sending W: {message}')
-        update_parameter(params, 6, int_to_hex_string(0x80))
+        update_parameter(params, 6, int_to_hex_string(0xf0))
+        message = create_message(params)
+        ser.write(message.encode())
+    for i in range(0xff):      
+        # Convert the loop counter to a two-character hexadecimal string
+        update_parameter(params, 4, int_to_hex_string(0xff-i))
+        print(f'Color wheel. Sending W: {message}')
+        update_parameter(params, 6, int_to_hex_string(0xf0))
         message = create_message(params)
         ser.write(message.encode())
         
@@ -141,6 +149,7 @@ try:
     for i in range(0xff):      
         # Convert the loop counter to a two-character hexadecimal string
         print(f'Color wheel. Sending intensity to previous color: {message}')
+        update_parameter(params, 4, int_to_hex_string(0xff))
         update_parameter(params, 5, int_to_hex_string(i+1))
         message = create_message(params)
         ser.write(message.encode())

@@ -82,14 +82,14 @@ wire w_dbgPin;
 		.red_pin(w_redPin),
 		.green_pin(w_greenPin),
 		.blue_pin(w_bluePin),
-		.white_pin(w_whitePin),
-		.dbg(w_dbgPin)
+		.white_pin(w_whitePin)
+		//.dbg(w_dbgPin)
    );
 
   // Instantiate Master to drive Slave
   SPI_Master
   #(.SPI_MODE(SPI_MODE),
-	.CLKS_PER_HALF_BIT(2),
+	.CLKS_PER_HALF_BIT(16),
 	.NUM_SLAVES(1)) SPI_Master_UUT
   (
    // Control/Data Signals,
@@ -216,11 +216,11 @@ begin
   	dataPayload[3]  <= 8'h00;
   	dataPayload[4]  <= 8'hFF;
   	dataPayload[5]  <= 8'h00;
-  	dataPayload[6]  <= 8'h00;
+  	dataPayload[6]  <= (8'hAA);
   	dataPayload[7]  <= 8'hA4;
   	dataLength  	<= 8;
 	CS_high();
-  	repeat(10) @(posedge r_Clk);
+  	repeat(20) @(posedge r_Clk);
   	for (cnt=0; cnt<dataLength; cnt++)
   	begin
   	$display("%d (1)\n", r_Master_CS_n);
@@ -230,17 +230,17 @@ begin
 	@(posedge r_Clk);
   	$display("%d (0)\n", r_Master_CS_n);
   	SendSingleByteNoCS(dataPayload[cnt], dataLength);
-	repeat(10) @(posedge r_Clk);
+	repeat(20) @(posedge r_Clk);
 	CS_high();
-  	repeat(10) @(posedge r_Clk);
+  	repeat(200) @(posedge r_Clk);
    	end
 	end
-	repeat(10000) @(posedge r_Clk);
+	repeat(20000) @(posedge r_Clk);
 
 
   	dataPayload[0]  <= 8'h55;
   	dataPayload[1]  <= 8'hff;
-  	dataPayload[2]  <= 8'h23;
+  	dataPayload[2]  <= 8'h25;
   	dataPayload[3]  <= 8'h00;
   	dataPayload[4]  <= 8'hFF;
   	dataPayload[5]  <= 8'h00;
@@ -248,7 +248,7 @@ begin
   	dataPayload[7]  <= 8'hA4;
   	dataLength  	<= 8;
 	CS_high();
-  	repeat(10) @(posedge r_Clk);
+  	repeat(20) @(posedge r_Clk);
   	for (cnt=0; cnt<dataLength; cnt++)
   	begin
   	$display("%d (1)\n", r_Master_CS_n);
@@ -258,11 +258,94 @@ begin
 	@(posedge r_Clk);
   	$display("%d (0)\n", r_Master_CS_n);
   	SendSingleByteNoCS(dataPayload[cnt], dataLength);
-	repeat(10) @(posedge r_Clk);
+	repeat(20) @(posedge r_Clk);
 	CS_high();
-  	repeat(10) @(posedge r_Clk);
+  	repeat(20) @(posedge r_Clk);
               	end
-	repeat(10000) @(posedge r_Clk);
+	repeat(20000) @(posedge r_Clk);
+
+
+
+
+	dataPayload[0]  <= 8'h55;
+  	dataPayload[1]  <= 8'hff;
+  	dataPayload[2]  <= 8'h24;
+  	dataPayload[3]  <= 8'hFF;
+  	dataPayload[4]  <= 8'h00;
+  	dataPayload[5]  <= 8'h00;
+  	dataPayload[6]  <= 8'h00;
+  	dataPayload[7]  <= 8'hA4;
+  	dataLength  	<= 8;
+	CS_high();
+  	repeat(20) @(posedge r_Clk);
+  	for (cnt=0; cnt<dataLength; cnt++)
+  	begin
+  	$display("%d (1)\n", r_Master_CS_n);
+  	@(posedge r_Clk);
+	CS_low();
+  	$display("%d (0)\n", r_Master_CS_n);
+	@(posedge r_Clk);
+  	$display("%d (0)\n", r_Master_CS_n);
+  	SendSingleByteNoCS(dataPayload[cnt], dataLength);
+	repeat(20) @(posedge r_Clk);
+	CS_high();
+  	repeat(20) @(posedge r_Clk);
+              	end
+	repeat(20000) @(posedge r_Clk);
+
+
+	dataPayload[0]  <= 8'h55;
+  	dataPayload[1]  <= 8'hff;
+  	dataPayload[2]  <= 8'h23;
+  	dataPayload[3]  <= 8'hFF;
+  	dataPayload[4]  <= 8'h00;
+  	dataPayload[5]  <= 8'h00;
+  	dataPayload[6]  <= 8'h00;
+  	dataPayload[7]  <= 8'hA4;
+  	dataLength  	<= 8;
+	CS_high();
+  	repeat(20) @(posedge r_Clk);
+  	for (cnt=0; cnt<dataLength; cnt++)
+  	begin
+  	$display("%d (1)\n", r_Master_CS_n);
+  	@(posedge r_Clk);
+	CS_low();
+  	$display("%d (0)\n", r_Master_CS_n);
+	@(posedge r_Clk);
+  	$display("%d (0)\n", r_Master_CS_n);
+  	SendSingleByteNoCS(dataPayload[cnt], dataLength);
+	repeat(20) @(posedge r_Clk);
+	CS_high();
+  	repeat(20) @(posedge r_Clk);
+              	end
+	repeat(20000) @(posedge r_Clk);
+
+
+	dataPayload[0]  <= 8'h55;
+  	dataPayload[1]  <= 8'hff;
+  	dataPayload[2]  <= 8'ha0;
+  	dataPayload[3]  <= 8'hFF;
+  	dataPayload[4]  <= 8'h00;
+  	dataPayload[5]  <= 8'h00;
+  	dataPayload[6]  <= 8'h00;
+  	dataPayload[7]  <= 8'h21;
+  	dataLength  	<= 8;
+	CS_high();
+  	repeat(20) @(posedge r_Clk);
+  	for (cnt=0; cnt<dataLength; cnt++)
+  	begin
+  	$display("%d (1)\n", r_Master_CS_n);
+  	@(posedge r_Clk);
+	CS_low();
+  	$display("%d (0)\n", r_Master_CS_n);
+	@(posedge r_Clk);
+  	$display("%d (0)\n", r_Master_CS_n);
+  	SendSingleByteNoCS(dataPayload[cnt], dataLength);
+	repeat(20) @(posedge r_Clk);
+	CS_high();
+  	repeat(20) @(posedge r_Clk);
+              	end
+	repeat(20000) @(posedge r_Clk);
 
 
   	$display("Before  finish\n");

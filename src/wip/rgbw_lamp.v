@@ -17,18 +17,20 @@ module rgbw_lamp (
     output wire green_pin,
     output wire blue_pin,
     output wire white_pin,
-    output wire dbg,
+    output wire [3:0] dbg,
+    output wire m_ok,
+    output wire ld_mult
     // output wire red_pwr,
     // output wire green_pwr,
     // output wire blue_pwr,
     // output wire white_pwr,
-    output wire [7:1] buffRx_spi_o,
-    output wire rdy_o
+    //output wire [7:1] buffRx_spi_o,
+    //output wire rdy_o
 
 );
 
     // Internal signals
-    //wire clkSys_shared;
+    wire clkSys_shared;
     wire clkSys_pwm;
     wire clkSys_des;
     wire red_sig;
@@ -37,22 +39,25 @@ module rgbw_lamp (
     wire white_sig;
     wire rdy;
     reg reset_sync;
-    wire [15:0] rDuty;
-    wire [15:0] gDuty;
-    wire [15:0] bDuty;
-    wire [15:0] wDuty;
+    wire [7:0] rDuty;
+    wire [7:0] gDuty;
+    wire [7:0] bDuty;
+    wire [7:0] wDuty;
     wire [7:0] buffRx_spi;
     wire [3:0] byte_cnt_spi;
     wire [7:0] lint_sync;
-    wire [15:0] red_sync;
-    wire [15:0] green_sync;
-    wire [15:0] blue_sync;
-    wire [15:0] white_sync;
+    wire [7:0] red_sync;
+    wire [7:0] green_sync;
+    wire [7:0] blue_sync;
+    wire [7:0] white_sync;
     wire [7:0] colorIdx_sync;
     wire [7:0] mode_sync;
+    wire [7:0] a, b;
+    wire [15:0] result;
+    wire load, mult_rdy;
 
     // Output assignments
-    assign dbg = sck0 & reset;
+    //assign dbg = sck0 & reset;
     // assign red_pin = red_sig;
     // assign green_pin = green_sig;
     // assign blue_pin = blue_sig;
@@ -62,18 +67,28 @@ module rgbw_lamp (
     // assign blue_pwr = blue_pin;
     // assign white_pwr = white_pin;
     //assign clkSys_shared = clk12;
-    assign buffRx_spi_o = buffRx_spi;
-    assign rdy_o = rdy;
+    //assign buffRx_spi_o = buffRx_spi;
+    //assign rdy_o = rdy;
 
-    // // Components instantiation
-    // clockDividerPwm clockFeeder (
-    //     .clk(clk12),
-    //     .clkPresc(clkSys_shared),
-    //     .reset(reset_sync)
-    // ) /* synthesis syn_noprune=1 */;
+    // Components instantiation
+    clockDividerPwm clockFeeder (
+        .clk(clk12),
+        .clkPresc(clkSys_shared),
+        .reset(reset)
+    ) /* synthesis syn_noprune=1 */;
+
+    mult8x8 mult (
+        .clk(clk12),
+        .reset(reset),
+        .ld(load),
+        .mult_rdy(m_rdy),
+        .a(a),
+        .b(b),
+        .result(result)        
+    );
 
     pwmGen pwm (
-        .clk(clk12),
+        .clk(clkSys_shared),
         .reset(reset),
         .duty0(rDuty),
         .duty1(gDuty),
@@ -86,8 +101,13 @@ module rgbw_lamp (
     ) /* synthesis syn_noprune=1 */;
 
     colorGen color (
-        .clk(clk12),
+        .clk(clkSys_shared),
         .reset(reset),
+        .mult1(a),
+        .mult2(b),
+        .mult_res(result),
+        .mult_ok(m_rdy),
+        .ld(load),
         .mode(mode_sync),
         .lint(lint_sync),
         .colorIdx(colorIdx_sync),
@@ -98,7 +118,10 @@ module rgbw_lamp (
         .redOut(rDuty),
         .greenOut(gDuty),
         .blueOut(bDuty),
-        .whiteOut(wDuty)
+        .whiteOut(wDuty),
+        .dbg(dbg),
+        .mult_ok_dbg(m_ok),
+        .ld_dbg(ld_mult)
     ) /* synthesis syn_noprune=1 */;
 
     
@@ -107,7 +130,7 @@ module rgbw_lamp (
         .buffRx_spi(buffRx_spi),
         .reset(reset),
         .rdy(rdy),
-        .clk(clk12),
+        .clk(clkSys_shared),
         .lint_sync(lint_sync),
         .red_sync(red_sync),
         .green_sync(green_sync),
@@ -120,10 +143,10 @@ module rgbw_lamp (
     spiSlave spi_rx (
         .sck(sck0),
         .cs(cs), 
-        .clk(clk12),
+        .clk(clkSys_shared),
         .mosi(mosi),
         .reset(reset),
-        .rdy(rdy),
+        .rdy_sig(rdy),
         .data(buffRx_spi)
     ) /* synthesis syn_noprune=1 */;
 

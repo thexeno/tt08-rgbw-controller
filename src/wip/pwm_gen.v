@@ -40,10 +40,10 @@ module pwmGen (
 
 input   clk; 
 input   reset; 
-input   [15:0] duty0; 
-input   [15:0] duty1; 
-input   [15:0] duty2; 
-input   [15:0] duty3; 
+input   [7:0] duty0; 
+input   [7:0] duty1; 
+input   [7:0] duty2; 
+input   [7:0] duty3; 
 output   d0; 
 output   d1; 
 output   d2; 
@@ -132,10 +132,10 @@ always @(posedge clk)
          begin
          counter <= {8{1'b 0}};  
          // here are sync updates with pwm period 
-         duty0_buff <= duty0[15:8];   
-         duty1_buff <= duty1[15:8];   
-         duty2_buff <= duty2[15:8];   
-         duty3_buff <= duty3[15:8];   
+         duty0_buff <= duty0;   
+         duty1_buff <= duty1;   
+         duty2_buff <= duty2;   
+         duty3_buff <= duty3;   
          end
       else
          begin
