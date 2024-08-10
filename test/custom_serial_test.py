@@ -46,7 +46,7 @@ ser = serial.Serial('COM5', 115200, timeout=5)
 
 
 try:
-    print(f'Next test: single color cyyontrol.')
+    print(f'Next test: single color control.')
     keyboard.wait('y')
     # Initial parameters
     params = ["00", "00", "00", "00", "00", "00", "00", "21"]
@@ -59,7 +59,7 @@ try:
             # Convert the loop counter to a two-character hexadecimal string
             hex_value = int_to_hex_string(i)
 
-            # Create the messagey
+            # Create the message
             if j == 0:
                 update_parameter(params, 1, hex_value)
                 message = create_message(params)
@@ -100,7 +100,7 @@ try:
         # Send the message over serial
         print(f'Sending: {message}')
         ser.write(message.encode())
-        #time.sleep(0.1)
+        ytime.sleep(0.1)
 
     print("Press 'y' to continue. Next test: white with random color 1")
     keyboard.wait('y')
@@ -125,7 +125,7 @@ try:
     params = ["00", "00", "00", "00", "00", "ff", "00", "a4"]
     create_message(params)
     i = 0
-    update_parameter(params, 6, int_to_hex_string(0x80))
+    update_parameter(params, 6, int_to_hex_string(0xf0))
     message = create_message(params)
     ser.write(message.encode())
     keyboard.wait('y')
@@ -149,7 +149,7 @@ try:
     for i in range(0xff):      
         # Convert the loop counter to a two-character hexadecimal string
         print(f'Color wheel. Sending intensity to previous color: {message}')
-        update_parameter(params, 4, int_to_hex_string(0xff))
+        update_parameter(params, 4, int_to_hex_string(0x0))
         update_parameter(params, 5, int_to_hex_string(i+1))
         message = create_message(params)
         ser.write(message.encode())

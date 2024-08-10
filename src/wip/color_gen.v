@@ -163,7 +163,7 @@ module colorGen
                 g = 8'b00000000;
                 temp_ovf_b = 9'b000000000;
                 counter = counter + 1;
-                if (counter <= thr)
+                if (counter < thr)
                 begin
                     if (counter < 8'h2A)
                     begin
@@ -250,7 +250,7 @@ module colorGen
                 end   
                 temp_ovf_b = 9'b000000000;
                 counter = counter + 1;
-                if (counter <= thr)
+                if (counter < thr)
                 begin
                     if (counter < 8'hA8)
                     begin
@@ -512,7 +512,7 @@ module colorGen
                 state <= init;
             end
 
-                // default: state <= init;
+                // default: state <= init;  
             endcase
         end
     end
