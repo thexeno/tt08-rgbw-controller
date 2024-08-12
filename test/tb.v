@@ -19,7 +19,7 @@ module tb ();
   wire [7:0] uio_oe;
 
   // Replace tt_um_example with your module name:
-  tt08_thexeno_rgbw_lamp user_project (
+  tt_um_thexeno_rgbw_controller user_project (
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST

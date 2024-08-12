@@ -7,7 +7,7 @@
 //              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
 //              v.1.2 for applicable Conditions.
 
-module tt08_thexeno_rgbw_lamp (
+module tt_um_thexeno_rgbw_controller (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
