@@ -7,7 +7,7 @@
 //              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
 //              v.1.2 for applicable Conditions.
 
-module rgbw_data_dispencer (
+module rgbw_data_dispenser (
     input wire [7:0] buffRx_spi,
     input wire reset,
     input wire rdy,

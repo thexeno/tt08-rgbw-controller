@@ -142,7 +142,7 @@ module tt_um_thexeno_rgbw_controller (
 
     
 
-    rgbw_data_dispencer deserializer (
+    rgbw_data_dispenser deserializer (
         .buffRx_spi(buffRx_spi),
         .reset(reset),
         .rdy(rdy),
