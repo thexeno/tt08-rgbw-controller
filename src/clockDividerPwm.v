@@ -32,13 +32,11 @@ module clockDividerPwm (
  
 
 input   clk; 
-output   clkPresc; 
+output reg  clkPresc; 
 input   reset; 
 
-reg     clkPresc; 
-reg     [7:0] prescalerCnt = {8{1'b 0}}; 
+reg     [7:0] prescalerCnt = 8'h00; 
 reg     clkPrescSig = 1'b0;
-reg     reset_sig; 
 
 // initial 
 //    begin : process_2
@@ -53,12 +51,11 @@ reg     reset_sig;
 
 always @(posedge clk)
    begin : mainprocess
-   reset_sig <= reset;   
-   if (reset_sig == 1'b 0)
+   if (reset == 1'b 0)
       begin
-      prescalerCnt <= {8{1'b 0}};   
+      prescalerCnt <= 8'h00;  
       clkPrescSig <= 1'b 0;   
-
+      clkPresc <= 1'b0;
 // clkPresc <= '0';
       end
    else

@@ -7,14 +7,7 @@
 //              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
 //              v.1.2 for applicable Conditions.
 
-`define false 1'b 0
-`define FALSE 1'b 0
-`define true 1'b 1
-`define TRUE 1'b 1
-
-`timescale 1 ns / 1 ns // timescale for following modules
-
-module tt_um_thexeno_rgbw_controller (
+module tt08_thexeno_rgbw_lamp (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -53,7 +46,6 @@ module tt_um_thexeno_rgbw_controller (
     wire white_sig;
     wire rdy;
     wire sck;
-    reg reset_sync;
     wire [7:0] rDuty;
     wire [7:0] gDuty;
     wire [7:0] bDuty;
@@ -149,7 +141,7 @@ module tt_um_thexeno_rgbw_controller (
 
     
 
-    rgbw_data_dispenser deserializer (
+    rgbw_data_dispencer deserializer (
         .buffRx_spi(buffRx_spi),
         .reset(reset),
         .rdy(rdy),

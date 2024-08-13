@@ -26,32 +26,29 @@ module colorGen
         output reg [7 : 0] redOut,
         output reg [7 : 0] greenOut,
         output reg [7 : 0] blueOut,
-        output reg [7 : 0] whiteOut,
-        output wire [7 : 0] dbg,
-        output wire mult_ok_dbg,
-        output wire ld_dbg);
+        output reg [7 : 0] whiteOut
+    );
 
-    localparam init = 4'd0;
-    localparam thr1 = 4'd1;
-    localparam thr2 = 4'd2;
-    localparam thr3 = 4'd3;
-    localparam thr4 = 4'd4;
-    localparam thr5 = 4'd5;
-    localparam thr6 = 4'd6;
-    localparam thr6_a = 4'd7;
-    localparam thr7 = 4'd8;
-    localparam whiteSat = 4'd9;
-    localparam finalAdj = 4'd10;
-    localparam stateApply = 4'd11;
-    localparam stateApply_R = 4'd12;
-    localparam stateApply_G = 4'd13;
-    localparam stateApply_B = 4'd14;
+    localparam init = 5'd0;
+    localparam pre_thr1 = 5'd1;
+    localparam thr1 = 5'd2;
+    localparam pre_thr2 = 5'd3;
+    localparam thr2 = 5'd4;
+    localparam pre_thr3 = 5'd5;
+    localparam thr3 = 5'd6;
+    localparam pre_thr4 = 5'd7;
+    localparam thr4 = 5'd8;
+    localparam pre_thr5 = 5'd9;
+    localparam thr5 = 5'd10;
+    localparam pre_thr6 = 5'd11;
+    localparam thr6 = 5'd12;
+    localparam whiteSat = 5'd13;
+    localparam stateApply = 5'd14;
+    localparam stateApply_R = 5'd15;
+    localparam stateApply_G = 5'd16;
+    localparam stateApply_B = 5'd17;
+    localparam applyOut = 5'd18;
 
-    localparam applyOut = 4'd15;
-
-    assign dbg = state;
-    assign mult_ok_dbg = mult_ok;
-    assign ld_dbg = ld;
 
     // typedef enum reg [3:0] {
     //     init,
@@ -82,16 +79,14 @@ module colorGen
     // wire [7:0] b_minus;
     // wire [7:0] r_minus;
     reg [7 : 0] w = 8'b00000000;
-    reg [7 : 0] w_m = 8'b00000000;
     reg [7 : 0] lint_sig = 8'b00000000;
     reg [7 : 0] thr = 8'b00000000;
     reg [7 : 0] counter = 8'b00000000;
     reg [7 : 0] w_sig = 8'b00000000;
     reg [7 : 0] mode_latch = 8'b00000000;
     // reg [2:0] lint_comp = 3'b000;
-    reg reset_sig;
 
-    reg [3 : 0] state = 4'd0;
+    reg [4 : 0] state = 5'd0;
 
     // assign b_plus = b + 8'b00000111;
     // assign b_minus = b - 8'b00000111;
@@ -100,8 +95,7 @@ module colorGen
 
     always @(posedge clk)
     begin
-        reset_sig <= reset;
-        if (reset_sig == 1'b0)
+        if (reset == 1'b0)
         begin
             state <= init;
             thr <= 8'b00000000;
@@ -112,10 +106,13 @@ module colorGen
             b <= 8'b00000000;
             w <= 8'b00000000;
             mode_latch <= 8'b00000000;
-            whiteOut <= 16'h0000;
-            redOut <= 16'h0000;
-            greenOut <= 16'h0000;
-            blueOut <= 16'h0000;
+            whiteOut <= 8'h00;
+            redOut <= 8'h00;
+            greenOut <= 8'h00;
+            blueOut <= 8'h00;
+            ld <= 1'b0;
+            mult1 <= 8'h00;
+            mult2 <= 8'h00;
             // lint_comp <= 3'b000;
         end
         else
@@ -143,7 +140,7 @@ module colorGen
                 end
                 else if (mode_latch == 8'ha4)
                 begin
-                    state <= thr1;
+                    state <= pre_thr1;
                     temp_ovf_b <= b + 8'b00000111;
                 end
                 else
@@ -152,26 +149,34 @@ module colorGen
                 end
             end
 
-            thr1: begin
-                if (temp_ovf_b[8] == 1'b1) begin // overflow
+            pre_thr1: begin
+            /* this pre_* state is purely to have the correct sync in a pure sequential logic. it increase the clock cycles to compute a color */
+            if (temp_ovf_b[8] == 1'b1) begin // overflow
                     b <= 8'hff;
                 end 
                 else begin
                     b <= temp_ovf_b[7:0]; 
                 end           
-                r <= 8'b11111111;
-                g <= 8'b00000000;
+            r <= 8'b11111111;
+            g <= 8'b00000000;
+            state <= thr1;
+            end
+
+
+            thr1: begin
+                
+            
                 if (counter < thr)
                 begin
                     counter <= counter + 1;
                     if (counter < 8'h2A)
                     begin
-                        state <= thr1;
+                        state <= pre_thr1;
                         temp_ovf_b <= b + 8'b00000111;
                     end
                     else
                     begin
-                        state <= thr2;
+                        state <= pre_thr2;
                         temp_ovf_r <= r - 8'b00000111;
                     end
                 end
@@ -181,8 +186,9 @@ module colorGen
                 end
             end
 
-            thr2: begin
-                if ((temp_ovf_r[8] == 1'b1)) begin // underflow
+            pre_thr2: begin
+            /* this pre_* state is purely to have the correct sync in a pure sequential logic. it increase the clock cycles to compute a color */
+            if ((temp_ovf_r[8] == 1'b1)) begin // underflow
                     r <= 8'h00;
                 end 
                 else begin
@@ -190,17 +196,22 @@ module colorGen
                 end                   
                 g <= 8'b00000000;
                 b <= 8'b11111111;
+                state <= thr2;
+            end
+
+            thr2: begin
+                
                 if (counter < thr)
                 begin
                     counter <= counter + 1;
                     if (counter < 8'h54)
                     begin
-                        state <= thr2;
+                        state <= pre_thr2;
                         temp_ovf_r <= r - 8'b00000111;
                     end
                     else
                     begin
-                        state <= thr3;
+                        state <= pre_thr3;
                         temp_ovf_g <= g + 8'b00000111;
                     end
                 end
@@ -210,8 +221,9 @@ module colorGen
                 end
             end
 
-            thr3: begin
 
+            pre_thr3: begin
+            /* this pre_* state is purely to have the correct sync in a pure sequential logic. it increase the clock cycles to compute a color */
                 if (temp_ovf_g[8] == 1'b1) begin // overflow
                     g <= 8'hff;
                 end 
@@ -220,17 +232,23 @@ module colorGen
                 end    
                 r <= 8'b00000000;
                 b <= 8'b11111111;
+                state <= thr3;
+            end
+
+
+            thr3: begin
+
                 if (counter < thr)
                 begin
                     counter <= counter + 1;
                     if (counter < 8'h7e)
                     begin
-                        state <= thr3;
+                        state <= pre_thr3;
                         temp_ovf_g <= g + 8'b00000111;
                     end
                     else
                     begin
-                        state <= thr4;
+                        state <= pre_thr4;
                         temp_ovf_b <= b - 8'b00000111;
                     end
                 end
@@ -240,7 +258,8 @@ module colorGen
                 end
             end
 
-            thr4: begin
+            pre_thr4: begin
+            /* this pre_* state is purely to have the correct sync in a pure sequential logic. it increase the clock cycles to compute a color */
                 if ((temp_ovf_b[8] == 1'b1)) begin // underflow
                     b <= 8'h00;
                 end 
@@ -249,17 +268,23 @@ module colorGen
                 end   
                 r <= 8'b00000000;
                 g <= 8'b11111111;
+                state <= thr4;
+                    counter <= counter + 1;
+
+            end
+
+            thr4: begin
+
                 if (counter < thr)
                 begin
-                    counter <= counter + 1;
                     if (counter < 8'hA8)
                     begin
-                        state <= thr4;
+                        state <= pre_thr4;
                         temp_ovf_b <= b - 8'b00000111;
                     end
                     else
                     begin
-                        state <= thr5;
+                        state <= pre_thr5;
                         temp_ovf_r <= r + 8'b00000111;
                     end
                 end
@@ -269,7 +294,8 @@ module colorGen
                 end
             end
 
-            thr5: begin
+            pre_thr5: begin
+            /* this pre_* state is purely to have the correct sync in a pure sequential logic. it increase the clock cycles to compute a color */
                 if (temp_ovf_r[8] == 1'b1) begin // overflow
                     r <= 8'hff;
                 end 
@@ -278,17 +304,22 @@ module colorGen
                 end    
                 g <= 8'b11111111;
                 b <= 8'b00000000;
+                state <= thr5;
+            end
+
+            thr5: begin
+
                 if (counter < thr)
                 begin
                     counter <= counter + 1;
                     if (counter < 8'hD2)
                     begin
-                        state <= thr5;
+                        state <= pre_thr5;
                         temp_ovf_r <= r + 8'b00000111;
                     end
                     else
                     begin
-                        state <= thr6;
+                        state <= pre_thr6;
                         temp_ovf_g <= g - 8'b00000111;
                     end
                 end
@@ -298,7 +329,8 @@ module colorGen
                 end
             end
 
-            thr6: begin
+            pre_thr6: begin
+            /* this pre_* state is purely to have the correct sync in a pure sequential logic. it increase the clock cycles to compute a color */
                 if ((temp_ovf_g[8] == 1'b1)) begin // underflow
                     g <= 8'h00;  
                 end 
@@ -307,12 +339,16 @@ module colorGen
                 end    
                 r <= 8'b11111111;
                 b <= 8'b00000000;
+                state <= thr6;
+            end
+
+            thr6: begin
                 if (counter < thr)
                 begin
                     counter <= counter + 1;
                     if (counter < 8'hFC)
                     begin
-                        state <= thr6;
+                        state <= pre_thr6;
                         temp_ovf_g <= g - 8'b00000111;
                     end
                     else
@@ -505,10 +541,10 @@ module colorGen
 
             applyOut: begin
 
-                whiteOut <= w_temp >> 8;
-                redOut <= r_temp >> 8;
-                greenOut <= g_temp >> 8;
-                blueOut <= b_temp >> 8;
+                whiteOut <= w_temp[15:8];// >> 8;
+                redOut <= r_temp[15:8];// >> 8;
+                greenOut <= g_temp[15:8];// >> 8;
+                blueOut <= b_temp[15:8];// >> 8;
 
                 state <= init;
             end

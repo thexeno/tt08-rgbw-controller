@@ -7,14 +7,7 @@
 //              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
 //              v.1.2 for applicable Conditions.
 
-`define false 1'b 0
-`define FALSE 1'b 0
-`define true 1'b 1
-`define TRUE 1'b 1
-
-`timescale 1 ns / 1 ns // timescale for following modules
-
-module rgbw_data_dispenser (
+module rgbw_data_dispencer (
     input wire [7:0] buffRx_spi,
     input wire reset,
     input wire rdy,
@@ -40,12 +33,10 @@ module rgbw_data_dispenser (
     reg rdy_latch = 1'b0;
     reg rdy_prev = 1'b0;
     //reg sync_char = 1'b0;
-    reg reset_sig;
 
 always @(posedge clk) begin
-   reset_sig <= reset;
 
-   if (reset_sig == 1'b0)  begin
+   if (reset == 1'b0)  begin
             lint_spi <= 8'b00000000;
             colorIdx_spi <= 8'b00000000;
             white_spi <= 8'b00000000;
@@ -59,16 +50,15 @@ always @(posedge clk) begin
             //sync_char <= 1'b0;
             lint_sync <= 8'b00000000;
             colorIdx_sync <= 8'b00000000;
-            white_sync <= 16'h0000;
-            red_sync <= 16'h0000;
-            green_sync <= 16'h0000;
-            blue_sync <= 16'h0000;
-            mode_sync <= 16'h0000;
+            white_sync <= 8'h00;
+            red_sync <= 8'h00;
+            green_sync <= 8'h00;
+            blue_sync <= 8'h00;
+            mode_sync <= 8'h00;
             rdy_latch <= 1'b0;
         end 
         else 
         begin
-            reset_sig <= reset;
             rdy_prev <= rdy_latch;
             buffRx_spi_latch <= buffRx_spi;
             rdy_latch <= rdy;

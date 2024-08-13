@@ -26,100 +26,43 @@
 //               v.1.2 for applicable Conditions.
 
 module pwmGen (
-   clk,
-   reset,
-   duty0,
-   duty1,
-   duty2,
-   duty3,
-   d0,
-   d1,
-   d2,
-   d3);
+input   clk,
+input   reset,
+input [7:0]  duty0,
+input [7:0]  duty1,
+input [7:0]  duty2,
+input [7:0]  duty3,
+output reg    d0,
+output reg    d1,
+output reg    d2,
+output reg    d3);
  
 
-input   clk; 
-input   reset; 
-input   [7:0] duty0; 
-input   [7:0] duty1; 
-input   [7:0] duty2; 
-input   [7:0] duty3; 
-output   d0; 
-output   d1; 
-output   d2; 
-output   d3; 
-
-reg     d0; 
-reg     d1; 
-reg     d2; 
-reg     d3; 
-reg     [7:0] counter;
-reg     [7:0] duty0_buff ;
-reg     [7:0] duty1_buff ;
-reg     [7:0] duty2_buff ;
-reg     [7:0] duty3_buff ;
-reg     d0_sig;
-reg     d1_sig;
-reg     d2_sig;
-reg     d3_sig;
-reg     reset_sig; 
-
-// initial 
-//    begin : process_9
-//    d3_sig = 1'b 0;   
-//    end
-
-// initial 
-//    begin : process_8
-//    d2_sig = 1'b 0;   
-//    end
-
-// initial 
-//    begin : process_7
-//    d1_sig = 1'b 0;   
-//    end
-
-// initial 
-//    begin : process_6
-//    d0_sig = 1'b 0;   
-//    end
-
-// initial 
-//    begin : process_5
-//    duty3_buff = {8{1'b 0}};   
-//    end
-
-// initial 
-//    begin : process_4
-//    duty2_buff = {8{1'b 0}};   
-//    end
-
-// initial 
-//    begin : process_3
-//    duty1_buff = {8{1'b 0}};   
-//    end
-
-// initial 
-//    begin : process_2
-//    duty0_buff = {8{1'b 0}};   
-//    end
-
-// initial 
-//    begin : process_1
-//    counter = {8{1'b 0}};   
-//    end
+ 
+reg     [7:0] counter = 8'h00;
+reg     [7:0] duty0_buff = 8'h00;
+reg     [7:0] duty1_buff = 8'h00;
+reg     [7:0] duty2_buff = 8'h00;
+reg     [7:0] duty3_buff = 8'h00;
+reg     d0_sig = 1'b0;
+reg     d1_sig = 1'b0;
+reg     d2_sig = 1'b0;
+reg     d3_sig = 1'b0;
 
 
 always @(posedge clk)
    begin : maincounter
-   reset_sig <= reset;   
-   if (reset_sig == 1'b 0)
+   if (reset == 1'b0)
       begin
       counter <= {8{1'b 0}};   
       d0_sig <= 1'b 0;   
       d1_sig <= 1'b 0;   
       d2_sig <= 1'b 0;   
-      d3_sig <= 1'b 0;   
+      d3_sig <= 1'b 0;
+      d0 <= 1'b 0;   
+      d1 <= 1'b 0;   
+      d2 <= 1'b 0;   
+      d3 <= 1'b 0;         
       // duty0_buff <= {8{1'b 0}};   
       // duty1_buff <= {8{1'b 0}};   
       // duty2_buff <= {8{1'b 0}};   
@@ -139,8 +82,9 @@ always @(posedge clk)
          end
       else
          begin
-         counter <= counter + 8'h 01;   
+         counter <= counter + 1;   
          end
+
       if (counter < duty0_buff)
          begin
          d0_sig <= 1'b 1;   

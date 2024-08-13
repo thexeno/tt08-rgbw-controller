@@ -35,10 +35,11 @@ module mult8x8 (
    output reg[15:0] result
 );
 
- reg[7:0] a_sig;
- reg[7:0] b_sig;
- reg [3:0] seq;
- reg ld_latch, ld_prev;
+ reg[7:0] a_sig = 8'h00;
+ reg[7:0] b_sig = 8'h00;
+ reg [3:0] seq = 4'h0;
+ reg ld_latch = 1'b0;
+ reg ld_prev = 1'b0;
 
 
 always @(posedge clk)

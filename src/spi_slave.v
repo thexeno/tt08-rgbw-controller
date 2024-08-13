@@ -45,14 +45,13 @@ module spiSlave (
 
 //reg     rdy; 
 //reg     [7:0] data; 
-reg     [7:0] bit_counter = {8{1'b 0}}; 
+reg     [7:0] bit_counter = 8'h00; 
 //reg     [7:0] data_reg = {8{1'b 0}}; 
-reg     [7:0] data_byte  = {8{1'b 0}};  
+reg     [7:0] data_byte  = 8'h00;  
 //reg     rdy_sig = 1'b 0;
-reg     sck_latch = 1'b 0; 
-reg     sck_prev = 1'b 0; 
-reg     mosi_latch = 1'b 0;
-reg     reset_sig; 
+reg     sck_latch = 1'b0; 
+reg     sck_prev = 1'b0; 
+reg     mosi_latch = 1'b0;
 reg clkPrescSig = 1'b0;
 // initial 
 //    begin : process_7
@@ -95,12 +94,11 @@ always @(posedge clk)
 
 always @(posedge clkPrescSig)
    begin : mainprocess
-   reset_sig <= reset;   
-   if (reset_sig == 1'b 0 || cs == 1'b 1)
+   if (reset == 1'b 0 || cs == 1'b 1)
       begin
-      bit_counter <= {8{1'b 0}};   
+      bit_counter <= 8'h00;   
       //data_reg <= {8{1'b 0}};   
-      data_byte <= {8{1'b 0}};   
+      data_byte <= 8'h00;   
       rdy_sig <= 1'b 0;   
       sck_prev <= 1'b 0;   
       sck_latch <= 1'b 0;   
@@ -111,19 +109,19 @@ always @(posedge clkPrescSig)
       sck_prev <= sck_latch;   
       sck_latch <= sck;   
       mosi_latch <= mosi;   
-      if (sck_prev == 1'b 0 & sck_latch == 1'b 1)
+      if (sck_prev == 1'b 0 & sck_latch == 1'b1)
          begin
          data_byte <= {data_byte[6:0], mosi_latch};   
-         bit_counter <= bit_counter + 8'h 01;   
+         bit_counter <= bit_counter + 8'h01;   
          end
-      if (sck_latch == 1'b 0 && bit_counter == 8'h 08)
+      if (sck_latch == 1'b 0 && bit_counter == 8'h08)
          begin
-         rdy_sig <= 1'b 1;   
-         bit_counter <= 8'h 00;   
+         rdy_sig <= 1'b1;   
+         bit_counter <= 8'h00;   
          end
       else
          begin
-         rdy_sig <= 1'b 0;   
+         rdy_sig <= 1'b0;   
          end
       data <= data_byte;   
      // rdy <= rdy_sig;   
