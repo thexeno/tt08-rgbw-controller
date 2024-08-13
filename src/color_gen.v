@@ -7,13 +7,6 @@
 //              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
 //              v.1.2 for applicable Conditions.
 
-`define false 1'b 0
-`define FALSE 1'b 0
-`define true 1'b 1
-`define TRUE 1'b 1
-
-`timescale 1 ns / 1 ns // timescale for following modules
-
 module colorGen
     (
         input wire clk,
@@ -151,6 +144,7 @@ module colorGen
                 else if (mode_latch == 8'ha4)
                 begin
                     state <= thr1;
+                    temp_ovf_b <= b + 8'b00000111;
                 end
                 else
                 begin
@@ -159,26 +153,26 @@ module colorGen
             end
 
             thr1: begin
-                temp_ovf_b = b + 8'b00000111;
                 if (temp_ovf_b[8] == 1'b1) begin // overflow
-                    b = 8'hff;
+                    b <= 8'hff;
                 end 
                 else begin
-                    b = temp_ovf_b[7:0]; 
+                    b <= temp_ovf_b[7:0]; 
                 end           
-                r = 8'b11111111;
-                g = 8'b00000000;
-                temp_ovf_b = 9'b000000000;
-                counter = counter + 1;
+                r <= 8'b11111111;
+                g <= 8'b00000000;
                 if (counter < thr)
                 begin
+                    counter <= counter + 1;
                     if (counter < 8'h2A)
                     begin
                         state <= thr1;
+                        temp_ovf_b <= b + 8'b00000111;
                     end
                     else
                     begin
                         state <= thr2;
+                        temp_ovf_r <= r - 8'b00000111;
                     end
                 end
                 else
@@ -188,26 +182,26 @@ module colorGen
             end
 
             thr2: begin
-                temp_ovf_r = r - 8'b00000111;
                 if ((temp_ovf_r[8] == 1'b1)) begin // underflow
-                    r = 8'h00;
+                    r <= 8'h00;
                 end 
                 else begin
-                    r = temp_ovf_r[7:0]; 
+                    r <= temp_ovf_r[7:0]; 
                 end                   
-                g = 8'b00000000;
-                b = 8'b11111111;
-                temp_ovf_r = 9'b000000000;
-                counter = counter + 1;
+                g <= 8'b00000000;
+                b <= 8'b11111111;
                 if (counter < thr)
                 begin
+                    counter <= counter + 1;
                     if (counter < 8'h54)
                     begin
                         state <= thr2;
+                        temp_ovf_r <= r - 8'b00000111;
                     end
                     else
                     begin
                         state <= thr3;
+                        temp_ovf_g <= g + 8'b00000111;
                     end
                 end
                 else
@@ -217,26 +211,27 @@ module colorGen
             end
 
             thr3: begin
-                r = 8'b00000000;
-                temp_ovf_g = g + 8'b00000111;
+
                 if (temp_ovf_g[8] == 1'b1) begin // overflow
-                    g = 8'hff;
+                    g <= 8'hff;
                 end 
                 else begin
-                    g = temp_ovf_g[7:0]; 
+                    g <= temp_ovf_g[7:0]; 
                 end    
-                b = 8'b11111111;
-                temp_ovf_g = 9'b000000000;
-                counter = counter + 1;
+                r <= 8'b00000000;
+                b <= 8'b11111111;
                 if (counter < thr)
                 begin
+                    counter <= counter + 1;
                     if (counter < 8'h7e)
                     begin
                         state <= thr3;
+                        temp_ovf_g <= g + 8'b00000111;
                     end
                     else
                     begin
                         state <= thr4;
+                        temp_ovf_b <= b - 8'b00000111;
                     end
                 end
                 else
@@ -246,26 +241,26 @@ module colorGen
             end
 
             thr4: begin
-                r = 8'b00000000;
-                g = 8'b11111111;
-                temp_ovf_b = b - 8'b00000111;
                 if ((temp_ovf_b[8] == 1'b1)) begin // underflow
-                    b = 8'h00;
+                    b <= 8'h00;
                 end 
                 else begin
-                    b = temp_ovf_b[7:0]; 
+                    b <= temp_ovf_b[7:0]; 
                 end   
-                temp_ovf_b = 9'b000000000;
-                counter = counter + 1;
+                r <= 8'b00000000;
+                g <= 8'b11111111;
                 if (counter < thr)
                 begin
+                    counter <= counter + 1;
                     if (counter < 8'hA8)
                     begin
                         state <= thr4;
+                        temp_ovf_b <= b - 8'b00000111;
                     end
                     else
                     begin
                         state <= thr5;
+                        temp_ovf_r <= r + 8'b00000111;
                     end
                 end
                 else
@@ -275,26 +270,26 @@ module colorGen
             end
 
             thr5: begin
-                temp_ovf_r = r + 8'b00000111;
                 if (temp_ovf_r[8] == 1'b1) begin // overflow
-                    r = 8'hff;
+                    r <= 8'hff;
                 end 
                 else begin
-                    r = temp_ovf_r[7:0]; 
+                    r <= temp_ovf_r[7:0]; 
                 end    
-                g = 8'b11111111;
-                b = 8'b00000000;
-                temp_ovf_r = 9'b000000000;
-                counter = counter + 1;
+                g <= 8'b11111111;
+                b <= 8'b00000000;
                 if (counter < thr)
                 begin
+                    counter <= counter + 1;
                     if (counter < 8'hD2)
                     begin
                         state <= thr5;
+                        temp_ovf_r <= r + 8'b00000111;
                     end
                     else
                     begin
                         state <= thr6;
+                        temp_ovf_g <= g - 8'b00000111;
                     end
                 end
                 else
@@ -304,22 +299,21 @@ module colorGen
             end
 
             thr6: begin
-                r = 8'b11111111;
-                temp_ovf_g = g - 8'b00000111;
                 if ((temp_ovf_g[8] == 1'b1)) begin // underflow
-                    g = 8'h00;  
+                    g <= 8'h00;  
                 end 
                 else begin
-                 g = temp_ovf_g[7:0]; 
-                end                  
-                b = 8'b00000000;
-                temp_ovf_g = 9'b000000000;
-                counter = counter + 1;
+                 g <= temp_ovf_g[7:0]; 
+                end    
+                r <= 8'b11111111;
+                b <= 8'b00000000;
                 if (counter < thr)
                 begin
+                    counter <= counter + 1;
                     if (counter < 8'hFC)
                     begin
                         state <= thr6;
+                        temp_ovf_g <= g - 8'b00000111;
                     end
                     else
                     begin
@@ -519,7 +513,7 @@ module colorGen
                 state <= init;
             end
 
-                // default: state <= init;  
+                // default: state <= init;
             endcase
         end
     end

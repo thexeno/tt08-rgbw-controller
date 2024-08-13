@@ -44,6 +44,8 @@ async def test_colorwheel(dut):
     dataPayload[MODE_POS] = 0xa4
     dataPayload[PREAMB_POS] = 0x55
 
+    # resulting PWM is 0D, FE, 00, 00
+
     print(dataPayload)
     for i in range(8):
         await SPI_send(dut, dataPayload[i])
