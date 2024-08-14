@@ -18,13 +18,12 @@ project:
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
     - "rgbw_lamp.v"
-    - "color_gen.v"
-    - "mult8x8.v"
     - "clockDividerPwm.v"
-    - "pwm_gen.v"
-    - "spi_slave.v"
-    - "main_data_dispenser.v"
-
+    # - "pwm_gen.v"
+    # - "spi_slave.v"
+    # - "main_data_dispenser.v"
+    # - "color_gen.v"
+    # - "mult8x8.v"
 
 
 
@@ -34,18 +33,18 @@ pinout:
   ui[0]: ""
   ui[1]: ""
   ui[2]: ""
-  ui[3]: "MOSI"
-  ui[4]: "#CS (from external master)"
-  ui[5]: "SPI SCK (from external master)"
+  ui[3]: "" # ui[3]: "MOSI"
+  ui[4]: "" # ui[4]: "#CS (from external master)"
+  ui[5]: "" # ui[5]: "SPI SCK (from external master)"
   ui[6]: ""
-  ui[7]: ""
+  ui[7]: "clk_div_en"
 
   # Outputs
-  uo[0]: "R PWM channel"
-  uo[1]: "G PWM channel"
-  uo[2]: "B PWM channel"
-  uo[3]: "W PWM channel"
-  uo[4]: ""
+  uo[0]: "" #uo[0]: "R PWM channel"
+  uo[1]: "" #uo[1]: "G PWM channel"
+  uo[2]: "" #uo[2]: "B PWM channel"
+  uo[3]: "" #uo[3]: "W PWM channel"
+  uo[4]: "clock_div"
   uo[5]: ""
   uo[6]: ""
   uo[7]: ""

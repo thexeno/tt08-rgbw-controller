@@ -40,7 +40,7 @@ async def test_colorwheel(dut):
     dataPayload[B_POS] = 0x00
     dataPayload[W_POS] = 0x00
     dataPayload[INT_POS] = 0xFF
-    dataPayload[IDX_POS] = 0xAA
+    dataPayload[IDX_POS] = 0xA2
     dataPayload[MODE_POS] = 0xa4
     dataPayload[PREAMB_POS] = 0x55
 
@@ -90,27 +90,34 @@ async def user_project(dut):
     clock = Clock(dut.clk, 10, units="us")
     cocotb.start_soon(clock.start())
 
+
     # Reset
     dut._log.info("Reset")
     dut.ena.value = 0
     dut.rst_n.value = 0
-    
+
     await ClockCycles(dut.clk, 10)
     #assert (dut.uo_out.value[7]) == (0)
     dut.ena.value = 1
     dut.ui_in.value = 0
     dut.rst_n.value = 1
+
     await ClockCycles(dut.clk, 10)
-    dut.ui_in.value = (dut.ui_in.value) | (0x1 << PIN_CS)
+    dut.ui_in.value = dut.ui_in.value & ~(0x1 << 7) # reset the clock gen
+    await ClockCycles(dut.clk, 10)
+    dut.ui_in.value = dut.ui_in.value | (0x1 << 7) # activate the clock gen
     await ClockCycles(dut.clk, 10)
 
-    await test_colorwheel(dut)
-    await ClockCycles(dut.clk, 10000)
+    # dut.ui_in.value = (dut.ui_in.value) | (0x1 << PIN_CS)
+    # await ClockCycles(dut.clk, 10)
+
+    # await test_colorwheel(dut)
+    # await ClockCycles(dut.clk, 10000)
 
 
-    await SPI_send(dut, 0x55)
-    await ClockCycles(dut.clk, 10)
-    await SPI_send(dut, 0xAA)
+    # await SPI_send(dut, 0x55)
+    # await ClockCycles(dut.clk, 10)
+    # await SPI_send(dut, 0xAA)
 
 
 

@@ -29,10 +29,11 @@ module tt_um_thexeno_rgbw_controller (
     wire white_pin;
 
     // List all unused inputs to prevent warnings
-    wire _unused = &{ui_in[7:3], uio_in[7:0], 1'b0};
+    wire _unused = &{ui_in[6:3], uio_in[7:0], 1'b0};
     assign uio_oe = 0;
     assign uio_out = 0;
-    assign uo_out[6:4] = 0;
+    assign uo_out[3:0] = 0;
+    assign uo_out[6:5] = 0;
     assign uo_out[7] = ena;
 
 
@@ -66,16 +67,19 @@ module tt_um_thexeno_rgbw_controller (
     wire m_rdy;
     wire clk_div_en;
 
+    wire TEST_clk_shared;
+    assign TEST_clk_shared = uo_out[4];
+
     assign reset = rst_n;
     assign clk12 = clk;
-    assign sck = ui_in[5];
-    assign mosi = ui_in[3];
-    assign cs = ui_in[4];
+    // assign sck = ui_in[5];
+    // assign mosi = ui_in[3];
+    //assign cs = ui_in[4];
     assign clk_div_en = ui_in[7];
-    assign red_pin = uo_out[0];
-    assign green_pin = uo_out[1];
-    assign blue_pin = uo_out[2];
-    assign white_pin = uo_out[3];
+    // assign red_pin = uo_out[0];
+    // assign green_pin = uo_out[1];
+    // assign blue_pin = uo_out[2];
+    // assign white_pin = uo_out[3];
 
 
     // Output assignments
@@ -95,87 +99,90 @@ module tt_um_thexeno_rgbw_controller (
     // Components instantiation
     clockDividerPwm clockFeeder (
         .clk(clk12),
-        .clkPresc(clkSys_shared),
+        //.clkPresc(clkSys_shared),
+        .clkPresc(TEST_clk_shared),
         .reset(clk_div_en)
     ) /* synthesis syn_noprune=1 */;
 
-    mult8x8 mult (
-        .clk(clk12),
-        .reset(reset),
-        .ld(load),
-        .mult_rdy(m_rdy),
-        .a(a),
-        .b(b),
-        .result(result)        
-    );
 
-    pwmGen pwm (
-        .clk(clkSys_shared),
-        .reset(reset),
-        .duty0(rDuty),
-        .duty1(gDuty),
-        .duty2(bDuty),
-        .duty3(wDuty),
-        .d0(red_pin),
-        .d1(green_pin),
-        .d2(blue_pin),
-        .d3(white_pin)
-    ) /* synthesis syn_noprune=1 */;
 
-    colorGen color (
-        .clk(clkSys_shared),
-        .reset(reset),
-        .mult1(a),
-        .mult2(b),
-        .mult_res(result),
-        .mult_ok(m_rdy),
-        .ld(load),
-        .mode(mode_sync),
-        .lint(lint_sync),
-        .colorIdx(colorIdx_sync),
-        .whiteIn(white_sync),
-        .redIn(red_sync),
-        .greenIn(green_sync),
-        .blueIn(blue_sync),
-        .redOut(rDuty),
-        .greenOut(gDuty),
-        .blueOut(bDuty),
-        .whiteOut(wDuty)
-    ) /* synthesis syn_noprune=1 */;
+    // mult8x8 mult (
+    //     .clk(clk12),
+    //     .reset(reset),
+    //     .ld(load),
+    //     .mult_rdy(m_rdy),
+    //     .a(a),
+    //     .b(b),
+    //     .result(result)        
+    // );
+
+    // pwmGen pwm (
+    //     .clk(clkSys_shared),
+    //     .reset(reset),
+    //     .duty0(rDuty),
+    //     .duty1(gDuty),
+    //     .duty2(bDuty),
+    //     .duty3(wDuty),
+    //     .d0(red_pin),
+    //     .d1(green_pin),
+    //     .d2(blue_pin),
+    //     .d3(white_pin)
+    // ) /* synthesis syn_noprune=1 */;
+
+    // colorGen color (
+    //     .clk(clkSys_shared),
+    //     .reset(reset),
+    //     .mult1(a),
+    //     .mult2(b),
+    //     .mult_res(result),
+    //     .mult_ok(m_rdy),
+    //     .ld(load),
+    //     .mode(mode_sync),
+    //     .lint(lint_sync),
+    //     .colorIdx(colorIdx_sync),
+    //     .whiteIn(white_sync),
+    //     .redIn(red_sync),
+    //     .greenIn(green_sync),
+    //     .blueIn(blue_sync),
+    //     .redOut(rDuty),
+    //     .greenOut(gDuty),
+    //     .blueOut(bDuty),
+    //     .whiteOut(wDuty)
+    // ) /* synthesis syn_noprune=1 */;
 
     
 
-    rgbw_data_dispencer deserializer (
-        .buffRx_spi(buffRx_spi),
-        .reset(reset),
-        .rdy(rdy),
-        .clk(clkSys_shared),
-        .lint_sync(lint_sync),
-        .red_sync(red_sync),
-        .green_sync(green_sync),
-        .blue_sync(blue_sync),
-        .white_sync(white_sync),
-        .colorIdx_sync(colorIdx_sync),
-        .mode_sync(mode_sync)
-    ) /* synthesis syn_noprune=1 */;
+    // rgbw_data_dispencer deserializer (
+    //     .buffRx_spi(buffRx_spi),
+    //     .reset(reset),
+    //     .rdy(rdy),
+    //     .clk(clkSys_shared),
+    //     .lint_sync(lint_sync),
+    //     .red_sync(red_sync),
+    //     .green_sync(green_sync),
+    //     .blue_sync(blue_sync),
+    //     .white_sync(white_sync),
+    //     .colorIdx_sync(colorIdx_sync),
+    //     .mode_sync(mode_sync)
+    // ) /* synthesis syn_noprune=1 */;
 
-    spiSlave spi_rx (
-        .sck(sck),
-        .cs(cs), 
-        .clk(clkSys_shared),
-        .mosi(mosi),
-        .reset(reset),
-        .rdy_sig(rdy),
-        .data(buffRx_spi)
-    ) /* synthesis syn_noprune=1 */;
+    // spiSlave spi_rx (
+    //     .sck(sck),
+    //     .cs(cs), 
+    //     .clk(clkSys_shared),
+    //     .mosi(mosi),
+    //     .reset(reset),
+    //     .rdy_sig(rdy),
+    //     .data(buffRx_spi)
+    // ) /* synthesis syn_noprune=1 */;
 
-    // // Process for synchronous reset
-    // always @(posedge clk12) begin
-    //     if (clk12) begin
-    //         reset_sync <= reset;
-    //     end
-    // end
-    // not needed as all module have sync reset
+    // // // Process for synchronous reset
+    // // always @(posedge clk12) begin
+    // //     if (clk12) begin
+    // //         reset_sync <= reset;
+    // //     end
+    // // end
+    // // not needed as all module have sync reset
 
 
 endmodule
