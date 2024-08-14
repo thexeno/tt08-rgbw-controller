@@ -7,7 +7,7 @@
 //              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
 //              v.1.2 for applicable Conditions.
 
-module tt08_thexeno_rgbw_lamp (
+module tt_um_thexeno_rgbw_controller (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -46,6 +46,7 @@ module tt08_thexeno_rgbw_lamp (
     wire white_sig;
     wire rdy;
     wire sck;
+    reg reset_sync;
     wire [7:0] rDuty;
     wire [7:0] gDuty;
     wire [7:0] bDuty;
@@ -61,13 +62,16 @@ module tt08_thexeno_rgbw_lamp (
     wire [7:0] mode_sync;
     wire [7:0] a, b;
     wire [15:0] result;
-    wire load, m_rdy;
+    wire load;
+    wire m_rdy;
+    wire clk_div_en;
 
     assign reset = rst_n;
     assign clk12 = clk;
     assign sck = ui_in[5];
     assign mosi = ui_in[3];
     assign cs = ui_in[4];
+    assign clk_div_en = ui_in[7];
     assign red_pin = uo_out[0];
     assign green_pin = uo_out[1];
     assign blue_pin = uo_out[2];
@@ -92,7 +96,7 @@ module tt08_thexeno_rgbw_lamp (
     clockDividerPwm clockFeeder (
         .clk(clk12),
         .clkPresc(clkSys_shared),
-        .reset(reset)
+        .reset(clk_div_en)
     ) /* synthesis syn_noprune=1 */;
 
     mult8x8 mult (
