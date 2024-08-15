@@ -34,7 +34,7 @@ module tt_um_thexeno_rgbw_controller (
     assign uio_out = buffRx_spi;
     assign uo_out[6] = 1'b0;
     assign uo_out[7] = ena;
-    assign uo_out[3:0] = 3'b0;
+    assign uo_out[4:0] = 0;
 
     // Internal signals
     wire clkSys_shared;
@@ -66,7 +66,7 @@ module tt_um_thexeno_rgbw_controller (
     wire clk_div_en;
 
     wire TEST_clk_shared;
-    assign uo_out[4] = TEST_clk_shared;
+    //assign uo_out[4] = TEST_clk_shared;
     assign uo_out[5] = rdy;
 
     assign reset = rst_n;
