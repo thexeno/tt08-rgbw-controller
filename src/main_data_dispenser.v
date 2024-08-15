@@ -12,21 +12,21 @@ module rgbw_data_dispencer (
     input wire reset,
     input wire rdy,
     input wire clk,
-    output reg [7:0] lint_sync,
-    output reg [7:0] red_sync,
-    output reg [7:0] green_sync,
-    output reg [7:0] blue_sync,
-    output reg [7:0] white_sync,
-    output reg [7:0] colorIdx_sync,
-    output reg [7:0] mode_sync
+    output reg [7:0] lint_spi,
+    output reg [7:0] red_spi,
+    output reg [7:0] green_spi,
+    output reg [7:0] blue_spi,
+    output reg [7:0] white_spi,
+    output reg [7:0] colorIdx_spi,
+    output reg [7:0] mode_spi
 );
 
-    reg [7:0] lint_spi = 8'b00000000;
-    reg [7:0] red_spi = 8'b00000000;
-    reg [7:0] green_spi = 8'b00000000;
-    reg [7:0] blue_spi = 8'b00000000;
-    reg [7:0] white_spi = 8'b00000000;
-    reg [7:0] colorIdx_spi = 8'b00000000;
+    // reg [7:0] lint_spi = 8'b00000000;
+    // reg [7:0] red_spi = 8'b00000000;
+    // reg [7:0] green_spi = 8'b00000000;
+    // reg [7:0] blue_spi = 8'b00000000;
+    // reg [7:0] white_spi = 8'b00000000;
+    // reg [7:0] colorIdx_spi = 8'b00000000;
     //reg [7:0] mode_spi = 8'b00000000;
     reg [7:0] buffRx_spi_latch = 8'b00000000;
     reg [3:0] byte_cnt_spi = 4'b0000;
@@ -48,13 +48,13 @@ always @(posedge clk) begin
             byte_cnt_spi <= 4'b0000;
             rdy_prev <= 1'b0;
             //sync_char <= 1'b0;
-            lint_sync <= 8'b00000000;
-            colorIdx_sync <= 8'b00000000;
-            white_sync <= 8'h00;
-            red_sync <= 8'h00;
-            green_sync <= 8'h00;
-            blue_sync <= 8'h00;
-            mode_sync <= 8'h00;
+            // lint_sync <= 8'b00000000;
+            // colorIdx_sync <= 8'b00000000;
+            // white_sync <= 8'h00;
+            // red_sync <= 8'h00;
+            // green_sync <= 8'h00;
+            // blue_sync <= 8'h00;
+            // mode_sync <= 8'h00;
             rdy_latch <= 1'b0;
         end 
         else 
@@ -95,14 +95,14 @@ always @(posedge clk) begin
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h7: begin
-                        mode_sync <= buffRx_spi_latch; // rimani in questo stato sempre fino a nuovo RDY
+                        //mode_sync <= buffRx_spi_latch; // rimani in questo stato sempre fino a nuovo RDY
                         byte_cnt_spi <= 4'h0;
-                        lint_sync <= lint_spi;
-                        colorIdx_sync <= colorIdx_spi;
-                        red_sync <= red_spi;     //are 16bit for optimizing the reuslt of mult in color_Gen, works better with the synthesizer
-                        green_sync <= green_spi;
-                        blue_sync <= blue_spi;
-                        white_sync <= white_spi;
+                        // lint_sync <= lint_spi;
+                        // colorIdx_sync <= colorIdx_spi;
+                        // red_sync <= red_spi;     //are 16bit for optimizing the reuslt of mult in color_Gen, works better with the synthesizer
+                        // green_sync <= green_spi;
+                        // blue_sync <= blue_spi;
+                        // white_sync <= white_spi;
                     end
                     default: byte_cnt_spi <= 4'h0;
                 endcase
