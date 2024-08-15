@@ -20,13 +20,13 @@
 //               v.1.2 for applicable Conditions.
 
 module spiSlave (
-  input sck,
-  input cs,
-  input clk,
-  input mosi,
-  input reset,
+  input wire sck,
+  input wire cs,
+  input wire clk,
+  input wire mosi,
+  input wire reset,
   output reg rdy_sig,
-  output reg [7:0] data);
+  output wire [7:0] data);
  
 
 //input   sck; 

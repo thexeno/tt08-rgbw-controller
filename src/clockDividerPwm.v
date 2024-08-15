@@ -8,6 +8,12 @@
 
 *******************************************************************************/
 
+`define false 1'b 0
+`define FALSE 1'b 0
+`define true 1'b 1
+`define TRUE 1'b 1
+
+`timescale 1 ns / 1 ns // timescale for following modules
 
 
 //  (C) Copyright 2017 Enrico Sanino
@@ -26,7 +32,7 @@ module clockDividerPwm (
  
 
 input   clk; 
-output reg  clkPresc; 
+output wire  clkPresc; 
 input   reset; 
 
 reg     [7:0] prescalerCnt = 8'h00; 
@@ -41,7 +47,7 @@ reg     clkPrescSig = 1'b0;
 //    begin : process_1
 //    prescalerCnt = {8{1'b 0}};   
 //    end
-
+assign   clkPresc = clkPrescSig;   
 
 always @(posedge clk)
    begin : mainprocess
@@ -49,7 +55,6 @@ always @(posedge clk)
       begin
       prescalerCnt <= 8'h00;  
       clkPrescSig <= 1'b 0;   
-      clkPresc <= 1'b0;
 // clkPresc <= '0';
       end
    else
@@ -64,7 +69,6 @@ always @(posedge clk)
          prescalerCnt <= prescalerCnt + 8'h 01;   
          end
       end
-   clkPresc <= clkPrescSig;   
    end
 
 
