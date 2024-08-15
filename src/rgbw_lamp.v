@@ -23,10 +23,10 @@ module tt_um_thexeno_rgbw_controller (
     wire sck0;
     wire mosi;
     wire cs;
-    wire red_pin;
-    wire green_pin;
-    wire blue_pin;
-    wire white_pin;
+    // wire red_pin;
+    // wire green_pin;
+    // wire blue_pin;
+    // wire white_pin;
 
     // List all unused inputs to prevent warnings
     wire _unused = &{ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
@@ -34,36 +34,35 @@ module tt_um_thexeno_rgbw_controller (
     assign uio_out = buffRx_spi;
     assign uo_out[6] = 1'b0;
     assign uo_out[7] = ena;
-
+    assign uo_out[3:0] = 3'b0;
 
     // Internal signals
     wire clkSys_shared;
-    wire clkSys_pwm;
-    wire clkSys_des;
-    wire red_sig;
-    wire green_sig;
-    wire blue_sig;
-    wire white_sig;
+    // wire clkSys_pwm;
+    // wire clkSys_des;
+    // wire red_sig;
+    // wire green_sig;
+    // wire blue_sig;
+    // wire white_sig;
     wire rdy;
     wire sck;
-    reg reset_sync;
-    wire [7:0] rDuty;
-    wire [7:0] gDuty;
-    wire [7:0] bDuty;
-    wire [7:0] wDuty;
+    // wire [7:0] rDuty;
+    // wire [7:0] gDuty;
+    // wire [7:0] bDuty;
+    // wire [7:0] wDuty;
     wire [7:0] buffRx_spi;
-    wire [3:0] byte_cnt_spi;
-    wire [7:0] lint_sync;
-    wire [7:0] red_sync;
-    wire [7:0] green_sync;
-    wire [7:0] blue_sync;
-    wire [7:0] white_sync;
-    wire [7:0] colorIdx_sync;
-    wire [7:0] mode_sync;
-    wire [7:0] a, b;
-    wire [15:0] result;
-    wire load;
-    wire m_rdy;
+    // wire [3:0] byte_cnt_spi;
+    // wire [7:0] lint_sync;
+    // wire [7:0] red_sync;
+    // wire [7:0] green_sync;
+    // wire [7:0] blue_sync;
+    // wire [7:0] white_sync;
+    // wire [7:0] colorIdx_sync;
+    // wire [7:0] mode_sync;
+    // wire [7:0] a, b;
+    // wire [15:0] result;
+    // wire load;
+    // wire m_rdy;
     wire clk_div_en;
 
     wire TEST_clk_shared;
