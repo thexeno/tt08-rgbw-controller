@@ -29,11 +29,11 @@ module tt_um_thexeno_rgbw_controller (
     wire white_pin;
 
     // List all unused inputs to prevent warnings
-    wire _unused = &{ui_in[7:6], ui_in[2:0], uio_in[7:0], 1'b0};
+    wire _unused = &{ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
     assign uio_oe = 8'hff;
     assign uio_out = buffRx_spi;
-    assign uo_out[6] = 0;
-    assign uo_out[7] = ena;
+    assign uo_out[6] = 1'b0;
+    assign ena = uo_out[7];
 
 
     // Internal signals
@@ -67,11 +67,11 @@ module tt_um_thexeno_rgbw_controller (
     wire clk_div_en;
 
     wire TEST_clk_shared;
-    assign uo_out[4] = TEST_clk_shared;
-    assign uo_out[5] = rdy;
+    assign TEST_clk_shared = uo_out[4];
+    assign rdy = uo_out[5];
 
-    assign reset = rst_n;
-    assign clk12 = clk;
+    assign rst_n = reset;
+    assign clk = clk12;
     assign sck = ui_in[5];
     assign mosi = ui_in[3];
     assign cs = ui_in[4];
