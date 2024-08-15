@@ -151,13 +151,13 @@ module tt_um_thexeno_rgbw_controller (
         .reset(reset),
         .rdy(rdy),
         .clk(clk_sys_shared),
-        .lint_sync(lint_sync),
-        .red_sync(red_sync),
-        .green_sync(green_sync),
-        .blue_sync(blue_sync),
-        .white_sync(white_sync),
-        .colorIdx_sync(colorIdx_sync),
-        .mode_sync(mode_sync)
+        .lint_spi(lint_sync),
+        .red_spi(red_sync),
+        .green_spi(green_sync),
+        .blue_spi(blue_sync),
+        .white_spi(white_sync),
+        .colorIdx_spi(colorIdx_sync),
+        .mode_spi(mode_sync)
     ) /* synthesis syn_noprune=1 */;
 
     spiSlave spi_rx (
