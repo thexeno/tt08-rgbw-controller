@@ -26,7 +26,7 @@ module spiSlave (
   input wire mosi,
   input wire reset,
   output reg rdy_sig,
-  output wire [7:0] data);
+  output reg [7:0] data_byte);
  
 
 //input   sck; 
@@ -41,7 +41,7 @@ module spiSlave (
 //reg     [7:0] data; 
 reg     [7:0] bit_counter = 8'h00; 
 //reg     [7:0] data_reg = {8{1'b 0}}; 
-reg     [7:0] data_byte  = 8'h00;  
+//reg     [7:0] data_byte  = 8'h00;  
 //reg     rdy_sig = 1'b 0;
 reg     sck_latch = 1'b0; 
 reg     sck_prev = 1'b0; 
@@ -117,7 +117,7 @@ always @(posedge clkPrescSig)
          begin
          rdy_sig <= 1'b0;   
          end
-      data <= data_byte;   
+      //data <= data_byte;   
      // rdy <= rdy_sig;   
       end
    end
