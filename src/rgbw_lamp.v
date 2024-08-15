@@ -33,7 +33,7 @@ module tt_um_thexeno_rgbw_controller (
     assign uio_oe = 8'hff;
     assign uio_out = buffRx_spi;
     assign uo_out[6] = 1'b0;
-    assign ena = uo_out[7];
+    assign uo_out[7] = ena;
 
 
     // Internal signals
