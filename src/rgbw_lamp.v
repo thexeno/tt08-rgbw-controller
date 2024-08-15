@@ -29,11 +29,10 @@ module tt_um_thexeno_rgbw_controller (
     wire white_pin;
 
     // List all unused inputs to prevent warnings
-    wire _unused = &{ui_in[6:3], uio_in[7:0], 1'b0};
-    assign uio_oe = 0;
-    assign uio_out = 0;
-    assign uo_out[3:0] = 0;
-    assign uo_out[6:5] = 0;
+    wire _unused = &{ui_in[7:6], ui_in[2:0], uio_in[7:0], 1'b0};
+    assign uio_oe = 8'hff;
+    assign uio_out = buffRx_spi;
+    assign uo_out[6] = 0;
     assign uo_out[7] = ena;
 
 
@@ -69,12 +68,13 @@ module tt_um_thexeno_rgbw_controller (
 
     wire TEST_clk_shared;
     assign TEST_clk_shared = uo_out[4];
+    assign rdy = uo_out[5];
 
     assign reset = rst_n;
     assign clk12 = clk;
-    // assign sck = ui_in[5];
-    // assign mosi = ui_in[3];
-    //assign cs = ui_in[4];
+    assign sck = ui_in[5];
+    assign mosi = ui_in[3];
+    assign cs = ui_in[4];
     assign clk_div_en = ui_in[7];
     // assign red_pin = uo_out[0];
     // assign green_pin = uo_out[1];
@@ -166,15 +166,15 @@ module tt_um_thexeno_rgbw_controller (
     //     .mode_sync(mode_sync)
     // ) /* synthesis syn_noprune=1 */;
 
-    // spiSlave spi_rx (
-    //     .sck(sck),
-    //     .cs(cs), 
-    //     .clk(clkSys_shared),
-    //     .mosi(mosi),
-    //     .reset(reset),
-    //     .rdy_sig(rdy),
-    //     .data(buffRx_spi)
-    // ) /* synthesis syn_noprune=1 */;
+    spiSlave spi_rx (
+        .sck(sck),
+        .cs(cs), 
+        .clk(TEST_clk_shared),
+        .mosi(mosi),
+        .reset(reset),
+        .rdy_sig(rdy),
+        .data(buffRx_spi)
+    ) /* synthesis syn_noprune=1 */;
 
     // // // Process for synchronous reset
     // // always @(posedge clk12) begin

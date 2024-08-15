@@ -108,16 +108,16 @@ async def user_project(dut):
     dut.ui_in.value = dut.ui_in.value | (0x1 << 7) # activate the clock gen
     await ClockCycles(dut.clk, 10)
 
-    # dut.ui_in.value = (dut.ui_in.value) | (0x1 << PIN_CS)
-    # await ClockCycles(dut.clk, 10)
+    dut.ui_in.value = (dut.ui_in.value) | (0x1 << PIN_CS)
+    await ClockCycles(dut.clk, 10)
 
-    # await test_colorwheel(dut)
-    # await ClockCycles(dut.clk, 10000)
+    await test_colorwheel(dut)
+    await ClockCycles(dut.clk, 10000)
 
 
-    # await SPI_send(dut, 0x55)
-    # await ClockCycles(dut.clk, 10)
-    # await SPI_send(dut, 0xAA)
+    await SPI_send(dut, 0x55)
+    await ClockCycles(dut.clk, 10)
+    await SPI_send(dut, 0xAA)
 
 
 
