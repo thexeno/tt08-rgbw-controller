@@ -8,12 +8,6 @@
 
 *******************************************************************************/
 
-`define false 1'b 0
-`define FALSE 1'b 0
-`define true 1'b 1
-`define TRUE 1'b 1
-
-`timescale 1 ns / 1 ns // timescale for following modules
 
 
 //  (C) Copyright 2017 Enrico Sanino
