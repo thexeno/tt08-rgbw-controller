@@ -67,8 +67,8 @@ module tt_um_thexeno_rgbw_controller (
     wire clk_div_en;
 
     wire TEST_clk_shared;
-    assign TEST_clk_shared = uo_out[4];
-    assign rdy = uo_out[5];
+    assign uo_out[4] = TEST_clk_shared;
+    assign uo_out[5] = rdy;
 
     assign reset = rst_n;
     assign clk12 = clk;
