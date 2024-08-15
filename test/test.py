@@ -95,14 +95,14 @@ async def user_project(dut):
     dut._log.info("Reset")
     dut.ena.value = 0
     dut.rst_n.value = 0
-
-    await ClockCycles(dut.clk, 10)
+    dut.ui_in.value = 0 # reset the clock gen
+    await ClockCycles(dut.clk, 1000)
     #assert (dut.uo_out.value[7]) == (0)
     dut.ena.value = 1
     dut.ui_in.value = 0
     dut.rst_n.value = 1
 
-    await ClockCycles(dut.clk, 10)
+    await ClockCycles(dut.clk, 100)
     dut.ui_in.value = dut.ui_in.value & ~(0x1 << 7) # reset the clock gen
     await ClockCycles(dut.clk, 10)
     dut.ui_in.value = dut.ui_in.value | (0x1 << 7) # activate the clock gen
@@ -118,6 +118,7 @@ async def user_project(dut):
     await SPI_send(dut, 0x55)
     await ClockCycles(dut.clk, 10)
     await SPI_send(dut, 0xAA)
+    await ClockCycles(dut.clk, 10)
 
 
 
