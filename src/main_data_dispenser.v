@@ -70,6 +70,7 @@ always @(posedge clk) begin
                 byte_cnt_spi <= 4'b0000;
             end
             else begin
+                mode_spi <= 8'hb4;
                 byte_cnt_spi <= byte_cnt_spi + 1'b0001;
             end            
 
