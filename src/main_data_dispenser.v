@@ -35,6 +35,8 @@ module rgbw_data_dispencer (
     reg rdy_prev = 1'b0;
     //reg sync_char = 1'b0;
 
+    assign byte_cnt_spi_out = byte_cnt_spi;
+
 always @(posedge clk) begin
 
    if (reset == 1'b0)  begin
@@ -63,7 +65,7 @@ always @(posedge clk) begin
             rdy_prev <= rdy_latch;
             buffRx_spi_latch <= buffRx_spi;
             rdy_latch <= rdy;
-            byte_cnt_spi <= byte_cnt_spi + 1;
+            byte_cnt_spi <= byte_cnt_spi + 1'b0001;
                                         // if (rdy_prev == 1'b0 && rdy_latch == 1'b1) begin
                                         //     case (byte_cnt_spi)
                                         //         4'h0: begin

@@ -37,7 +37,7 @@ module tt_um_thexeno_rgbw_controller (
     assign uo_out[4] = clk_sys_shared;
     assign uo_out[7:5] = 0;
     // Internal signals
-    wire clkSys_shared;
+    //wire clkSys_shared;
     // wire clkSys_pwm;
     // wire clkSys_des;
     // wire red_sig;
@@ -52,13 +52,13 @@ module tt_um_thexeno_rgbw_controller (
     // wire [7:0] wDuty;
     wire [7:0] buffRx_spi;
     wire [3:0] byte_cnt_spi_w;
-    wire [7:0] lint_sync;
-    wire [7:0] red_sync;
-    wire [7:0] green_sync;
-    wire [7:0] blue_sync;
-    wire [7:0] white_sync;
-    wire [7:0] colorIdx_sync;
-    wire [7:0] mode_sync;
+    // wire [7:0] lint_sync;
+    // wire [7:0] red_sync;
+    // wire [7:0] green_sync;
+    // wire [7:0] blue_sync;
+    // wire [7:0] white_sync;
+    // wire [7:0] colorIdx_sync;
+    // wire [7:0] mode_sync;
     // wire [7:0] a, b;
     // wire [15:0] result;
     // wire load;
