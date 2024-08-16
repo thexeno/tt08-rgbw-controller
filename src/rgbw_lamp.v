@@ -19,7 +19,7 @@ module tt_um_thexeno_rgbw_controller (
 );
 
     wire reset;
-   // wire clk12;
+    // wire clk12;
     //wire sck0;
     wire mosi;
     wire cs;
@@ -27,15 +27,6 @@ module tt_um_thexeno_rgbw_controller (
     // wire green_pin;
     // wire blue_pin;
     // wire white_pin;
-
-    // List all unused inputs to prevent warnings
-    wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
-    assign uio_oe = 8'hff;
-    assign uio_out = 0;
-    //assign uo_out[7] = clk_sys_shared;
-    assign uo_out[3:0] = byte_cnt_spi_w;
-    assign uo_out[4] = clk_sys_shared;
-    assign uo_out[7:5] = 0;
     // Internal signals
     //wire clkSys_shared;
     // wire clkSys_pwm;
@@ -50,6 +41,7 @@ module tt_um_thexeno_rgbw_controller (
     // wire [7:0] gDuty;
     // wire [7:0] bDuty;
     // wire [7:0] wDuty;
+    wire [7:0] mode_spi_w;
     wire [7:0] buffRx_spi;
     wire [3:0] byte_cnt_spi_w;
     // wire [7:0] lint_sync;
@@ -64,8 +56,16 @@ module tt_um_thexeno_rgbw_controller (
     // wire load;
     // wire m_rdy;
     wire clk_div_en;
-
     wire clk_sys_shared;
+
+    // List all unused inputs to prevent warnings
+    wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
+    assign uio_oe = 8'hff;
+    assign uio_out = mode_spi_w;
+    //assign uo_out[7] = clk_sys_shared;
+    assign uo_out[3:0] = byte_cnt_spi_w;
+    assign uo_out[4] = clk_sys_shared;
+    assign uo_out[7:5] = 0;
 
     assign reset = rst_n;
     assign sck = ui_in[5];
@@ -153,7 +153,8 @@ module tt_um_thexeno_rgbw_controller (
         .reset(reset),
         .rdy(rdy),
         .clk(clk),
-        .byte_cnt_spi_out(byte_cnt_spi_w)
+        .byte_cnt_spi_out(byte_cnt_spi_w),
+
     ) /* synthesis syn_noprune=1 */;
 
     spiSlave spi_rx (
