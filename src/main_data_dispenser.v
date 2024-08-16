@@ -65,11 +65,13 @@ always @(posedge clk) begin
             rdy_prev <= rdy_latch;
             buffRx_spi_latch <= buffRx_spi;
             rdy_latch <= rdy;
-            byte_cnt_spi <= byte_cnt_spi + 1'b0001;
             if (rdy_prev == 1'b0 && rdy_latch == 1'b1) begin
                 mode_spi <= 8'ha5;
                 byte_cnt_spi <= 4'b0000;
             end
+            else begin
+                byte_cnt_spi <= byte_cnt_spi + 1'b0001;
+            end            
 
                                         // if (rdy_prev == 1'b0 && rdy_latch == 1'b1) begin
                                         //     case (byte_cnt_spi)
