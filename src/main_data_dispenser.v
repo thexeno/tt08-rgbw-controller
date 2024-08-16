@@ -43,7 +43,7 @@ always @(posedge clk) begin
             red_spi <= 8'b00000000;
             green_spi <= 8'b00000000;
             blue_spi <= 8'b00000000;
-           // mode_spi <= 8'b00000000;
+            mode_spi <= 8'b00000000;
             buffRx_spi_latch <= 8'b00000000;
             byte_cnt_spi <= 4'b0000;
             rdy_prev <= 1'b0;
@@ -95,7 +95,7 @@ always @(posedge clk) begin
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h7: begin
-                        //mode_sync <= buffRx_spi_latch; // rimani in questo stato sempre fino a nuovo RDY
+                        mode_spi <= buffRx_spi_latch; // rimani in questo stato sempre fino a nuovo RDY
                         byte_cnt_spi <= 4'h0;
                         //lint_sync <= lint_spi;
                         // colorIdx_sync <= colorIdx_spi;
