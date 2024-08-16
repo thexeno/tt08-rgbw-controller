@@ -85,6 +85,7 @@ reg     mosi_latch = 1'b0;
 //    begin : spi_sys_clock
 //             clkPrescSig <= ~clkPrescSig;   
 //    end
+assign rdy_sig = clk;
 
 always @(posedge clk)
    begin : mainprocess
@@ -93,7 +94,7 @@ always @(posedge clk)
       bit_counter <= 8'h00;   
       //data_reg <= {8{1'b 0}};   
       data_byte <= 8'h00;   
-      rdy_sig <= 1'b 0;   
+      //rdy_sig <= 1'b 0;   
       sck_prev <= 1'b 0;   
       sck_latch <= 1'b 0;   
       mosi_latch <= 1'b 0;   
@@ -110,12 +111,12 @@ always @(posedge clk)
          end
       if (sck_latch == 1'b 0 && bit_counter == 8'h08)
          begin
-         rdy_sig <= 1'b1;   
+       //  rdy_sig <= 1'b1;   
          bit_counter <= 8'h00;   
          end
       else
          begin
-         rdy_sig <= 1'b0;   
+        // rdy_sig <= 1'b0;   
          end
       //data <= data_byte;   
      // rdy <= rdy_sig;   
