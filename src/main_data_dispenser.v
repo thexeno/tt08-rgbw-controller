@@ -12,7 +12,7 @@ module rgbw_data_dispencer (
     input wire reset,
     input wire rdy,
     input wire clk,
-    output wire [3:0] byte_cnt_spi_out
+    output wire [3:0] byte_cnt_spi_out,
     // output reg [7:0] lint_spi,
     // output reg [7:0] red_spi,
     // output reg [7:0] green_spi,
