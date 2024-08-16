@@ -38,7 +38,7 @@ async def test_colorwheel(dut):
     dataPayload[R_POS] = 0x00
     dataPayload[G_POS] = 0x00
     dataPayload[B_POS] = 0x00
-    dataPayload[W_POS] = 0x00
+    dataPayload[W_POS] = 0x35
     dataPayload[INT_POS] = 0xFF
     dataPayload[IDX_POS] = 0xA2
     dataPayload[MODE_POS] = 0xa4

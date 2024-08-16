@@ -42,6 +42,7 @@ module tt_um_thexeno_rgbw_controller (
     // wire [7:0] bDuty;
     // wire [7:0] wDuty;
     wire [7:0] mode_spi_w;
+    wire [7:0] white_spi_w;
     wire [7:0] buffRx_spi;
     wire [3:0] byte_cnt_spi_w;
     // wire [7:0] lint_sync;
@@ -63,9 +64,7 @@ module tt_um_thexeno_rgbw_controller (
     assign uio_oe = 8'hff;
     assign uio_out = mode_spi_w;
     //assign uo_out[7] = clk_sys_shared;
-    assign uo_out[3:0] = byte_cnt_spi_w;
-    assign uo_out[4] = clk_sys_shared;
-    assign uo_out[7:5] = 0;
+    assign uo_out = white_spi_w;
 
     assign reset = rst_n;
     assign sck = ui_in[5];
@@ -154,6 +153,7 @@ module tt_um_thexeno_rgbw_controller (
         .rdy(rdy),
         .clk(clk),
         .byte_cnt_spi_out(byte_cnt_spi_w),
+        .white_spi(white_spi_w),
         .mode_spi(mode_spi_w)
     ) /* synthesis syn_noprune=1 */;
 

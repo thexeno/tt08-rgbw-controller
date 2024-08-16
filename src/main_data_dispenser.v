@@ -17,9 +17,9 @@ module rgbw_data_dispencer (
     // output reg [7:0] red_spi,
     // output reg [7:0] green_spi,
     // output reg [7:0] blue_spi,
-    // output reg [7:0] white_spi,
+    output reg [7:0] white_spi,
     // output reg [7:0] colorIdx_spi,
-     output reg [7:0] mode_spi
+    output reg [7:0] mode_spi
 );
 
     // reg [7:0] lint_spi = 8'b00000000;
@@ -94,7 +94,7 @@ always @(posedge clk) begin
                     //byte_cnt_spi <= byte_cnt_spi + 1;
                 end
                 4'h6: begin
-                 //   white_spi <= buffRx_spi_latch;
+                    white_spi <= buffRx_spi;
                     //byte_cnt_spi <= byte_cnt_spi + 1;
                 end
                 4'h7: begin
