@@ -5,7 +5,13 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = project.v
+PROJECT_SOURCES = rgbw_lamp.v
+PROJECT_SOURCES += clockDividerPwm.v
+PROJECT_SOURCES += color_gen.v
+PROJECT_SOURCES += mult8x8.v
+PROJECT_SOURCES += pwm_gen.v
+PROJECT_SOURCES += spi_slave.v
+PROJECT_SOURCES += main_data_dispenser.v
 
 ifneq ($(GATES),yes)
 

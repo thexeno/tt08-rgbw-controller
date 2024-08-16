@@ -7,27 +7,34 @@
 //              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
 //              v.1.2 for applicable Conditions.
 
-module rgbw_lamp (
-    input reset,
-    input clk12,
-    input sck0,
-    input mosi,
-    input cs,
-    output wire red_pin,
-    output wire green_pin,
-    output wire blue_pin,
-    output wire white_pin,
-    output wire [3:0] dbg,
-    output wire m_ok,
-    output wire ld_mult
-    // output wire red_pwr,
-    // output wire green_pwr,
-    // output wire blue_pwr,
-    // output wire white_pwr,
-    //output wire [7:1] buffRx_spi_o,
-    //output wire rdy_o
-
+module tt_um_thexeno_rgbw_controller (
+    input  wire [7:0] ui_in,    // Dedicated inputs
+    output wire [7:0] uo_out,   // Dedicated outputs
+    input  wire [7:0] uio_in,   // IOs: Input path
+    output wire [7:0] uio_out,  // IOs: Output path
+    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
+    input  wire       ena,      // will go high when the design is enabled
+    input  wire       clk,      // clock
+    input  wire       rst_n     // reset_n - low to reset
 );
+
+    wire reset;
+    wire clk12;
+    wire sck0;
+    wire mosi;
+    wire cs;
+    wire red_pin;
+    wire green_pin;
+    wire blue_pin;
+    wire white_pin;
+
+    // List all unused inputs to prevent warnings
+    wire _unused = &{ui_in[7:3], uio_in[7:0], 1'b0};
+    assign uio_oe = 0;
+    assign uio_out = 0;
+    assign uo_out[6:4] = 0;
+    assign uo_out[7] = ena;
+
 
     // Internal signals
     wire clkSys_shared;
@@ -38,6 +45,7 @@ module rgbw_lamp (
     wire blue_sig;
     wire white_sig;
     wire rdy;
+    wire sck;
     reg reset_sync;
     wire [7:0] rDuty;
     wire [7:0] gDuty;
@@ -54,7 +62,21 @@ module rgbw_lamp (
     wire [7:0] mode_sync;
     wire [7:0] a, b;
     wire [15:0] result;
-    wire load, mult_rdy;
+    wire load;
+    wire m_rdy;
+    wire clk_div_en;
+
+    assign reset = rst_n;
+    assign clk12 = clk;
+    assign sck = ui_in[5];
+    assign mosi = ui_in[3];
+    assign cs = ui_in[4];
+    assign clk_div_en = ui_in[7];
+    assign red_pin = uo_out[0];
+    assign green_pin = uo_out[1];
+    assign blue_pin = uo_out[2];
+    assign white_pin = uo_out[3];
+
 
     // Output assignments
     //assign dbg = sck0 & reset;
@@ -74,7 +96,7 @@ module rgbw_lamp (
     clockDividerPwm clockFeeder (
         .clk(clk12),
         .clkPresc(clkSys_shared),
-        .reset(reset)
+        .reset(clk_div_en)
     ) /* synthesis syn_noprune=1 */;
 
     mult8x8 mult (
@@ -118,10 +140,7 @@ module rgbw_lamp (
         .redOut(rDuty),
         .greenOut(gDuty),
         .blueOut(bDuty),
-        .whiteOut(wDuty),
-        .dbg(dbg),
-        .mult_ok_dbg(m_ok),
-        .ld_dbg(ld_mult)
+        .whiteOut(wDuty)
     ) /* synthesis syn_noprune=1 */;
 
     
@@ -141,7 +160,7 @@ module rgbw_lamp (
     ) /* synthesis syn_noprune=1 */;
 
     spiSlave spi_rx (
-        .sck(sck0),
+        .sck(sck),
         .cs(cs), 
         .clk(clkSys_shared),
         .mosi(mosi),

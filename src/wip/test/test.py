@@ -9,24 +9,33 @@ from cocotb.triggers import ClockCycles
 # Sends DATA of a specific LENGTH through spi. MOSI pin is selected by providing a MASK for ui_in
 # MSB first
 async def SPI_send(dut, DATA: int):
-    # Set the clock period to 100 us (10 KHz)
-    clock = Clock(dut.clk, 10, units="us")
-    cocotb.start_soon(clock.start())
+
+    dut.ui_in.value = dut.ui_in.value & ~(0x1 << 5) #CS low
+    await ClockCycles(dut.clk, 5)
     # Send SPI data
     for i in range(8):
         dut._log.info(f"SPI send: {i}")
-        if (DATA << i) & 0x80 == 0x80: # Check if highest bit is set
-            dut.ui_in.value[6] = 1 #miso ui_in[1]
+        if (DATA << i) & 0x80 == 0x80: # Check if highest bit is set      
+        # Clear bit 7 in the current value and then set it to the desired value
+        # current_value = dut.uo_out.value.integer
+            dut.ui_in.value = (dut.ui_in.value) | (0x1 << 1)
+            await ClockCycles(dut.clk, 1)
             dut._log.info(f"DATA: 1")
+            print ((dut.ui_in))
         else:
-            dut.ui_in.value[6] = 0 #int(dut.ui_in.value) & ~MASK #clear bit
+            dut.ui_in.value = dut.ui_in.value & ~(0x1 << 1)
+            await ClockCycles(dut.clk, 1)
             dut._log.info(f"DATA: 0")
-        dut.ui_in.value[7] = 1 #sck, SPI mode 1
-        await ClockCycles(dut.clk, 50)
-        dut.ui_in.value[7] = 0
-        await ClockCycles(dut.clk, 50)
+            print (dut.ui_in)
 
-
+         
+        dut.ui_in.value = (dut.ui_in.value) | (0x1 << 0)
+        await ClockCycles(dut.clk, 50)
+        dut.ui_in.value = dut.ui_in.value & ~(0x1 << 0)
+        await ClockCycles(dut.clk, 50)
+    
+    dut.ui_in.value = (dut.ui_in.value) | (0x1 << 5) #CS high
+    await ClockCycles(dut.clk, 5)
 
 
 @cocotb.test()
@@ -41,48 +50,21 @@ async def user_project(dut):
     dut._log.info("Reset")
     dut.ena.value = 0
     dut.rst_n.value = 0
+    
     await ClockCycles(dut.clk, 10)
     #assert (dut.uo_out.value[7]) == (0)
     dut.ena.value = 1
     dut.ui_in.value = 0
     dut.rst_n.value = 1
-    dut.ui_in.value[5] = 1 #cs high
     await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 0
-    dut.ui_in.value[5] = 1 #cs high
+    dut.ui_in.value = (dut.ui_in.value) | (0x1 << 5)
     await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
-    dut.ui_in.value[5] = 1 #cs high
+    await SPI_send(dut, 0x55)
     await ClockCycles(dut.clk, 10)
-    print (dut.uo_out.value[0])
-    print (dut.uo_out.value[1])
-    print (dut.uo_out.value[2])
-    print (dut.uo_out.value[3])
-    print (dut.uo_out.value[4])
-    print (dut.uo_out.value[5])
-    print (dut.uo_out.value[6])
-
-    print (dut.ui_in.value[0])
-    print (dut.ui_in.value[1])
-    print (dut.ui_in.value[2])
-    print (dut.ui_in.value[3])
-    print (dut.ui_in.value[4])
-    print (dut.ui_in.value[5])
-    print (dut.ui_in.value[6])
-    print (dut.ui_in.value[7])
-
-    dut.ui_in.value = 50 #cs low
-    await ClockCycles(dut.clk, 1)
-    print (dut.ui_in.value[0])
-    print (dut.ui_in.value[1])
-    print (dut.ui_in.value[2])
-    print (dut.ui_in.value[3])
-    print (dut.ui_in.value[4])
-    print (dut.ui_in.value[5])
-    print (dut.ui_in.value[6])
-    print (dut.ui_in.value[7])
     await SPI_send(dut, 0xAA)
-    dut.ui_in.value[5] = 1 #cs high
+
+
+
     await ClockCycles(dut.clk, 100)
     print (dut.uo_out.value[0])
     print (dut.uo_out.value[1])
