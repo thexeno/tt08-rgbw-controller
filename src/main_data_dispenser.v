@@ -12,13 +12,14 @@ module rgbw_data_dispencer (
     input wire reset,
     input wire rdy,
     input wire clk,
-    output reg [7:0] lint_spi,
-    output reg [7:0] red_spi,
-    output reg [7:0] green_spi,
-    output reg [7:0] blue_spi,
-    output reg [7:0] white_spi,
-    output reg [7:0] colorIdx_spi,
-    output reg [7:0] mode_spi
+    output wire [3:0] byte_cnt_spi_out
+    // output reg [7:0] lint_spi,
+    // output reg [7:0] red_spi,
+    // output reg [7:0] green_spi,
+    // output reg [7:0] blue_spi,
+    // output reg [7:0] white_spi,
+    // output reg [7:0] colorIdx_spi,
+    // output reg [7:0] mode_spi
 );
 
     // reg [7:0] lint_spi = 8'b00000000;
@@ -37,13 +38,13 @@ module rgbw_data_dispencer (
 always @(posedge clk) begin
 
    if (reset == 1'b0)  begin
-            lint_spi <= 8'b00000000;
-            colorIdx_spi <= 8'b00000000;
-            white_spi <= 8'b00000000;
-            red_spi <= 8'b00000000;
-            green_spi <= 8'b00000000;
-            blue_spi <= 8'b00000000;
-            mode_spi <= 8'b00000000;
+            // lint_spi <= 8'b00000000;
+            // colorIdx_spi <= 8'b00000000;
+            // white_spi <= 8'b00000000;
+            // red_spi <= 8'b00000000;
+            // green_spi <= 8'b00000000;
+            // blue_spi <= 8'b00000000;
+            // mode_spi <= 8'b00000000;
             buffRx_spi_latch <= 8'b00000000;
             byte_cnt_spi <= 4'b0000;
             rdy_prev <= 1'b0;
