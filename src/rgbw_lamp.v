@@ -31,7 +31,7 @@ module tt_um_thexeno_rgbw_controller (
     // List all unused inputs to prevent warnings
     wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
     assign uio_oe = 8'hff;
-    assign uio_out = mode_sync;
+    assign uio_out = 0;
     //assign uo_out[7] = clk_sys_shared;
     assign uo_out[3:0] = byte_cnt_spi_w;
     assign uo_out[4] = clk_sys_shared;
