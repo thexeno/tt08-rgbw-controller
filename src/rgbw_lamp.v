@@ -154,7 +154,7 @@ module tt_um_thexeno_rgbw_controller (
         .rdy(rdy),
         .clk(clk),
         .byte_cnt_spi_out(byte_cnt_spi_w),
-
+        .mode_spi(mode_spi_w)
     ) /* synthesis syn_noprune=1 */;
 
     spiSlave spi_rx (
