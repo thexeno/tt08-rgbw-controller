@@ -33,7 +33,7 @@ module tt_um_thexeno_rgbw_controller (
     assign uio_oe = 8'hff;
     assign uio_out = mode_sync;
     //assign uo_out[7] = clk_sys_shared;
-    assign uo_out = (blue_sync || red_sync || green_sync || white_sync || colorIdx_sync || mode_sync);
+    assign uo_out = (blue_sync | red_sync | green_sync | white_sync | colorIdx_sync | mode_sync);
     // Internal signals
     wire clkSys_shared;
     // wire clkSys_pwm;
