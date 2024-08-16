@@ -97,7 +97,7 @@ always @(posedge clk) begin
                     4'h7: begin
                         //mode_sync <= buffRx_spi_latch; // rimani in questo stato sempre fino a nuovo RDY
                         byte_cnt_spi <= 4'h0;
-                        // lint_sync <= lint_spi;
+                        //lint_sync <= lint_spi;
                         // colorIdx_sync <= colorIdx_spi;
                         // red_sync <= red_spi;     //are 16bit for optimizing the reuslt of mult in color_Gen, works better with the synthesizer
                         // green_sync <= green_spi;
