@@ -149,9 +149,10 @@ module tt_um_thexeno_rgbw_controller (
 
     rgbw_data_dispencer deserializer (
         .buffRx_spi(buffRx_spi),
+        .clk_half(clk_sys_shared),
         .reset(reset),
         .rdy(rdy),
-        .clk(clk_sys_shared),
+        .clk(clk),
         .byte_cnt_spi_out(byte_cnt_spi_w),
         .white_spi(white_spi_w),
         .mode_spi(mode_spi_w)
@@ -160,11 +161,12 @@ module tt_um_thexeno_rgbw_controller (
     spiSlave spi_rx (
         .sck(sck),
         .cs(cs), 
-        .clk(clk_sys_shared),
+        .clk(clk),
+        .clk_half(clk_sys_shared),
         .mosi(mosi),
         .reset(reset),
         .rdy_sig(rdy),
-        .data_byte(buffRx_spi)
+        .data(buffRx_spi)
     ) /* synthesis syn_noprune=1 */;
 
     // // // Process for synchronous reset

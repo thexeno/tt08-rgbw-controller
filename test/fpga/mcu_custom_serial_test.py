@@ -100,7 +100,7 @@ try:
         # Send the message over serial
         print(f'Sending: {message}')
         ser.write(message.encode())
-        ytime.sleep(0.1)
+        time.sleep(0.1)
 
     print("Press 'y' to continue. Next test: white with random color 1")
     keyboard.wait('y')

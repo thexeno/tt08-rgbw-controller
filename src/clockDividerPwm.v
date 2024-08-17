@@ -10,6 +10,7 @@
 
 
 
+
 //  (C) Copyright 2017 Enrico Sanino
 //  License:     This project is licensed with the CERN Open Hardware Licence
 //               v1.2.  You may redistribute and modify this project under the
@@ -53,7 +54,7 @@ always @(posedge clk)
       end
    else
       begin
-      if (prescalerCnt == 8'h 01)
+      if (prescalerCnt == 8'h 00)
          begin
          clkPrescSig <= ~clkPrescSig;   
          prescalerCnt <= {8{1'b 0}};   
