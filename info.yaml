@@ -22,8 +22,8 @@ project:
     # - "pwm_gen.v"
     - "spi_slave.v"
     - "main_data_dispenser.v"
-    # - "color_gen.v"
-    # - "mult8x8.v"
+    - "color_gen.v"
+    - "mult8x8.v"
 
 
 

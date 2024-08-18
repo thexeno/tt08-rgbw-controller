@@ -10,6 +10,7 @@
 module colorGen
     (
         input wire clk,
+        input wire clk_half,
         input wire reset,
         input wire mult_ok,
         output reg [7 : 0] mult1,
@@ -94,6 +95,8 @@ module colorGen
     // assign r_minus = r - 8'b00000111;
 
     always @(posedge clk)
+    begin
+    if (clk_half == 1'b0)
     begin
         if (reset == 1'b0)
         begin
@@ -552,5 +555,6 @@ module colorGen
                 // default: state <= init;
             endcase
         end
+    end
     end
 endmodule

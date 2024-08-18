@@ -37,10 +37,10 @@ module tt_um_thexeno_rgbw_controller (
     // wire white_sig;
     wire rdy;
     wire sck;
-    // wire [7:0] rDuty;
-    // wire [7:0] gDuty;
-    // wire [7:0] bDuty;
-    // wire [7:0] wDuty;
+    wire [7:0] r_duty_w;
+    wire [7:0] g_duty_w;
+    wire [7:0] b_duty_w;
+    wire [7:0] w_duty_w;
     wire [7:0] mode_spi_w;
     wire [7:0] white_spi_w;
     wire [7:0] buffRx_spi;
@@ -49,19 +49,19 @@ module tt_um_thexeno_rgbw_controller (
     wire [7:0] green_spi_w;
     wire [7:0] blue_spi_w;
     wire [7:0] colorIdx_spi_w;
-    // wire [7:0] a, b;
-    // wire [15:0] result;
-    // wire load;
-    // wire m_rdy;
+    wire [7:0] a, b;
+    wire [15:0] result;
+    wire load;
+    wire m_rdy;
     wire clk_div_en;
     wire clk_sys_shared;
 
     // List all unused inputs to prevent warnings
     wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
-    assign uo_out = {colorIdx_spi_w && blue_spi_w && green_spi_w && red_spi_w && lint_spi_w && white_spi_w};
+    assign uo_out = white_spi_w;
 
     assign uio_oe = 8'hff;
-    assign uio_out = mode_spi_w;
+    assign uio_out = blue_spi_w;
     //assign uo_out[7] = clk_sys_shared;
     //assign uo_out = white_spi_w;
 
@@ -100,15 +100,15 @@ module tt_um_thexeno_rgbw_controller (
 
 
 
-    // mult8x8 mult (
-    //     .clk(clk12),
-    //     .reset(reset),
-    //     .ld(load),
-    //     .mult_rdy(m_rdy),
-    //     .a(a),
-    //     .b(b),
-    //     .result(result)        
-    // );
+    mult8x8 mult (
+        .clk(clk),
+        .reset(reset),
+        .ld(load),
+        .mult_rdy(m_rdy),
+        .a(a),
+        .b(b),
+        .result(result)        
+    );
 
     // pwmGen pwm (
     //     .clk(clkSys_shared),
@@ -123,26 +123,27 @@ module tt_um_thexeno_rgbw_controller (
     //     .d3(white_pin)
     // ) /* synthesis syn_noprune=1 */;
 
-    // colorGen color (
-    //     .clk(clkSys_shared),
-    //     .reset(reset),
-    //     .mult1(a),
-    //     .mult2(b),
-    //     .mult_res(result),
-    //     .mult_ok(m_rdy),
-    //     .ld(load),
-    //     .mode(mode_sync),
-    //     .lint(lint_sync),
-    //     .colorIdx(colorIdx_sync),
-    //     .whiteIn(white_sync),
-    //     .redIn(red_sync),
-    //     .greenIn(green_sync),
-    //     .blueIn(blue_sync),
-    //     .redOut(rDuty),
-    //     .greenOut(gDuty),
-    //     .blueOut(bDuty),
-    //     .whiteOut(wDuty)
-    // ) /* synthesis syn_noprune=1 */;
+    colorGen color (
+        .clk(clk),
+        .clk_half(clk_sys_shared),
+        .reset(reset),
+        .mult1(a),
+        .mult2(b),
+        .mult_res(result),
+        .mult_ok(m_rdy),
+        .ld(load),
+        .mode(mode_spi_w),
+        .lint(lint_spi_w),
+        .colorIdx(colorIdx_spi_w),
+        .whiteIn(white_spi_w),
+        .redIn(red_spi_w),
+        .greenIn(green_spi_w),
+        .blueIn(blue_spi_w),
+        .redOut(r_duty_w),
+        .greenOut(g_duty_w),
+        .blueOut(b_duty_w),
+        .whiteOut(w_duty_w)
+    ) /* synthesis syn_noprune=1 */;
 
     
 
