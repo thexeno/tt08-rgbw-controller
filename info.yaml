@@ -40,14 +40,14 @@ pinout:
   ui[7]: "clk_div_en"
 
   # Outputs
-  uo[0]: "" #uo[0]: "R PWM channel"
-  uo[1]: "" #uo[1]: "G PWM channel"
-  uo[2]: "" #uo[2]: "B PWM channel"
-  uo[3]: "" #uo[3]: "W PWM channel"
-  uo[4]: "clock_div"
-  uo[5]: "rdy"
-  uo[6]: ""
-  uo[7]: ""
+  uo[0]: "spirx_0_o"
+  uo[1]: "spirx_1_o"
+  uo[2]: "spirx_2_o"
+  uo[3]: "spirx_3_o"
+  uo[4]: "spirx_4_o"
+  uo[5]: "spirx_5_o"
+  uo[6]: "spirx_6_o"
+  uo[7]: "spirx_7_o"
 
   # Bidirectional pins
   uio[0]: "spirx_0"
