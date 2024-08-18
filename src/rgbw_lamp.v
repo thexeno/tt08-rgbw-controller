@@ -44,7 +44,6 @@ module tt_um_thexeno_rgbw_controller (
     wire [7:0] mode_spi_w;
     wire [7:0] white_spi_w;
     wire [7:0] buffRx_spi;
-    wire [3:0] byte_cnt_spi_w;
     wire [7:0] lint_spi_w;
     wire [7:0] red_spi_w;
     wire [7:0] green_spi_w;
@@ -59,10 +58,12 @@ module tt_um_thexeno_rgbw_controller (
 
     // List all unused inputs to prevent warnings
     wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
+    assign uo_out = {colorIdx_spi_w && blue_spi_w && green_spi_w && red_spi_w && lint_spi_w && white_spi_w};
+
     assign uio_oe = 8'hff;
     assign uio_out = mode_spi_w;
     //assign uo_out[7] = clk_sys_shared;
-    assign uo_out = white_spi_w;
+    //assign uo_out = white_spi_w;
 
     assign reset = rst_n;
     assign sck = ui_in[5];
@@ -151,13 +152,13 @@ module tt_um_thexeno_rgbw_controller (
         .reset(reset),
         .rdy(rdy),
         .clk(clk),
-        .lint_spi(lint_spi_w),
-        .red_spi(red_spi_w),
-        .green_spi(green_spi_w),
-        .blue_spi(blue_spi_w),
-        .colorIdx_spi(colorIdx_spi_w),
-        .white_spi(white_spi_w),
-        .mode_spi(mode_spi_w)
+        .lint_spi_out(lint_spi_w),
+        .red_spi_out(red_spi_w),
+        .green_spi_out(green_spi_w),
+        .blue_spi_out(blue_spi_w),
+        .colorIdx_spi_out(colorIdx_spi_w),
+        .white_spi_out(white_spi_w),
+        .mode_spi_out(mode_spi_w)
     ) /* synthesis syn_noprune=1 */;
 
     spiSlave spi_rx (
