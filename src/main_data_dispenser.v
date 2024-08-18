@@ -13,13 +13,12 @@ module rgbw_data_dispencer (
     input wire rdy,
     input wire clk,
     input wire clk_half,
-    output wire [3:0] byte_cnt_spi_out,
-    // output reg [7:0] lint_spi,
-    // output reg [7:0] red_spi,
-    // output reg [7:0] green_spi,
-    // output reg [7:0] blue_spi,
+    output reg [7:0] lint_spi,
+    output reg [7:0] red_spi,
+    output reg [7:0] green_spi,
+    output reg [7:0] blue_spi,
     output reg [7:0] white_spi,
-    // output reg [7:0] colorIdx_spi,
+     output reg [7:0] colorIdx_spi,
     output reg [7:0] mode_spi
 );
 
@@ -29,7 +28,7 @@ module rgbw_data_dispencer (
     // reg [7:0] blue_spi = 8'b00000000;
     // reg [7:0] white_spi = 8'b00000000;
     // reg [7:0] colorIdx_spi = 8'b00000000;
-    //reg [7:0] mode_spi = 8'b00000000;
+    // reg [7:0] mode_spi = 8'b00000000;
     reg [7:0] buffRx_spi_latch = 8'b00000000;
     reg [3:0] byte_cnt_spi = 4'b0000;
     reg rdy_latch = 1'b0;
@@ -43,13 +42,13 @@ begin
    if (clk_half == 1'b0)
    begin
     if (reset == 1'b0)  begin
-                // lint_spi <= 8'b00000000;
-                // colorIdx_spi <= 8'b00000000;
-                // white_spi <= 8'b00000000;
-                // red_spi <= 8'b00000000;
-                // green_spi <= 8'b00000000;
-                // blue_spi <= 8'b00000000;
-                // mode_spi <= 8'b00000000;
+                lint_spi <= 8'b00000000;
+                colorIdx_spi <= 8'b00000000;
+                white_spi <= 8'b00000000;
+                red_spi <= 8'b00000000;
+                green_spi <= 8'b00000000;
+                blue_spi <= 8'b00000000;
+                mode_spi <= 8'b00000000;
                 buffRx_spi_latch <= 8'b00000000;
                 byte_cnt_spi <= 4'b0000;
                 rdy_prev <= 1'b0;
@@ -77,23 +76,23 @@ begin
                         end
                     end
                     4'h1: begin
-                    //  lint_spi <= buffRx_spi_latch;
+                      lint_spi <= buffRx_spi_latch;
                         //byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h2: begin
-                    //  colorIdx_spi <= buffRx_spi_latch;
+                      colorIdx_spi <= buffRx_spi_latch;
                         //byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h3: begin
-                    //    red_spi <= buffRx_spi_latch;
+                        red_spi <= buffRx_spi_latch;
                         //byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h4: begin
-                    //    green_spi <= buffRx_spi_latch;
+                        green_spi <= buffRx_spi_latch;
                         //byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h5: begin
-                    //   blue_spi <= buffRx_spi_latch;
+                       blue_spi <= buffRx_spi_latch;
                         //byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h6: begin

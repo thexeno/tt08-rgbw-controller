@@ -45,13 +45,11 @@ module tt_um_thexeno_rgbw_controller (
     wire [7:0] white_spi_w;
     wire [7:0] buffRx_spi;
     wire [3:0] byte_cnt_spi_w;
-    // wire [7:0] lint_sync;
-    // wire [7:0] red_sync;
-    // wire [7:0] green_sync;
-    // wire [7:0] blue_sync;
-    // wire [7:0] white_sync;
-    // wire [7:0] colorIdx_sync;
-    // wire [7:0] mode_sync;
+    wire [7:0] lint_spi_w;
+    wire [7:0] red_spi_w;
+    wire [7:0] green_spi_w;
+    wire [7:0] blue_spi_w;
+    wire [7:0] colorIdx_spi_w;
     // wire [7:0] a, b;
     // wire [15:0] result;
     // wire load;
@@ -153,7 +151,11 @@ module tt_um_thexeno_rgbw_controller (
         .reset(reset),
         .rdy(rdy),
         .clk(clk),
-        .byte_cnt_spi_out(byte_cnt_spi_w),
+        .lint_spi(lint_spi_w),
+        .red_spi(red_spi_w),
+        .green_spi(green_spi_w),
+        .blue_spi(blue_spi_w),
+        .colorIdx_spi(colorIdx_spi_w),
         .white_spi(white_spi_w),
         .mode_spi(mode_spi_w)
     ) /* synthesis syn_noprune=1 */;
