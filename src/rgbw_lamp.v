@@ -70,10 +70,10 @@ module tt_um_thexeno_rgbw_controller (
     assign mosi = ui_in[3];
     assign cs = ui_in[4];
     assign clk_div_en = ui_in[7];
-    assign red_pin = uo_out[0];
-    assign green_pin = uo_out[1];
-    assign blue_pin = uo_out[2];
-    assign white_pin = uo_out[3];
+    assign uo_out[0] = red_pin;
+    assign uo_out[1] = green_pin;
+    assign uo_out[2] = blue_pin ;
+    assign uo_out[3] = white_pin;
 
 
     // Output assignments
