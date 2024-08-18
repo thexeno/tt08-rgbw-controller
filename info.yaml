@@ -19,7 +19,7 @@ project:
   source_files:
     - "rgbw_lamp.v"
     - "clockDividerPwm.v"
-    # - "pwm_gen.v"
+    - "pwm_gen.v"
     - "spi_slave.v"
     - "main_data_dispenser.v"
     - "color_gen.v"

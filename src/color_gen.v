@@ -64,7 +64,6 @@ module colorGen
     //     stateApply
     // } state_type;
 
-    reg [15 : 0] temp_result = 16'h0000;
     reg [7 : 0] r = 8'b00000000;
     reg [7 : 0] g = 8'b00000000;
     reg [7 : 0] b = 8'b00000000;
@@ -83,7 +82,6 @@ module colorGen
     reg [7 : 0] lint_sig = 8'b00000000;
     reg [7 : 0] thr = 8'b00000000;
     reg [7 : 0] counter = 8'b00000000;
-    reg [7 : 0] w_sig = 8'b00000000;
     reg [7 : 0] mode_latch = 8'b00000000;
     // reg [2:0] lint_comp = 3'b000;
 

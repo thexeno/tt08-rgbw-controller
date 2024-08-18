@@ -47,8 +47,7 @@ reg     [7:0] data_byte  = {8{1'b 0}};
 reg     sck_latch = 1'b 0; 
 reg     sck_prev = 1'b 0; 
 reg     mosi_latch = 1'b 0;
-reg     reset_sig; 
-reg clkPrescSig = 1'b0;
+reg     reset_sig = 1'b0; 
 // initial 
 //    begin : process_7
 //    mosi_latch = 1'b 0;   

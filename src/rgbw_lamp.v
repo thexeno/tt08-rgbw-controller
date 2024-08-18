@@ -23,10 +23,10 @@ module tt_um_thexeno_rgbw_controller (
     //wire sck0;
     wire mosi;
     wire cs;
-    // wire red_pin;
-    // wire green_pin;
-    // wire blue_pin;
-    // wire white_pin;
+    wire red_pin = 0;
+    wire green_pin = 0;
+    wire blue_pin = 0;
+    wire white_pin = 0;
     // Internal signals
     //wire clkSys_shared;
     // wire clkSys_pwm;
@@ -35,31 +35,31 @@ module tt_um_thexeno_rgbw_controller (
     // wire green_sig;
     // wire blue_sig;
     // wire white_sig;
-    wire rdy;
-    wire sck;
-    wire [7:0] r_duty_w;
-    wire [7:0] g_duty_w;
-    wire [7:0] b_duty_w;
-    wire [7:0] w_duty_w;
-    wire [7:0] mode_spi_w;
-    wire [7:0] white_spi_w;
-    wire [7:0] buffRx_spi;
-    wire [7:0] lint_spi_w;
-    wire [7:0] red_spi_w;
-    wire [7:0] green_spi_w;
-    wire [7:0] blue_spi_w;
-    wire [7:0] colorIdx_spi_w;
-    wire [7:0] a;
-    wire [7:0] b;
-    wire [15:0] result;
-    wire load;
-    wire m_rdy;
-    wire clk_div_en;
-    wire clk_sys_shared;
+    wire rdy = 0;
+    wire sck = 0;
+    wire [7:0] r_duty_w = 0;
+    wire [7:0] g_duty_w = 0;
+    wire [7:0] b_duty_w = 0;
+    wire [7:0] w_duty_w = 0;
+    wire [7:0] mode_spi_w = 0;
+    wire [7:0] white_spi_w = 0;
+    wire [7:0] buffRx_spi = 0;
+    wire [7:0] lint_spi_w = 0;
+    wire [7:0] red_spi_w = 0;
+    wire [7:0] green_spi_w = 0;
+    wire [7:0] blue_spi_w = 0;
+    wire [7:0] colorIdx_spi_w = 0;
+    wire [7:0] a = 0;
+    wire [7:0] b = 0;
+    wire [15:0] result = 0;
+    wire load = 0;
+    wire m_rdy = 0;
+    wire clk_div_en = 0;
+    wire clk_sys_shared = 0;
 
     // List all unused inputs to prevent warnings
     wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
-    assign uo_out = (r_duty_w && g_duty_w && w_duty_w);
+    //assign uo_out = (r_duty_w && g_duty_w && w_duty_w);
     assign uio_oe = 8'hff;
     assign uio_out = b_duty_w;
     //assign uo_out[7] = clk_sys_shared;
@@ -70,10 +70,10 @@ module tt_um_thexeno_rgbw_controller (
     assign mosi = ui_in[3];
     assign cs = ui_in[4];
     assign clk_div_en = ui_in[7];
-    // assign red_pin = uo_out[0];
-    // assign green_pin = uo_out[1];
-    // assign blue_pin = uo_out[2];
-    // assign white_pin = uo_out[3];
+    assign red_pin = uo_out[0];
+    assign green_pin = uo_out[1];
+    assign blue_pin = uo_out[2];
+    assign white_pin = uo_out[3];
 
 
     // Output assignments
@@ -110,18 +110,19 @@ module tt_um_thexeno_rgbw_controller (
         .result(result)        
     );
 
-    // pwmGen pwm (
-    //     .clk(clkSys_shared),
-    //     .reset(reset),
-    //     .duty0(rDuty),
-    //     .duty1(gDuty),
-    //     .duty2(bDuty),
-    //     .duty3(wDuty),
-    //     .d0(red_pin),
-    //     .d1(green_pin),
-    //     .d2(blue_pin),
-    //     .d3(white_pin)
-    // ) /* synthesis syn_noprune=1 */;
+    pwmGen pwm (
+        .clk(clk),
+        .clk_half(clk_sys_shared),
+        .reset(reset),
+        .duty0(rDuty),
+        .duty1(gDuty),
+        .duty2(bDuty),
+        .duty3(wDuty),
+        .d0(red_pin),
+        .d1(green_pin),
+        .d2(blue_pin),
+        .d3(white_pin)
+    ) /* synthesis syn_noprune=1 */;
 
     colorGen color (
         .clk(clk),
