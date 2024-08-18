@@ -550,6 +550,10 @@ module colorGen
                 state <= init;
             end
 
+            default:
+            begin
+                state <= init;
+            end
                 // default: state <= init;
             endcase
         end
