@@ -78,7 +78,6 @@ module colorGen
     // wire [7:0] r_plus;
     // wire [7:0] b_minus;
     // wire [7:0] r_minus;
-    reg [7 : 0] w = 8'b00000000;
     reg [7 : 0] lint_sig = 8'b00000000;
     reg [7 : 0] thr = 8'b00000000;
     reg [7 : 0] counter = 8'b00000000;
@@ -105,7 +104,6 @@ module colorGen
             r <= 8'b00000000;
             g <= 8'b00000000;
             b <= 8'b00000000;
-            w <= 8'b00000000;
             mode_latch <= 8'b00000000;
             whiteOut <= 8'h00;
             redOut <= 8'h00;
@@ -127,7 +125,6 @@ module colorGen
                 r <= 8'b00000000;
                 g <= 8'b00000000;
                 b <= 8'b00000000;
-                w <= 8'b00000000;
                 thr <= colorIdx;
                 lint_sig <= lint;
                 counter <= 8'b00000001;
@@ -464,7 +461,7 @@ module colorGen
 
                     state <= stateApply_R;
                     ld <= 1'b0;
-                    w_temp <= mult_res;
+                    w_temp <= mult_res[15:8];
                 end
 
                 // w_temp = (lint_sig * whiteIn);
@@ -486,7 +483,7 @@ module colorGen
 
                     state <= stateApply_G;
                     ld <= 1'b0;
-                    r_temp <= mult_res;
+                    r_temp <= mult_res[15:8];
                 end
             end
 
@@ -505,7 +502,7 @@ module colorGen
 
                     state <= stateApply_B;
                     ld <= 1'b0;
-                    g_temp <= mult_res;
+                    g_temp <= mult_res[15:8];
                 end
 
                 // if (lint_sig[0]) g_temp = g_temp + (g << 0);
@@ -536,16 +533,16 @@ module colorGen
 
                     state <= applyOut;
                     ld <= 1'b0;
-                    b_temp <= mult_res;
+                    b_temp <= mult_res[15:8];
                 end
             end
 
             applyOut: begin
 
-                whiteOut <= w_temp[15:8];// >> 8;
-                redOut <= r_temp[15:8];// >> 8;
-                greenOut <= g_temp[15:8];// >> 8;
-                blueOut <= b_temp[15:8];// >> 8;
+                whiteOut <= w_temp;
+                redOut <= r_temp;
+                greenOut <= g_temp;
+                blueOut <= b_temp;
 
                 state <= init;
             end

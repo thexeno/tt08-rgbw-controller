@@ -74,7 +74,7 @@ module tt_um_thexeno_rgbw_controller (
     assign uo_out[1] = green_pin;
     assign uo_out[2] = blue_pin ;
     assign uo_out[3] = white_pin;
-
+    assign uo_out[7:4] = 4'b0000;
 
     // Output assignments
     //assign dbg = sck0 & reset;
