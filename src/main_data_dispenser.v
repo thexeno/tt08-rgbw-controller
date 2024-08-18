@@ -13,29 +13,28 @@ module rgbw_data_dispencer (
     input wire rdy,
     input wire clk,
     input wire clk_half,
-    output reg [7:0] lint_spi,
-    output reg [7:0] red_spi,
-    output reg [7:0] green_spi,
-    output reg [7:0] blue_spi,
-    output reg [7:0] white_spi,
-     output reg [7:0] colorIdx_spi,
-    output reg [7:0] mode_spi
+    output reg [7:0] lint_spi_out,
+    output reg [7:0] red_spi_out,
+    output reg [7:0] green_spi_out,
+    output reg [7:0] blue_spi_out,
+    output reg [7:0] white_spi_out,
+     output reg [7:0] colorIdx_spi_out,
+    output reg [7:0] mode_spi_out
 );
 
-    // reg [7:0] lint_spi = 8'b00000000;
-    // reg [7:0] red_spi = 8'b00000000;
-    // reg [7:0] green_spi = 8'b00000000;
-    // reg [7:0] blue_spi = 8'b00000000;
-    // reg [7:0] white_spi = 8'b00000000;
-    // reg [7:0] colorIdx_spi = 8'b00000000;
-    // reg [7:0] mode_spi = 8'b00000000;
+    reg [7:0] lint_spi = 8'b00000000;
+    reg [7:0] red_spi = 8'b00000000;
+    reg [7:0] green_spi = 8'b00000000;
+    reg [7:0] blue_spi = 8'b00000000;
+    reg [7:0] white_spi = 8'b00000000;
+    reg [7:0] colorIdx_spi = 8'b00000000;
+    reg [7:0] mode_spi = 8'b00000000;
     reg [7:0] buffRx_spi_latch = 8'b00000000;
     reg [3:0] byte_cnt_spi = 4'b0000;
     reg rdy_latch = 1'b0;
     reg rdy_prev = 1'b0;
     //reg sync_char = 1'b0;
 
-    assign byte_cnt_spi_out = byte_cnt_spi;
 
 always @(posedge clk) 
 begin
@@ -100,14 +99,14 @@ begin
                         //byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4'h7: begin
-                        mode_spi <= buffRx_spi; // rimani in questo stato sempre fino a nuovo RDY
-                        //byte_cnt_spi <= 4'h0;
-                        //lint_sync <= lint_spi;
-                        // colorIdx_sync <= colorIdx_spi;
-                        // red_sync <= red_spi;     //are 16bit for optimizing the reuslt of mult in color_Gen, works better with the synthesizer
-                        // green_sync <= green_spi;
-                        // blue_sync <= blue_spi;
-                        // white_sync <= white_spi;
+                        mode_spi_out <= buffRx_spi; // rimani in questo stato sempre fino a nuovo RDY
+                        byte_cnt_spi <= 4'h0;
+                        lint_spi_out <= lint_spi;
+                        colorIdx_spi_out <= colorIdx_spi;
+                        red_spi_out <= red_spi;     //are 16bit for optimizing the reuslt of mult in color_Gen, works better with the synthesizer
+                        green_spi_out <= green_spi;
+                        blue_spi_out <= blue_spi;
+                        white_spi_out <= white_spi;
                     end
                     default: byte_cnt_spi <= 4'h0;
                 endcase
