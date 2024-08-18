@@ -21,6 +21,7 @@
 
 module pwmGen (
 input   clk,
+input   clk_half,
 input   reset,
 input [7:0]  duty0,
 input [7:0]  duty1,
@@ -46,6 +47,8 @@ reg     d3_sig = 1'b0;
 
 always @(posedge clk)
    begin : maincounter
+   if (clk_half == 1'b0)
+   begin
    if (reset == 1'b0)
       begin
       counter <= {8{1'b 0}};   
@@ -116,6 +119,7 @@ always @(posedge clk)
          d2 <= d2_sig;   
          d3 <= d3_sig;   
       end
+   end
    end
 
 
