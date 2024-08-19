@@ -67,10 +67,10 @@ module colorGen
     reg [7 : 0] r = 8'b00000000;
     reg [7 : 0] g = 8'b00000000;
     reg [7 : 0] b = 8'b00000000;
-    reg [15 : 0] r_temp = 16'h0000;
-    reg [15 : 0] g_temp = 16'h0000;
-    reg [15 : 0] b_temp = 16'h0000;
-    reg [15 : 0] w_temp = 16'h0000;
+    reg [7 : 0] r_temp = 8'h00;
+    reg [7 : 0] g_temp = 8'h00;
+    reg [7 : 0] b_temp = 8'h00;
+    reg [7 : 0] w_temp = 8'h00;
     reg [8 : 0] temp_ovf_r = 9'b000000000;
     reg [8 : 0] temp_ovf_b = 9'b000000000;
     reg [8 : 0] temp_ovf_g = 9'b000000000;
