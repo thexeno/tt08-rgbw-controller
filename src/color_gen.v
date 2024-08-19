@@ -30,6 +30,8 @@ module colorGen
         output reg [7 : 0] whiteOut
     );
 
+    wire _unused = &{mult_res[7:0], 1'b0};
+
     localparam init = 5'd0;
     localparam pre_thr1 = 5'd1;
     localparam thr1 = 5'd2;
