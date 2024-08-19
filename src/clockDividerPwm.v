@@ -44,7 +44,7 @@ reg     clkPrescSig = 1'b0;
 //    end
 assign   clkPresc = clkPrescSig;   
 
-always @(negedge clk)
+always @(posedge clk)
    begin : mainprocess
    if (reset == 1'b 0)
       begin
