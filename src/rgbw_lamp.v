@@ -187,10 +187,8 @@ begin
         3: uo_out_reg <= blue_spi_w;
         4: uo_out_reg <= colorIdx_spi_w;
         5: uo_out_reg <= mode_spi_w;
-
-          
-        default:
-          uo_out_reg <= 8'hff;
+        6: uo_out_reg <= white_spi_w;
+        default: uo_out_reg <= white_spi_w;
        
     endcase
 end

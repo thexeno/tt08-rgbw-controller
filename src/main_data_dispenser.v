@@ -61,6 +61,7 @@ begin
                 // mode_sync <= 8'h00;
                 lint_spi_out <= lint_spi;
                 colorIdx_spi_out <= 8'b00000000;
+                mode_spi_out <= 8'b000000000;
                 red_spi_out <= 8'b000000000;
                 green_spi_out <= 8'b00000000;
                 blue_spi_out <= 8'b00000000;
