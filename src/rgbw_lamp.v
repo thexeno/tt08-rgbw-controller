@@ -57,9 +57,13 @@ module tt_um_thexeno_rgbw_controller (
     wire clk_div_en;
     wire clk_sys_shared;
 
+    reg [7:0] uo_out_reg = 0;
+
     // List all unused inputs to prevent warnings
     wire _unused = &{ena, ui_in[6], uio_in[7:0], 1'b0};
     //assign uo_out = (r_duty_w && g_duty_w && w_duty_w);
+
+    assign uo_out = uo_out_reg;
     assign uio_oe = 8'hff;
     //assign uio_out = b_duty_w;
     //assign uo_out[7] = clk_sys_shared;
@@ -174,14 +178,14 @@ module tt_um_thexeno_rgbw_controller (
         .data(buffRx_spi)
     ) /* synthesis syn_noprune=1 */;
 
-always_comb 
+always @(posedge clk) 
 begin
     case(ui_in[2:0])
-        0: uo_out = buffRx_spi;
-        1: uo_out[0] = rdy;
+        0: uo_out_reg <= buffRx_spi;
+        1: uo_out_reg <= rdy;
           
         default:
-          uo_out = 8'hff;
+          uo_out_reg <= 8'hff;
        
     endcase
 end
