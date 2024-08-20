@@ -96,6 +96,7 @@ async def user_project(dut):
     dut.ena.value = 0
     dut.rst_n.value = 0
     dut.ui_in.value = 0 # reset the clock gen
+    dut.uio_in.value = 0
     await ClockCycles(dut.clk, 1000)
     #assert (dut.uo_out.value[7]) == (0)
     dut.ena.value = 1
