@@ -23,10 +23,10 @@ module tt_um_thexeno_rgbw_controller (
     //wire sck0;
     wire mosi;
     wire cs;
-//*    wire red_pin;
-//*    wire green_pin;
-//*    wire blue_pin;
-//*    wire white_pin;
+    wire red_pin;
+    wire green_pin;
+    wire blue_pin;
+    wire white_pin;
     // Internal signals
     //wire clkSys_shared;
     // wire clkSys_pwm;
@@ -41,14 +41,14 @@ module tt_um_thexeno_rgbw_controller (
 //*    wire [7:0] g_duty_w;
 //*    wire [7:0] b_duty_w;
 //*    wire [7:0] w_duty_w;
-//*    wire [7:0] mode_spi_w;
-//*    wire [7:0] white_spi_w;
+    wire [7:0] mode_spi_w;
+    wire [7:0] white_spi_w;
     wire [7:0] buffRx_spi;
-//*    wire [7:0] lint_spi_w;
-//*    wire [7:0] red_spi_w;
-//*    wire [7:0] green_spi_w;
-//*    wire [7:0] blue_spi_w;
-//*    wire [7:0] colorIdx_spi_w;
+    wire [7:0] lint_spi_w;
+    wire [7:0] red_spi_w;
+    wire [7:0] green_spi_w;
+    wire [7:0] blue_spi_w;
+    wire [7:0] colorIdx_spi_w;
 //*    wire [7:0] a;
 //*    wire [7:0] b;
 //*    wire [15:0] result;
@@ -152,20 +152,20 @@ module tt_um_thexeno_rgbw_controller (
 
     
 
-    // rgbw_data_dispencer deserializer (
-    //     .buffRx_spi(buffRx_spi),
-    //     .clk_half(clk_sys_shared),
-    //     .reset(reset),
-    //     .rdy(rdy),
-    //     .clk(clk),
-    //     .lint_spi_out(lint_spi_w),
-    //     .red_spi_out(red_spi_w),
-    //     .green_spi_out(green_spi_w),
-    //     .blue_spi_out(blue_spi_w),
-    //     .colorIdx_spi_out(colorIdx_spi_w),
-    //     .white_spi_out(white_spi_w),
-    //     .mode_spi_out(mode_spi_w)
-    // ) /* synthesis syn_noprune=1 */;
+    rgbw_data_dispencer deserializer (
+        .buffRx_spi(buffRx_spi),
+        .clk_half(clk_sys_shared),
+        .reset(reset),
+        .rdy(rdy),
+        .clk(clk),
+        .lint_spi_out(lint_spi_w),
+        .red_spi_out(red_spi_w),
+        .green_spi_out(green_spi_w),
+        .blue_spi_out(blue_spi_w),
+        .colorIdx_spi_out(colorIdx_spi_w),
+        .white_spi_out(white_spi_w),
+        .mode_spi_out(mode_spi_w)
+    ) /* synthesis syn_noprune=1 */;
 
     spiSlave spi_rx (
         .sck(sck),
@@ -181,8 +181,13 @@ module tt_um_thexeno_rgbw_controller (
 always @(posedge clk) 
 begin
     case(ui_in[2:0])
-        0: uo_out_reg <= buffRx_spi;
-        1: uo_out_reg <= {7'b0000000, rdy};
+        0: uo_out_reg <= lint_spi_w;
+        1: uo_out_reg <= red_spi_w;
+        2: uo_out_reg <= green_spi_w;
+        3: uo_out_reg <= blue_spi_w;
+        4: uo_out_reg <= colorIdx_spi_w;
+        5: uo_out_reg <= mode_spi_w;
+
           
         default:
           uo_out_reg <= 8'hff;
