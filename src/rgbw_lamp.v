@@ -65,7 +65,7 @@ module tt_um_thexeno_rgbw_controller (
 
     assign uo_out = uo_out_reg;
     assign uio_oe = 8'hff;
-    //assign uio_out = b_duty_w;
+    assign uio_out = 0;
     //assign uo_out[7] = clk_sys_shared;
     //assign uo_out = white_spi_w;
 
