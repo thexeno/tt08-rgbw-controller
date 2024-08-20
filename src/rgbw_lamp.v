@@ -174,7 +174,8 @@ module tt_um_thexeno_rgbw_controller (
         .data(buffRx_spi)
     ) /* synthesis syn_noprune=1 */;
 
-always@(*) begin
+always_comb 
+begin
     case(ui_in[2:0])
         0: uo_out = buffRx_spi;
         1: uo_out[0] = rdy;
