@@ -43,7 +43,7 @@ module tt_um_thexeno_rgbw_controller (
 //*    wire [7:0] w_duty_w;
 //*    wire [7:0] mode_spi_w;
 //*    wire [7:0] white_spi_w;
-//*    wire [7:0] buffRx_spi;
+    wire [7:0] buffRx_spi;
 //*    wire [7:0] lint_spi_w;
 //*    wire [7:0] red_spi_w;
 //*    wire [7:0] green_spi_w;
@@ -182,7 +182,7 @@ always @(posedge clk)
 begin
     case(ui_in[2:0])
         0: uo_out_reg <= buffRx_spi;
-        1: uo_out_reg <= rdy;
+        1: uo_out_reg <= {7'b0000000, rdy};
           
         default:
           uo_out_reg <= 8'hff;
