@@ -58,10 +58,10 @@ module tt_um_thexeno_rgbw_controller (
     wire clk_sys_shared;
 
     // List all unused inputs to prevent warnings
-    wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
+    wire _unused = &{ena, ui_in[6], uio_in[7:0], 1'b0};
     //assign uo_out = (r_duty_w && g_duty_w && w_duty_w);
     assign uio_oe = 8'hff;
-    assign uio_out = b_duty_w;
+    //assign uio_out = b_duty_w;
     //assign uo_out[7] = clk_sys_shared;
     //assign uo_out = white_spi_w;
 
@@ -70,11 +70,11 @@ module tt_um_thexeno_rgbw_controller (
     assign mosi = ui_in[3];
     assign cs = ui_in[4];
     assign clk_div_en = ui_in[7];
-    assign uo_out[0] = red_pin;
-    assign uo_out[1] = green_pin;
-    assign uo_out[2] = blue_pin ;
-    assign uo_out[3] = white_pin;
-    assign uo_out[7:4] = 4'b0000;
+    // assign uo_out[0] = red_pin;
+    // assign uo_out[1] = green_pin;
+    // assign uo_out[2] = blue_pin ;
+    // assign uo_out[3] = white_pin;
+    // assign uo_out[7:4] = 4'b0000;
 
     // Output assignments
     //assign dbg = sck0 & reset;
@@ -100,68 +100,68 @@ module tt_um_thexeno_rgbw_controller (
 
 
 
-    mult8x8 mult (
-        .clk(clk),
-        .reset(reset),
-        .ld(load),
-        .mult_rdy(m_rdy),
-        .a(a),
-        .b(b),
-        .result(result)        
-    );
+    // mult8x8 mult (
+    //     .clk(clk),
+    //     .reset(reset),
+    //     .ld(load),
+    //     .mult_rdy(m_rdy),
+    //     .a(a),
+    //     .b(b),
+    //     .result(result)        
+    // );
 
-    pwmGen pwm (
-        .clk(clk),
-        .clk_half(clk_sys_shared),
-        .reset(reset),
-        .duty0(r_duty_w),
-        .duty1(g_duty_w),
-        .duty2(b_duty_w),
-        .duty3(w_duty_w),
-        .d0(red_pin),
-        .d1(green_pin),
-        .d2(blue_pin),
-        .d3(white_pin)
-    ) /* synthesis syn_noprune=1 */;
+    // pwmGen pwm (
+    //     .clk(clk),
+    //     .clk_half(clk_sys_shared),
+    //     .reset(reset),
+    //     .duty0(r_duty_w),
+    //     .duty1(g_duty_w),
+    //     .duty2(b_duty_w),
+    //     .duty3(w_duty_w),
+    //     .d0(red_pin),
+    //     .d1(green_pin),
+    //     .d2(blue_pin),
+    //     .d3(white_pin)
+    // ) /* synthesis syn_noprune=1 */;
 
-    colorGen color (
-        .clk(clk),
-        .clk_half(clk_sys_shared),
-        .reset(reset),
-        .mult1(a),
-        .mult2(b),
-        .mult_res(result),
-        .mult_ok(m_rdy),
-        .ld(load),
-        .mode(mode_spi_w),
-        .lint(lint_spi_w),
-        .colorIdx(colorIdx_spi_w),
-        .whiteIn(white_spi_w),
-        .redIn(red_spi_w),
-        .greenIn(green_spi_w),
-        .blueIn(blue_spi_w),
-        .redOut(r_duty_w),
-        .greenOut(g_duty_w),
-        .blueOut(b_duty_w),
-        .whiteOut(w_duty_w)
-    ) /* synthesis syn_noprune=1 */;
+    // colorGen color (
+    //     .clk(clk),
+    //     .clk_half(clk_sys_shared),
+    //     .reset(reset),
+    //     .mult1(a),
+    //     .mult2(b),
+    //     .mult_res(result),
+    //     .mult_ok(m_rdy),
+    //     .ld(load),
+    //     .mode(mode_spi_w),
+    //     .lint(lint_spi_w),
+    //     .colorIdx(colorIdx_spi_w),
+    //     .whiteIn(white_spi_w),
+    //     .redIn(red_spi_w),
+    //     .greenIn(green_spi_w),
+    //     .blueIn(blue_spi_w),
+    //     .redOut(r_duty_w),
+    //     .greenOut(g_duty_w),
+    //     .blueOut(b_duty_w),
+    //     .whiteOut(w_duty_w)
+    // ) /* synthesis syn_noprune=1 */;
 
     
 
-    rgbw_data_dispencer deserializer (
-        .buffRx_spi(buffRx_spi),
-        .clk_half(clk_sys_shared),
-        .reset(reset),
-        .rdy(rdy),
-        .clk(clk),
-        .lint_spi_out(lint_spi_w),
-        .red_spi_out(red_spi_w),
-        .green_spi_out(green_spi_w),
-        .blue_spi_out(blue_spi_w),
-        .colorIdx_spi_out(colorIdx_spi_w),
-        .white_spi_out(white_spi_w),
-        .mode_spi_out(mode_spi_w)
-    ) /* synthesis syn_noprune=1 */;
+    // rgbw_data_dispencer deserializer (
+    //     .buffRx_spi(buffRx_spi),
+    //     .clk_half(clk_sys_shared),
+    //     .reset(reset),
+    //     .rdy(rdy),
+    //     .clk(clk),
+    //     .lint_spi_out(lint_spi_w),
+    //     .red_spi_out(red_spi_w),
+    //     .green_spi_out(green_spi_w),
+    //     .blue_spi_out(blue_spi_w),
+    //     .colorIdx_spi_out(colorIdx_spi_w),
+    //     .white_spi_out(white_spi_w),
+    //     .mode_spi_out(mode_spi_w)
+    // ) /* synthesis syn_noprune=1 */;
 
     spiSlave spi_rx (
         .sck(sck),
@@ -173,6 +173,18 @@ module tt_um_thexeno_rgbw_controller (
         .rdy_sig(rdy),
         .data(buffRx_spi)
     ) /* synthesis syn_noprune=1 */;
+
+always@(*) begin
+    case(ui_in[2:0])
+        0: uo_out = buffRx_spi;
+        1: uo_out[0] = rdy;
+          
+        default:
+          uo_out = 8'hff;
+       
+    endcase
+end
+
 
     // // // Process for synchronous reset
     // // always @(posedge clk12) begin
