@@ -23,10 +23,10 @@ module tt_um_thexeno_rgbw_controller (
     //wire sck0;
     wire mosi;
     wire cs;
-    wire red_pin;
-    wire green_pin;
-    wire blue_pin;
-    wire white_pin;
+//*    wire red_pin;
+//*    wire green_pin;
+//*    wire blue_pin;
+//*    wire white_pin;
     // Internal signals
     //wire clkSys_shared;
     // wire clkSys_pwm;
