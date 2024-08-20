@@ -63,7 +63,7 @@ module tt_um_thexeno_rgbw_controller (
     wire _unused = &{ena, ui_in[6], ui_in[2:0], 1'b0};
     //assign uo_out = (r_duty_w && g_duty_w && w_duty_w);
 
-    assign uo_out = uo_out_reg;
+    assign uo_out_reg = uo_out;
     assign uio_oe = 8'h00;
     assign uio_out = 0;
     //assign uo_out[7] = clk_sys_shared;
@@ -181,14 +181,14 @@ module tt_um_thexeno_rgbw_controller (
 always @(posedge clk) 
 begin
     case(uio_in)
-        0: uo_out_reg <= lint_spi_w;
-        1: uo_out_reg <= red_spi_w;
-        2: uo_out_reg <= green_spi_w;
-        3: uo_out_reg <= blue_spi_w;
-        4: uo_out_reg <= colorIdx_spi_w;
-        5: uo_out_reg <= mode_spi_w;
-        6: uo_out_reg <= white_spi_w;
-        default: uo_out_reg <= white_spi_w;
+        8'd0: uo_out_reg <= lint_spi_w;
+        8'd1: uo_out_reg <= red_spi_w;
+        8'd2: uo_out_reg <= green_spi_w;
+        8'd3: uo_out_reg <= blue_spi_w;
+        8'd4: uo_out_reg <= colorIdx_spi_w;
+        8'd5: uo_out_reg <= mode_spi_w;
+        8'd6: uo_out_reg <= white_spi_w;
+        default: uo_out_reg <= mode_spi_w;
        
     endcase
 end
