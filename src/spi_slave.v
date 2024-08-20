@@ -93,6 +93,7 @@ always @(posedge clk)
          bit_counter <= {8{1'b 0}};   
          //data_reg <= {8{1'b 0}};   
          data_byte <= {8{1'b 0}};   
+         data <= {8{1'b 0}};   
          rdy_sig <= 1'b 0;   
          sck_prev <= 1'b 0;   
          sck_latch <= 1'b 0;   
