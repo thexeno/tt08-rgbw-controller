@@ -58,6 +58,7 @@ module tt_um_thexeno_rgbw_controller (
     wire clk_sys_shared;
 
     reg [7:0] uo_out_reg = 0;
+    reg [7:0] uio_in_reg = 0;
 
     // List all unused inputs to prevent warnings
     wire _unused = &{ena, ui_in[6], ui_in[2:0], 1'b0};
@@ -180,7 +181,8 @@ module tt_um_thexeno_rgbw_controller (
 
 always @(posedge clk) 
 begin
-    case(uio_in)
+    uio_in_reg <= uio_in;
+    case(uio_in_reg)
         8'd0: uo_out_reg <= lint_spi_w;
         8'd1: uo_out_reg <= red_spi_w;
         8'd2: uo_out_reg <= green_spi_w;
@@ -188,8 +190,7 @@ begin
         8'd4: uo_out_reg <= colorIdx_spi_w;
         8'd5: uo_out_reg <= mode_spi_w;
         8'd6: uo_out_reg <= white_spi_w;
-        default: uo_out_reg <= mode_spi_w;
-       
+        default: uo_out_reg <= white_spi_w;
     endcase
 end
 

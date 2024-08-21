@@ -50,6 +50,23 @@ async def test_colorwheel(dut):
     for i in range(8):
         await SPI_send(dut, dataPayload[i])
 
+async def test_rgb(dut):
+    dataPayload = [0x55, 0xff, 0x24, 0x00, 0xff, 0x00, 0xaa, 0xa4]
+    dataPayload[R_POS] = 0x00
+    dataPayload[G_POS] = 0x00
+    dataPayload[B_POS] = 0x7f
+    dataPayload[W_POS] = 0x15
+    dataPayload[INT_POS] = 0x00
+    dataPayload[IDX_POS] = 0x00
+    dataPayload[MODE_POS] = 0x21
+    dataPayload[PREAMB_POS] = 0x55
+
+    # resulting PWM is 0D, FE, 00, 00
+
+    print(dataPayload)
+    for i in range(8):
+        await SPI_send(dut, dataPayload[i])
+
 # Sends DATA of a specific LENGTH through spi. MOSI pin is selected by providing a MASK for ui_in
 # MSB first
 async def SPI_send(dut, DATA: int):
@@ -96,7 +113,7 @@ async def user_project(dut):
     dut.ena.value = 0
     dut.rst_n.value = 0
     dut.ui_in.value = 0 # reset the clock gen
-    dut.uio_in.value = 0
+    dut.uio_in.value = dut.uio_in.value | (0x3 << 1); # 6
     await ClockCycles(dut.clk, 1000)
     #assert (dut.uo_out.value[7]) == (0)
     dut.ena.value = 1
@@ -115,6 +132,8 @@ async def user_project(dut):
     await test_colorwheel(dut)
     await ClockCycles(dut.clk, 10000)
 
+    await test_rgb(dut)
+    await ClockCycles(dut.clk, 1000)
 
     await SPI_send(dut, 0x55)
     await ClockCycles(dut.clk, 10)
