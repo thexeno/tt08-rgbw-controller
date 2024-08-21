@@ -37,7 +37,7 @@ module rgbw_data_dispencer (
     reg [7:0] white_spi = 8'b00000000;
     reg [7:0] colorIdx_spi = 8'b00000000;
     reg [7:0] buffRx_spi_latch = 8'b00000000;
-    reg [3:0] byte_cnt_spi = 4'b0000;
+    reg [7:0] byte_cnt_spi = 8'b00000000;
     reg rdy_latch = 1'b0;
     reg rdy_prev = 1'b0;
     //reg sync_char = 1'b0;
@@ -69,7 +69,7 @@ begin
                 green_spi <= 8'b00000000;
                 blue_spi <= 8'b00000000;
                 buffRx_spi_latch <= 8'b00000000;
-                byte_cnt_spi <= 4'b0000;
+                byte_cnt_spi <= 8'b00000000;
                 rdy_prev <= 1'b0;
                 //sync_char <= 1'b0;
                 // lint_sync <= 8'b00000000;
@@ -79,12 +79,12 @@ begin
                 // green_sync <= 8'h00;
                 // blue_sync <= 8'h00;
                 // mode_sync <= 8'h00;
-                lint_spi_out <= lint_spi;
-                colorIdx_spi_out <= 8'b00000000;
-                red_spi_out <= 8'b00000000;
-                green_spi_out <= 8'b00000000;
-                blue_spi_out <= 8'b00000000;
-                white_spi_out <= 8'b00000000;
+                // lint_spi_out <= lint_spi;
+                // colorIdx_spi_out <= 8'b00000000;
+                // red_spi_out <= 8'b00000000;
+                // green_spi_out <= 8'b00000000;
+                // blue_spi_out <= 8'b00000000;
+                // white_spi_out <= 8'b00000000;
                 rdy_latch <= 1'b0;
             end 
             else 
@@ -92,41 +92,42 @@ begin
                 rdy_prev <= rdy_latch;
                 rdy_latch <= rdy;
             if (rdy_prev == 1'b0 && rdy_latch == 1'b1) begin
-                byte_cnt_spi <= byte_cnt_spi + 4'b0001;
-                //buffRx_spi_latch <= buffRx_spi;
+                //byte_cnt_spi <= byte_cnt_spi + 4'b0001;
+                buffRx_spi_latch <= buffRx_spi;
                 case (byte_cnt_spi)
-                    4'h0: begin
+                
+                    0: begin
                         if (buffRx_spi_latch == 8'h55) begin
-                            //byte_cnt_spi <= byte_cnt_spi + 1;
+                            byte_cnt_spi <= byte_cnt_spi + 1;
                         end
                     end
-                    4'h1: begin
+                    1: begin
                       lint_spi <= buffRx_spi_latch;
-                        //byte_cnt_spi <= byte_cnt_spi + 1;
+                        byte_cnt_spi <= byte_cnt_spi + 1;
                     end
-                    4'h2: begin
+                    2: begin
                       colorIdx_spi <= buffRx_spi_latch;
-                        //byte_cnt_spi <= byte_cnt_spi + 1;
+                        byte_cnt_spi <= byte_cnt_spi + 1;
                     end
-                    4'h3: begin
+                    3: begin
                         red_spi <= buffRx_spi_latch;
-                        //byte_cnt_spi <= byte_cnt_spi + 1;
+                        byte_cnt_spi <= byte_cnt_spi + 1;
                     end
-                    4'h4: begin
+                    4: begin
                         green_spi <= buffRx_spi_latch;
-                        //byte_cnt_spi <= byte_cnt_spi + 1;
+                        byte_cnt_spi <= byte_cnt_spi + 1;
                     end
-                    4'h5: begin
+                    5: begin
                        blue_spi <= buffRx_spi_latch;
-                        //byte_cnt_spi <= byte_cnt_spi + 1;
+                        byte_cnt_spi <= byte_cnt_spi + 1;
                     end
-                    4'h6: begin
+                    6: begin
                         white_spi <= buffRx_spi;
-                        //byte_cnt_spi <= byte_cnt_spi + 1;
+                        byte_cnt_spi <= byte_cnt_spi + 1;
                     end
-                    4'h7: begin
+                    7: begin
                         mode_spi_out_reg <= buffRx_spi; // rimani in questo stato sempre fino a nuovo RDY
-                        byte_cnt_spi <= 4'h0;
+                        byte_cnt_spi <= 0;
                         lint_spi_out_reg <= lint_spi;
                         colorIdx_spi_out_reg <= colorIdx_spi;
                         red_spi_out_reg <= red_spi;     //are 16bit for optimizing the reuslt of mult in color_Gen, works better with the synthesizer
@@ -134,7 +135,16 @@ begin
                         blue_spi_out_reg <= blue_spi;
                         white_spi_out_reg <= white_spi;
                     end
-                    default: byte_cnt_spi <= 4'h0;
+                    default: 
+                    begin
+                    byte_cnt_spi <= 0;
+                    lint_spi <= 0;
+                    colorIdx_spi <= 0;
+                    red_spi <= 0;
+                    green_spi <= 0;
+                    blue_spi <= 0;
+                    white_spi <= 0;
+                    end
                 endcase
             end
             end
