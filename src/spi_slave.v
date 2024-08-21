@@ -40,7 +40,7 @@ module spiSlave (
 
 //reg     rdy; 
 //reg     [7:0] data; 
-reg     [7:0] bit_counter = {8{1'b 0}}; 
+reg     [3:0] bit_counter = 0; 
 //reg     [7:0] data_reg = {8{1'b 0}}; 
 reg     [7:0] data_byte  = {8{1'b 0}};  
 reg     rdy_sig = 1'b 0;
@@ -92,7 +92,7 @@ always @(posedge clk)
       reset_sig <= reset;   
       if (reset_sig == 1'b 0 || cs == 1'b 1)
          begin
-         bit_counter <= {8{1'b 0}};   
+         bit_counter <= 0;   
          //data_reg <= {8{1'b 0}};   
          data_byte <= {8{1'b 0}};   
          data <= {8{1'b 0}};   
@@ -109,13 +109,13 @@ always @(posedge clk)
          if (sck_prev == 1'b 0 & sck_latch == 1'b 1)
             begin
             data_byte <= {data_byte[6:0], mosi_latch};   
-            bit_counter <= bit_counter + 8'h 01;   
+            bit_counter <= bit_counter + 1;   
             rdy_sig <= 1'b 0;   
             end
-         if (sck_latch == 1'b 0 && bit_counter == 8'h 08)
+         if (sck_latch == 1'b 0 && bit_counter == 8)
             begin
             rdy_sig <= 1'b 1;   
-            bit_counter <= 8'h 00;   
+            bit_counter <= 0;   
             end
          else
             begin
