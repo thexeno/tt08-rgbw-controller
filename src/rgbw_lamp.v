@@ -176,7 +176,7 @@ module tt_um_thexeno_rgbw_controller (
         .clk_half(clk_sys_shared),
         .mosi(mosi),
         .reset(reset),
-        .rdy_sig(rdy),
+        .rdy(rdy),
         .data(buffRx_spi)
     ) /* synthesis syn_noprune=1 */;
 
