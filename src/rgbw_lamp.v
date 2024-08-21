@@ -58,14 +58,14 @@ module tt_um_thexeno_rgbw_controller (
     wire clk_sys_shared;
 
     reg [7:0] uo_out_reg = 0;
-    reg [7:0] uio_in_reg = 0;
+    //reg [7:0] uio_in_reg = 0;
     reg [7:0] cnt_test_reg = 0;
 
     // List all unused inputs to prevent warnings
     wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
     //assign uo_out = (r_duty_w && g_duty_w && w_duty_w);
 
-    assign uo_out_reg = uo_out;
+    assign uo_out = uo_out_reg;
     assign uio_oe = 8'h00;
     assign uio_out = 0;
     //assign uo_out[7] = clk_sys_shared;
