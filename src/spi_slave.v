@@ -48,6 +48,8 @@ reg     sck_latch = 1'b 0;
 reg     sck_prev = 1'b 0; 
 reg     mosi_latch = 1'b 0;
 reg     reset_sig = 1'b0; 
+
+assign rdy = rdy_sig;
 // initial 
 //    begin : process_7
 //    mosi_latch = 1'b 0;   
@@ -119,7 +121,7 @@ always @(posedge clk)
             rdy_sig <= 1'b 0;   
             end
          data <= data_byte;   
-         rdy <= rdy_sig;   
+         //rdy <= rdy_sig;   
          end
       end
    end
