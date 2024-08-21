@@ -36,7 +36,6 @@ module rgbw_data_dispencer (
     reg [7:0] blue_spi = 8'b00000000;
     reg [7:0] white_spi = 8'b00000000;
     reg [7:0] colorIdx_spi = 8'b00000000;
-    reg [7:0] buffRx_spi_latch = 8'b00000000;
     reg [7:0] byte_cnt_spi = 8'b00000000;
     reg rdy_latch = 1'b0;
     reg rdy_prev = 1'b0;
@@ -68,7 +67,6 @@ begin
                 red_spi <= 8'b00000000;
                 green_spi <= 8'b00000000;
                 blue_spi <= 8'b00000000;
-                buffRx_spi_latch <= 8'b00000000;
                 byte_cnt_spi <= 8'b00000000;
                 rdy_prev <= 1'b0;
                 //sync_char <= 1'b0;
@@ -93,7 +91,6 @@ begin
                 rdy_latch <= rdy;
             if (rdy_prev == 1'b0 && rdy_latch == 1'b1) begin
                 //byte_cnt_spi <= byte_cnt_spi + 4'b0001;
-                buffRx_spi_latch <= buffRx_spi;
                 case (byte_cnt_spi)
                 
                     0: begin
@@ -102,23 +99,23 @@ begin
                         end
                     end
                     1: begin
-                      lint_spi <= buffRx_spi_latch;
+                      lint_spi <= buffRx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     2: begin
-                      colorIdx_spi <= buffRx_spi_latch;
+                      colorIdx_spi <= buffRx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     3: begin
-                        red_spi <= buffRx_spi_latch;
+                        red_spi <= buffRx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4: begin
-                        green_spi <= buffRx_spi_latch;
+                        green_spi <= buffRx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     5: begin
-                       blue_spi <= buffRx_spi_latch;
+                       blue_spi <= buffRx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     6: begin

@@ -110,6 +110,7 @@ always @(posedge clk)
             begin
             data_byte <= {data_byte[6:0], mosi_latch};   
             bit_counter <= bit_counter + 8'h 01;   
+            rdy_sig <= 1'b 0;   
             end
          if (sck_latch == 1'b 0 && bit_counter == 8'h 08)
             begin
