@@ -182,6 +182,11 @@ module tt_um_thexeno_rgbw_controller (
 
 always @(posedge clk) 
 begin
+    if (reset == 1'b0)
+    begin
+        cnt_test_reg <= 0;
+    end
+    else begin
     cnt_test_reg <= cnt_test_reg + 1;
     case(cnt_test_reg)
         8'd0: uo_out_reg <= lint_spi_w;
@@ -193,6 +198,7 @@ begin
         8'd6: uo_out_reg <= white_spi_w;
         default: uo_out_reg <= white_spi_w;
     endcase
+    end
 end
 
 
