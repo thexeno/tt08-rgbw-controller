@@ -90,7 +90,7 @@ begin
                 rdy_prev <= rdy_latch;
                 rdy_latch <= rdy;
             if (rdy_prev == 1'b0 && rdy_latch == 1'b1) begin
-                //byte_cnt_spi <= byte_cnt_spi + 4'b0001;
+                byte_cnt_spi <= byte_cnt_spi + 4'b0001;
                 case (byte_cnt_spi)
                 
                     0: begin
@@ -103,7 +103,7 @@ begin
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     2: begin
-                      colorIdx_spi <= buffRx_spi;
+                      colorIdx_spi_out_reg <= buffRx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     3: begin
