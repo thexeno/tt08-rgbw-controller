@@ -26,7 +26,7 @@ module spiSlave (
   input clk,
   input mosi,
   input reset,
-  output reg rdy_sig,
+  output wire rdy,
   output reg [7:0] data);
  
 
@@ -43,7 +43,7 @@ module spiSlave (
 reg     [7:0] bit_counter = {8{1'b 0}}; 
 //reg     [7:0] data_reg = {8{1'b 0}}; 
 reg     [7:0] data_byte  = {8{1'b 0}};  
-//reg     rdy_sig = 1'b 0;
+reg     rdy_sig = 1'b 0;
 reg     sck_latch = 1'b 0; 
 reg     sck_prev = 1'b 0; 
 reg     mosi_latch = 1'b 0;
@@ -119,7 +119,7 @@ always @(posedge clk)
             rdy_sig <= 1'b 0;   
             end
          data <= data_byte;   
-      // rdy <= rdy_sig;   
+         rdy <= rdy_sig;   
          end
       end
    end
