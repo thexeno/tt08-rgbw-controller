@@ -94,7 +94,7 @@ begin
                 case (byte_cnt_spi)
                 
                     0: begin
-                        if (buffRx_spi_latch == 8'h55) begin
+                        if (buffRx_spi == 8'h55) begin
                             byte_cnt_spi <= byte_cnt_spi + 1;
                         end
                     end
