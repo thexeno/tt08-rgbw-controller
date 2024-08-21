@@ -22,23 +22,23 @@ module rgbw_data_dispencer (
     output wire [7:0] mode_spi_out
 );
 
-    reg [7:0] lint_spi_out_reg = 0;
-    reg [7:0] red_spi_out_reg = 0;
-    reg [7:0] green_spi_out_reg = 0;
-    reg [7:0] blue_spi_out_reg = 0;
-    reg [7:0] white_spi_out_reg = 0;
-    reg [7:0] colorIdx_spi_out_reg = 0;
-    reg [7:0] mode_spi_out_reg = 0;
+    reg [7:0] lint_spi_out_reg;
+    reg [7:0] red_spi_out_reg;
+    reg [7:0] green_spi_out_reg;
+    reg [7:0] blue_spi_out_reg;
+    reg [7:0] white_spi_out_reg;
+    reg [7:0] colorIdx_spi_out_reg;
+    reg [7:0] mode_spi_out_reg;
 
-    reg [7:0] lint_spi = 8'b00000000;
-    reg [7:0] red_spi = 8'b00000000;
-    reg [7:0] green_spi = 8'b00000000;
-    reg [7:0] blue_spi = 8'b00000000;
-    reg [7:0] white_spi = 8'b00000000;
-    reg [7:0] colorIdx_spi = 8'b00000000;
-    reg [7:0] byte_cnt_spi = 8'b00000000;
-    reg rdy_latch = 1'b0;
-    reg rdy_prev = 1'b0;
+    reg [7:0] lint_spi;
+    reg [7:0] red_spi;
+    reg [7:0] green_spi;
+    reg [7:0] blue_spi;
+    reg [7:0] white_spi;
+    reg [7:0] colorIdx_spi;
+    reg [7:0] byte_cnt_spi;
+    reg rdy_latch;
+    reg rdy_prev;
     //reg sync_char = 1'b0;
 
     assign lint_spi_out = lint_spi_out_reg;

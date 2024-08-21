@@ -40,14 +40,14 @@ module spiSlave (
 
 //reg     rdy; 
 //reg     [7:0] data; 
-reg     [3:0] bit_counter = 0; 
+reg     [3:0] bit_counter;
 //reg     [7:0] data_reg = {8{1'b 0}}; 
 reg     [7:0] data_byte  = {8{1'b 0}};  
-reg     rdy_sig = 1'b 0;
-reg     sck_latch = 1'b 0; 
-reg     sck_prev = 1'b 0; 
-reg     mosi_latch = 1'b 0;
-reg     reset_sig = 1'b0; 
+reg     rdy_sig;
+reg     sck_latch; 
+reg     sck_prev ;
+reg     mosi_latch;
+reg     reset_sig;
 
 assign rdy = rdy_sig;
 // initial 

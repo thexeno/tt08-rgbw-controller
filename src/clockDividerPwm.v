@@ -30,8 +30,8 @@ input   clk;
 output wire  clkPresc; 
 input   reset; 
 
-reg     [7:0] prescalerCnt = 8'h00; 
-reg     clkPrescSig = 1'b0;
+reg     [7:0] prescalerCnt;
+reg     clkPrescSig;
 
 // initial 
 //    begin : process_2
