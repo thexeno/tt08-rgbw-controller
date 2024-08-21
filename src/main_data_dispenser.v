@@ -28,7 +28,6 @@ module rgbw_data_dispencer (
     reg [7:0] blue_spi = 8'b00000000;
     reg [7:0] white_spi = 8'b00000000;
     reg [7:0] colorIdx_spi = 8'b00000000;
-    reg [7:0] mode_spi = 8'b00000000;
     reg [7:0] buffRx_spi_latch = 8'b00000000;
     reg [3:0] byte_cnt_spi = 4'b0000;
     reg rdy_latch = 1'b0;
@@ -47,7 +46,6 @@ begin
                 red_spi <= 8'b00000000;
                 green_spi <= 8'b00000000;
                 blue_spi <= 8'b00000000;
-                mode_spi <= 8'b00000000;
                 buffRx_spi_latch <= 8'b00000000;
                 byte_cnt_spi <= 4'b0000;
                 rdy_prev <= 1'b0;
