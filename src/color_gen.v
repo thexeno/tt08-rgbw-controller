@@ -78,7 +78,7 @@ module colorGen
     // wire [7:0] r_plus;
     // wire [7:0] b_minus;
     // wire [7:0] r_minus;
-    reg [7 : 0] w = 8'b00000000;
+    //reg [7 : 0] w = 8'b00000000;
     reg [7 : 0] lint_sig = 8'b00000000;
     reg [7 : 0] thr = 8'b00000000;
     reg [7 : 0] counter = 8'b00000000;
@@ -105,7 +105,7 @@ module colorGen
             r <= 8'b00000000;
             g <= 8'b00000000;
             b <= 8'b00000000;
-            w <= 8'b00000000;
+            //w <= 8'b00000000;
             mode_latch <= 8'b00000000;
             whiteOut <= 8'h00;
             redOut <= 8'h00;
@@ -550,7 +550,8 @@ module colorGen
                 state <= init;
             end
 
-                // default: state <= init;
+            default: state <= init;
+
             endcase
         end
     end
