@@ -102,7 +102,7 @@ begin
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     2: begin
-                      colorIdx_spi_out_reg <= buffRx_spi;
+                      colorIdx_spi <= buffRx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     3: begin
