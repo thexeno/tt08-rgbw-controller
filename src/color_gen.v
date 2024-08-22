@@ -127,13 +127,13 @@ module colorGen
                 r <= 8'b00000000;
                 g <= 8'b00000000;
                 b <= 8'b00000000;
-                w <= 8'b00000000;
+                //w <= 8'b00000000;
                 thr <= colorIdx;
                 lint_sig <= lint;
-                mode_latch <= mode;
+                //mode_latch <= mode;
                 buff_white <= whiteIn;
                 counter <= 8'b00000001;
-                if (mode_latch == 8'h21)
+                if (mode == 8'h21)
                 begin
                     whiteOut <= whiteIn;
                     redOut <= redIn;
@@ -141,7 +141,7 @@ module colorGen
                     blueOut <= blueIn;
                     state <= init;
                 end
-                else if (mode_latch == 8'ha4)
+                else if (mode == 8'ha4)
                 begin
                     state <= pre_thr1;
                     temp_ovf_b <= b + 8'b00000111;
@@ -438,7 +438,7 @@ module colorGen
                     end
                 else 
                     begin  
-                        b <= b + whiteIn;
+                        b <= b + buff_white;
                     end
                 // if (g[7] == whiteIn[15] == temp_ovf_g[8] == 1'b1) g = 8'hff;
                 // else g = temp_ovf_g;
