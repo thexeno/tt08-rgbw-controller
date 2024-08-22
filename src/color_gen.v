@@ -67,6 +67,7 @@ module colorGen
     reg [7 : 0] r = 8'b00000000;
     reg [7 : 0] g = 8'b00000000;
     reg [7 : 0] b = 8'b00000000;
+    reg [7 : 0] buff_white = 8'b00000000;
     reg [15 : 0] r_temp = 16'h0000;
     reg [15 : 0] g_temp = 16'h0000;
     reg [15 : 0] b_temp = 16'h0000;
@@ -118,7 +119,6 @@ module colorGen
         end
         else
         begin
-            mode_latch <= mode;
             // mult_ok_latch <= mult_ok;
             // buff_white <= whiteIn;
 
@@ -130,6 +130,8 @@ module colorGen
                 w <= 8'b00000000;
                 thr <= colorIdx;
                 lint_sig <= lint;
+                mode_latch <= mode;
+                buff_white <= whiteIn;
                 counter <= 8'b00000001;
                 if (mode_latch == 8'h21)
                 begin
@@ -412,25 +414,25 @@ module colorGen
                 // temp_ovf = r + whiteIn[15:8];
 
                 // Assign values based on overflow check
-                if ({1'b0, r} + {1'b0, whiteIn} >= 9'b100000000) 
+                if ({1'b0, r} + {1'b0, buff_white} >= 9'b100000000) 
                     begin 
                         r <= 8'hff;
                     end
                 else 
                     begin  
-                        r <= r + whiteIn;
+                        r <= r + buff_white;
                     end
 
-                if ({1'b0, g} + {1'b0, whiteIn} >= 9'b100000000) 
+                if ({1'b0, g} + {1'b0, buff_white} >= 9'b100000000) 
                     begin 
                         g <= 8'hff;
                     end
                 else 
                     begin  
-                        g <= g + whiteIn;
+                        g <= g + buff_white;
                     end
 
-                if ({1'b0, b} + {1'b0, whiteIn} >= 9'b100000000) 
+                if ({1'b0, b} + {1'b0, buff_white} >= 9'b100000000) 
                     begin 
                         b <= 8'hff;
                     end
@@ -453,7 +455,7 @@ module colorGen
                 // Shift the result right by 8 to fit it within 8 bits
                 // whiteOut <= (temp_result >> 8);
                 mult1 <= lint_sig;
-                mult2 <= whiteIn;
+                mult2 <= buff_white;
                 if (mult_ok == 1'b0 && ld == 1'b0) // because i needed to be sure it was 0 and to put the rising edge only when mult ok was 0, meaning  the multiplicator was back in initial state. optimiziable, but i am in rush
                 begin
                     ld <= 1'b1;
