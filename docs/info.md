@@ -14,7 +14,7 @@ It also act as a SPI to 4 channel PWM controller, to directly output 4 PWM chann
 The system is as follow:
  asasdad
 
- The SPI slave will take in MODE 1(?) SPI protocol an 8 byte long command, discriminated with a preamble sequence (see Protocol and Test for the descrioption). This is fed into a data dispatcher that 
+ The SPI slave will take in MODE 0 SPI protocol an 8 byte long command, discriminated with a preamble sequence (see Protocol and Test for the descrioption). This is fed into a data dispatcher that 
 
 # protocol
 
