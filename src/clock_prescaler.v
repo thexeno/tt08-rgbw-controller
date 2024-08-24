@@ -16,15 +16,24 @@
 module clock_prescaler_module (
    clk,
    clk_presc,
-   reset);
+   reset,
+   reset_out);
  
 
 input   clk; 
 output wire  clk_presc; 
+output reg reset_out;
 input   reset; 
 
 reg     [7:0] prescaler_cnt;
+reg     [7:0] reset_cnt;
 reg     clk_presc_sig;
+
+reg [4 : 0] clk_state;
+
+localparam init = 5'd0;
+localparam startup = 5'd1;
+localparam active = 5'd2;
 
 assign   clk_presc = clk_presc_sig;   
 
@@ -32,11 +41,47 @@ always @(posedge clk)
    begin : mainprocess
    if (reset == 1'b 0)
       begin
-      prescaler_cnt <= 8'h00;  
-      clk_presc_sig <= 1'b 0;   
+      prescaler_cnt <= 8'h00;
+      reset_cnt <= 0;  
+      clk_presc_sig <= 1'b 0;
+      clk_state <= 0;   
+      reset_out <= 0;
       end
    else
       begin
+      case (clk_state)
+      init: begin
+         /* placeholder for more functionalities */
+         prescaler_cnt <= 8'h00;
+         reset_cnt <= 0;  
+         clk_presc_sig <= 1'b 0;
+         clk_state <= startup;
+         reset_out <= 0;
+      end
+
+      startup: begin
+         if (reset_cnt >= 8'd128)
+         begin
+            reset_cnt <= 0;
+            clk_state <= active;
+            reset_out <= 1;
+         end
+         else begin
+            reset_cnt <= reset_cnt + 1;
+            reset_out <= 0;
+         end
+         
+         if (prescaler_cnt == 8'h 00) // simply divide by 2 in this implementation
+            begin
+            clk_presc_sig <= ~clk_presc_sig;   
+            prescaler_cnt <= {8{1'b 0}};   
+            end
+         else
+            begin
+            prescaler_cnt <= prescaler_cnt + 8'h 01;   
+            end
+      end      
+      active: begin
       if (prescaler_cnt == 8'h 00) // simply divide by 2 in this implementation
          begin
          clk_presc_sig <= ~clk_presc_sig;   
@@ -46,6 +91,10 @@ always @(posedge clk)
          begin
          prescaler_cnt <= prescaler_cnt + 8'h 01;   
          end
+         clk_state <= active;
+         reset_out <= 1;
+      end
+      endcase
       end
    end
 

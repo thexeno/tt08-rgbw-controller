@@ -87,8 +87,8 @@ module color_wheel_processor
 
     always @(posedge clk)
     begin
-    if (clk_half == 1'b0)
-    begin
+  //  if (clk_half == 1'b0)
+   // begin
         if (reset == 1'b0)
         begin
             state <= init;
@@ -470,6 +470,6 @@ module color_wheel_processor
 
             endcase
         end
-    end
+   // end
     end
 endmodule

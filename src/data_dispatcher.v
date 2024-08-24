@@ -56,8 +56,8 @@ module data_dispatcher_module (
 
 always @(posedge clk) 
 begin
-   if (clk_half == 1'b0)
-   begin
+  // if (clk_half == 1'b0)
+  // begin
     if (reset == 1'b0)  begin
                 lint_spi_out_reg <= 8'b00000000;
                 red_spi_out_reg <= 8'b00000000;
@@ -135,6 +135,6 @@ begin
                 endcase
             end
             end
-    end
+    //end
 end
 endmodule

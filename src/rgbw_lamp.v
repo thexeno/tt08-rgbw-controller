@@ -61,12 +61,13 @@ module tt_um_thexeno_rgbw_controller (
     wire [15:0] result;
     wire load;
     wire m_rdy;
-    wire clk_div_en;
+    //wire clk_div_en;
     wire clk_sys_shared;
+    wire controlled_reset;
 
 
     // List all unused inputs to prevent warnings
-    wire _unused = &{ena, ui_in[2:0], uio_in[7:0], 1'b0};
+    wire _unused = &{ena, ui_in[7], ui_in[2:0], uio_in[7:0], 1'b0};
 
     // assign all the IO to the relative wires/regs
     // uo, uio
@@ -83,7 +84,7 @@ module tt_um_thexeno_rgbw_controller (
     assign mosi = ui_in[3];
     assign cs = ui_in[4];
     assign test_pin = ui_in[6];
-    assign clk_div_en = ui_in[7];
+    //assign clk_div_en = ui_in[7];
 
 
     // Components instantiation
@@ -91,14 +92,15 @@ module tt_um_thexeno_rgbw_controller (
     clock_prescaler_module clock_halver (
         .clk(clk),
         .clk_presc(clk_sys_shared),
-        .reset(clk_div_en)
+        .reset(rst_n),
+        .reset_out(controlled_reset)
     );
 
 
 
     mult8x8_module mult (
         .clk(clk),
-        .reset(reset),
+        .reset(controlled_reset),
         .ld(load),
         .mult_rdy(m_rdy),
         .a(a),
@@ -107,9 +109,9 @@ module tt_um_thexeno_rgbw_controller (
     );
 
     pwm_gen_module pwm (
-        .clk(clk),
+        .clk(clk_sys_shared),
         .clk_half(clk_sys_shared),
-        .reset(reset),
+        .reset(controlled_reset),
         .duty0(r_duty_w),
         .duty1(g_duty_w),
         .duty2(b_duty_w),
@@ -121,9 +123,9 @@ module tt_um_thexeno_rgbw_controller (
     );
 
     color_wheel_processor color (
-        .clk(clk),
+        .clk(clk_sys_shared),
         .clk_half(clk_sys_shared),
-        .reset(reset),
+        .reset(controlled_reset),
         .mult1(a),
         .mult2(b),
         .mult_res(result),
@@ -147,9 +149,9 @@ module tt_um_thexeno_rgbw_controller (
     data_dispatcher_module deserializer (
         .buff_rx_spi(rx_byte_spi),
         .clk_half(clk_sys_shared),
-        .reset(reset),
+        .reset(controlled_reset),
         .rdy(rdy),
-        .clk(clk),
+        .clk(clk_sys_shared),
         .lint_spi_out(lint_spi_w),
         .red_spi_out(red_spi_w),
         .green_spi_out(green_spi_w),
@@ -162,10 +164,10 @@ module tt_um_thexeno_rgbw_controller (
     spi_slave_module spi_rx (
         .sck(sck),
         .cs(cs), 
-        .clk(clk),
+        .clk(clk_sys_shared),
         .clk_half(clk_sys_shared),
         .mosi(mosi),
-        .reset(reset),
+        .reset(controlled_reset),
         .rdy(rdy),
         .data(rx_byte_spi)
     ) ;

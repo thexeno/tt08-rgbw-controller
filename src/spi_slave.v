@@ -35,8 +35,8 @@ assign rdy = rdy_sig;
 
 always @(posedge clk)
    begin
-   if (clk_half == 1'b0)
-   begin
+   //if (clk_half == 1'b0)
+   //begin
       reset_sig <= reset;   
       if (reset_sig == 1'b 0 || cs == 1'b 1)
          begin
@@ -73,7 +73,7 @@ always @(posedge clk)
             end
 
          end
-      end
+      //end
    end
 
 endmodule // module spiSlave
