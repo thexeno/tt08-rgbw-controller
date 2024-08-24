@@ -1,11 +1,16 @@
-// (C) Copyright 2017 Enrico Sanino
-// License:     This project is licensed with the CERN Open Hardware Licence
-//              v1.2.  You may redistribute and modify this project under the
-//              terms of the CERN OHL v.1.2. (http://ohwr.org/cernohl).
-//              This project is distributed WITHOUT ANY EXPRESS OR IMPLIED
-//              WARRANTY, INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY
-//              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
-//              v.1.2 for applicable Conditions.
+// Copyright, 2024 - Alea Art Engineering, Enrico Sanino
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 module tt_um_thexeno_rgbw_controller (
     input  wire [7:0] ui_in,    // Dedicated inputs
@@ -19,22 +24,24 @@ module tt_um_thexeno_rgbw_controller (
 );
 
     wire reset;
-    // wire clk12;
-    //wire sck0;
     wire mosi;
     wire cs;
     wire red_pin;
     wire green_pin;
     wire blue_pin;
     wire white_pin;
+
+    /* for test/debug: exporting the internal signals of the CwPU (color wheel processor unit) */
+    reg [7:0] uo_out_reg;
+    // test/debug enable, active high
+    wire test_pin;
+
+
     // Internal signals
-    //wire clkSys_shared;
-    // wire clkSys_pwm;
-    // wire clkSys_des;
-    // wire red_sig;
-    // wire green_sig;
-    // wire blue_sig;
-    // wire white_sig;
+
+    reg test_pin_sync;
+    reg [7:0] cnt_test_reg;
+
     wire rdy;
     wire sck;
     wire [7:0] r_duty_w;
@@ -43,7 +50,7 @@ module tt_um_thexeno_rgbw_controller (
     wire [7:0] w_duty_w;
     wire [7:0] mode_spi_w;
     wire [7:0] white_spi_w;
-    wire [7:0] buffRx_spi;
+    wire [7:0] rx_byte_spi;
     wire [7:0] lint_spi_w;
     wire [7:0] red_spi_w;
     wire [7:0] green_spi_w;
@@ -57,56 +64,39 @@ module tt_um_thexeno_rgbw_controller (
     wire clk_div_en;
     wire clk_sys_shared;
 
-    reg [7:0] uo_out_reg;
-    //reg [7:0] uio_in_reg = 0;
-    reg [7:0] cnt_test_reg;
 
     // List all unused inputs to prevent warnings
-    wire _unused = &{ena, ui_in[6], ui_in[2:0], uio_in[7:0], 1'b0};
-    //assign uo_out = (r_duty_w && g_duty_w && w_duty_w);
+    wire _unused = &{ena, ui_in[2:0], uio_in[7:0], 1'b0};
 
+    // assign all the IO to the relative wires/regs
+    // uo, uio
     assign uio_out = uo_out_reg;
     assign uio_oe = 8'hff;
     assign uo_out[7:4] = 0;
-    //assign uo_out[7] = clk_sys_shared;
-    //assign uo_out = white_spi_w;
-
-    assign reset = rst_n;
-    assign sck = ui_in[5];
-    assign mosi = ui_in[3];
-    assign cs = ui_in[4];
-    assign clk_div_en = ui_in[7];
     assign uo_out[0] = red_pin;
     assign uo_out[1] = green_pin;
     assign uo_out[2] = blue_pin ;
     assign uo_out[3] = white_pin;
-    // assign uo_out[7:4] = 4'b0000;
+    // ui
+    assign reset = rst_n;
+    assign sck = ui_in[5];
+    assign mosi = ui_in[3];
+    assign cs = ui_in[4];
+    assign test_pin = ui_in[6];
+    assign clk_div_en = ui_in[7];
 
-    // Output assignments
-    //assign dbg = sck0 & reset;
-    // assign red_pin = red_sig;
-    // assign green_pin = green_sig;
-    // assign blue_pin = blue_sig;
-    // assign white_pin = white_sig;
-    // assign red_pwr = red_pin;
-    // assign green_pwr = green_pin;
-    // assign blue_pwr = blue_pin;
-    // assign white_pwr = white_pin;
-    //assign clkSys_shared = clk12;
-    //assign buffRx_spi_o = buffRx_spi;
-    //assign rdy_o = rdy;
 
     // Components instantiation
-    clockDividerPwm clockFeeder (
+    
+    clock_prescaler_module clock_halver (
         .clk(clk),
-        //.clkPresc(clkSys_shared),
-        .clkPresc(clk_sys_shared),
+        .clk_presc(clk_sys_shared),
         .reset(clk_div_en)
-    ) /* synthesis syn_noprune=1 */;
+    );
 
 
 
-    mult8x8 mult (
+    mult8x8_module mult (
         .clk(clk),
         .reset(reset),
         .ld(load),
@@ -116,7 +106,7 @@ module tt_um_thexeno_rgbw_controller (
         .result(result)        
     );
 
-    pwmGen pwm (
+    pwm_gen_module pwm (
         .clk(clk),
         .clk_half(clk_sys_shared),
         .reset(reset),
@@ -128,9 +118,9 @@ module tt_um_thexeno_rgbw_controller (
         .d1(green_pin),
         .d2(blue_pin),
         .d3(white_pin)
-    ) /* synthesis syn_noprune=1 */;
+    );
 
-    colorGen color (
+    color_wheel_processor color (
         .clk(clk),
         .clk_half(clk_sys_shared),
         .reset(reset),
@@ -141,21 +131,21 @@ module tt_um_thexeno_rgbw_controller (
         .ld(load),
         .mode(mode_spi_w),
         .lint(lint_spi_w),
-        .colorIdx(colorIdx_spi_w),
-        .whiteIn(white_spi_w),
-        .redIn(red_spi_w),
-        .greenIn(green_spi_w),
-        .blueIn(blue_spi_w),
-        .redOut(r_duty_w),
-        .greenOut(g_duty_w),
-        .blueOut(b_duty_w),
-        .whiteOut(w_duty_w)
-    ) /* synthesis syn_noprune=1 */;
+        .color_idx(colorIdx_spi_w),
+        .white_in(white_spi_w),
+        .red_in(red_spi_w),
+        .green_in(green_spi_w),
+        .blue_in(blue_spi_w),
+        .red_out_reg(r_duty_w),
+        .green_out_reg(g_duty_w),
+        .blue_out_reg(b_duty_w),
+        .white_out_reg(w_duty_w)
+    );
 
     
 
-    rgbw_data_dispencer deserializer (
-        .buffRx_spi(buffRx_spi),
+    data_dispatcher_module deserializer (
+        .buff_rx_spi(rx_byte_spi),
         .clk_half(clk_sys_shared),
         .reset(reset),
         .rdy(rdy),
@@ -167,9 +157,9 @@ module tt_um_thexeno_rgbw_controller (
         .colorIdx_spi_out(colorIdx_spi_w),
         .white_spi_out(white_spi_w),
         .mode_spi_out(mode_spi_w)
-    ) /* synthesis syn_noprune=1 */;
+    ) ;
 
-    spiSlave spi_rx (
+    spi_slave_module spi_rx (
         .sck(sck),
         .cs(cs), 
         .clk(clk),
@@ -177,42 +167,39 @@ module tt_um_thexeno_rgbw_controller (
         .mosi(mosi),
         .reset(reset),
         .rdy(rdy),
-        .data(buffRx_spi)
-    ) /* synthesis syn_noprune=1 */;
+        .data(rx_byte_spi)
+    ) ;
 
+/* this will output a sequence of the CwP signals that can be debugged */
 always @(posedge clk) 
 begin
     if (reset == 1'b0)
     begin
         cnt_test_reg <= 0;
+        test_pin_sync <= 0;
     end
     else begin
-    cnt_test_reg <= cnt_test_reg + 1;
-    case(cnt_test_reg)
-        8'd0: uo_out_reg <= lint_spi_w;
-        8'd1: uo_out_reg <= red_spi_w;
-        8'd2: uo_out_reg <= green_spi_w;
-        8'd3: uo_out_reg <= blue_spi_w;
-        8'd4: uo_out_reg <= colorIdx_spi_w;
-        8'd5: uo_out_reg <= mode_spi_w;
-        8'd6: uo_out_reg <= white_spi_w;
-        8'd7: uo_out_reg <= r_duty_w;
-        8'd8: uo_out_reg <= g_duty_w;
-        8'd9: uo_out_reg <= b_duty_w;
-        8'd10: uo_out_reg <= w_duty_w;
-        default: uo_out_reg <= white_spi_w;
-    endcase
+    test_pin_sync <= test_pin;
+    if (test_pin_sync == 1'b1)
+        begin
+        cnt_test_reg <= cnt_test_reg + 1;
+        case(cnt_test_reg)
+            8'd0: uo_out_reg <= lint_spi_w;
+            8'd1: uo_out_reg <= red_spi_w;
+            8'd2: uo_out_reg <= green_spi_w;
+            8'd3: uo_out_reg <= blue_spi_w;
+            8'd4: uo_out_reg <= colorIdx_spi_w;
+            8'd5: uo_out_reg <= mode_spi_w;
+            8'd6: uo_out_reg <= white_spi_w;
+            8'd7: uo_out_reg <= r_duty_w;
+            8'd8: uo_out_reg <= g_duty_w;
+            8'd9: uo_out_reg <= b_duty_w;
+            8'd10: uo_out_reg <= w_duty_w;
+            default: uo_out_reg <= cnt_test_reg;
+        endcase
+        end
     end
 end
-
-
-    // // // Process for synchronous reset
-    // // always @(posedge clk12) begin
-    // //     if (clk12) begin
-    // //         reset_sync <= reset;
-    // //     end
-    // // end
-    // // not needed as all module have sync reset
 
 
 endmodule

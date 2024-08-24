@@ -3,7 +3,7 @@ project:
   title:        "Color Controller"      # Project title
   author:       "Enrico Sanino"      # Your name
   discord:      "thexeno"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  "Controller for RGBW outputs, direct or with color wheel mode with white saturation and light adjustment" # One line description of what your project does
+  description:  "Color generator for RGBW LEDs, with generation of hue, tint and intensity based on a color index. Is also a direct SPI to 4 PWM channels converter." # One line description of what your project does
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
   clock_hz:     66000000       # Clock frequency in Hz (or 0 if not applicable)
 
@@ -18,11 +18,11 @@ project:
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
     - "rgbw_lamp.v"
-    - "clockDividerPwm.v"
+    - "clock_prescaler.v"
     - "pwm_gen.v"
     - "spi_slave.v"
-    - "main_data_dispenser.v"
-    - "color_gen.v"
+    - "data_dispatcher.v"
+    - "color_wheel_processor.v"
     - "mult8x8.v"
 
 
@@ -34,30 +34,30 @@ pinout:
   ui[1]: ""
   ui[2]: ""
   ui[3]: "mosi" # ui[3]: "MOSI"
-  ui[4]: "n_cs" # ui[4]: "#CS (from external master)"
+  ui[4]: "cs_n" # ui[4]: "#CS (from external master)"
   ui[5]: "sck" # ui[5]: "SPI SCK (from external master)"
-  ui[6]: ""
+  ui[6]: "test"
   ui[7]: "clk_div_en"
 
   # Outputs
-  uo[0]: "spirx_0_o"
-  uo[1]: "spirx_1_o"
-  uo[2]: "spirx_2_o"
-  uo[3]: "spirx_3_o"
-  uo[4]: "spirx_4_o"
-  uo[5]: "spirx_5_o"
-  uo[6]: "spirx_6_o"
-  uo[7]: "spirx_7_o"
+  uo[0]: "red_pwm"
+  uo[1]: "green_pwm"
+  uo[2]: "blue_pwm"
+  uo[3]: "white_pwm"
+  uo[4]: ""
+  uo[5]: ""
+  uo[6]: ""
+  uo[7]: ""
 
   # Bidirectional pins
-  uio[0]: "spirx_0"
-  uio[1]: "spirx_1"
-  uio[2]: "spirx_2"
-  uio[3]: "spirx_3"
-  uio[4]: "spirx_4"
-  uio[5]: "spirx_5"
-  uio[6]: "spirx_6"
-  uio[7]: "spirx_7"
+  uio[0]: "test_out_0"
+  uio[1]: "test_out_1"
+  uio[2]: "test_out_2"
+  uio[3]: "test_out_3"
+  uio[4]: "test_out_4"
+  uio[5]: "test_out_5"
+  uio[6]: "test_out_6"
+  uio[7]: "test_out_7"
 
 # Do not change!
 yaml_version: 6

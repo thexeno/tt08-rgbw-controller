@@ -19,7 +19,7 @@
 //               AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
 //               v.1.2 for applicable Conditions.
 
-module pwmGen (
+module pwm_gen_module (
 input   clk,
 input   clk_half,
 input   reset,
@@ -60,10 +60,6 @@ always @(posedge clk)
       d1 <= 1'b 0;   
       d2 <= 1'b 0;   
       d3 <= 1'b 0;         
-      // duty0_buff <= {8{1'b 0}};   
-      // duty1_buff <= {8{1'b 0}};   
-      // duty2_buff <= {8{1'b 0}};   
-      // duty3_buff <= {8{1'b 0}};   
       end
    else
       begin
@@ -71,7 +67,7 @@ always @(posedge clk)
       if (counter == 8'h ff)
          begin
          counter <= {8{1'b 0}};  
-         // here are sync updates with pwm period 
+         // here are the outs updated in synch with pwm period (synchronous mode)
          duty0_buff <= duty0;   
          duty1_buff <= duty1;   
          duty2_buff <= duty2;   

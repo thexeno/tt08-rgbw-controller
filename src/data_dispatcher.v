@@ -1,14 +1,20 @@
-// (C) Copyright 2017 Enrico Sanino
-// License:     This project is licensed with the CERN Open Hardware Licence
-//              v1.2.  You may redistribute and modify this project under the
-//              terms of the CERN OHL v.1.2. (http://ohwr.org/cernohl).
-//              This project is distributed WITHOUT ANY EXPRESS OR IMPLIED
-//              WARRANTY, INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY
-//              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
-//              v.1.2 for applicable Conditions.
+// Copyright, 2024 - Alea Art Engineering, Enrico Sanino
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-module rgbw_data_dispencer (
-    input wire [7:0] buffRx_spi,
+
+module data_dispatcher_module (
+    input wire [7:0] buff_rx_spi,
     input wire reset,
     input wire rdy,
     input wire clk,
@@ -39,7 +45,6 @@ module rgbw_data_dispencer (
     reg [7:0] byte_cnt_spi;
     reg rdy_latch;
     reg rdy_prev;
-    //reg sync_char = 1'b0;
 
     assign lint_spi_out = lint_spi_out_reg;
     assign red_spi_out = red_spi_out_reg;
@@ -69,20 +74,6 @@ begin
                 blue_spi <= 8'b00000000;
                 byte_cnt_spi <= 8'b00000000;
                 rdy_prev <= 1'b0;
-                //sync_char <= 1'b0;
-                // lint_sync <= 8'b00000000;
-                // colorIdx_sync <= 8'b00000000;
-                // white_sync <= 8'h00;
-                // red_sync <= 8'h00;
-                // green_sync <= 8'h00;
-                // blue_sync <= 8'h00;
-                // mode_sync <= 8'h00;
-                // lint_spi_out <= lint_spi;
-                // colorIdx_spi_out <= 8'b00000000;
-                // red_spi_out <= 8'b00000000;
-                // green_spi_out <= 8'b00000000;
-                // blue_spi_out <= 8'b00000000;
-                // white_spi_out <= 8'b00000000;
                 rdy_latch <= 1'b0;
             end 
             else 
@@ -93,36 +84,36 @@ begin
                 case (byte_cnt_spi)
                 
                     0: begin
-                        if (buffRx_spi == 8'h55) begin
+                        if (buff_rx_spi == 8'h55) begin
                             byte_cnt_spi <= byte_cnt_spi + 1;
                         end
                     end
                     1: begin
-                      lint_spi <= buffRx_spi;
+                      lint_spi <= buff_rx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     2: begin
-                      colorIdx_spi <= buffRx_spi;
+                      colorIdx_spi <= buff_rx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     3: begin
-                        red_spi <= buffRx_spi;
+                        red_spi <= buff_rx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     4: begin
-                        green_spi <= buffRx_spi;
+                        green_spi <= buff_rx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     5: begin
-                       blue_spi <= buffRx_spi;
+                       blue_spi <= buff_rx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     6: begin
-                        white_spi <= buffRx_spi;
+                        white_spi <= buff_rx_spi;
                         byte_cnt_spi <= byte_cnt_spi + 1;
                     end
                     7: begin
-                        mode_spi_out_reg <= buffRx_spi; // rimani in questo stato sempre fino a nuovo RDY
+                        mode_spi_out_reg <= buff_rx_spi; // rimani in questo stato sempre fino a nuovo RDY
                         byte_cnt_spi <= 0;
                         lint_spi_out_reg <= lint_spi;
                         colorIdx_spi_out_reg <= colorIdx_spi;

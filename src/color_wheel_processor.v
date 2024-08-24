@@ -1,13 +1,19 @@
-// (C) Copyright 2017 Enrico Sanino
-// License:     This project is licensed with the CERN Open Hardware Licence
-//              v1.2.  You may redistribute and modify this project under the
-//              terms of the CERN OHL v.1.2. (http://ohwr.org/cernohl).
-//              This project is distributed WITHOUT ANY EXPRESS OR IMPLIED
-//              WARRANTY, INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY
-//              AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL
-//              v.1.2 for applicable Conditions.
+// Copyright, 2024 - Alea Art Engineering, Enrico Sanino
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-module colorGen
+
+module color_wheel_processor
     (
         input wire clk,
         input wire clk_half,
@@ -19,18 +25,22 @@ module colorGen
         output reg ld,
         input wire [7 : 0] mode,
         input wire [7 : 0] lint,
-        input wire [7 : 0] colorIdx,
-        input wire [7 : 0] whiteIn,
-        input wire [7 : 0] redIn,
-        input wire [7 : 0] greenIn,
-        input wire [7 : 0] blueIn,
-        output reg [7 : 0] redOut,
-        output reg [7 : 0] greenOut,
-        output reg [7 : 0] blueOut,
-        output reg [7 : 0] whiteOut
+        input wire [7 : 0] color_idx,
+        input wire [7 : 0] white_in,
+        input wire [7 : 0] red_in,
+        input wire [7 : 0] green_in,
+        input wire [7 : 0] blue_in,
+        output reg [7 : 0] red_out_reg,
+        output reg [7 : 0] green_out_reg,
+        output reg [7 : 0] blue_out_reg,
+        output reg [7 : 0] white_out_reg
     );
 
+    
+    /* this pre_* state is purely to have the correct sync in a pure sequential logic. it increase the clock cycles to compute a color */
     localparam init = 5'd0;
+    /* states to "rotate" the wheel up to the selected color. 256 rotation steps possible,
+       with total of 6 hue transitions */
     localparam pre_thr1 = 5'd1;
     localparam thr1 = 5'd2;
     localparam pre_thr2 = 5'd3;
@@ -43,55 +53,37 @@ module colorGen
     localparam thr5 = 5'd10;
     localparam pre_thr6 = 5'd11;
     localparam thr6 = 5'd12;
+    /* apply the tint by summing white to the colors and outputting a separate white as well */
     localparam whiteSat = 5'd13;
+    /* apply the intensity factor to the white */
     localparam stateApply = 5'd14;
+    /* apply the intensity factor to the red */
     localparam stateApply_R = 5'd15;
+    /* apply the intensity factor to the green */
     localparam stateApply_G = 5'd16;
+    /* apply the intensity factor to the blue */
     localparam stateApply_B = 5'd17;
+    /* truncate the final color from 16bit to 8 (MSB) and store them in the outputs */
     localparam applyOut = 5'd18;
 
 
-    // typedef enum reg [3:0] {
-    //     init,
-    //     thr1,
-    //     thr2,
-    //     thr3,
-    //     thr4,
-    //     thr5,
-    //     thr6,
-    //     thr7,
-    //     finalAdj,
-    //     stateApply
-    // } state_type;
-
-    reg [7 : 0] r = 8'b00000000;
-    reg [7 : 0] g = 8'b00000000;
-    reg [7 : 0] b = 8'b00000000;
-    reg [7 : 0] buff_white = 8'b00000000;
-    reg [15 : 0] r_temp = 16'h0000;
-    reg [15 : 0] g_temp = 16'h0000;
-    reg [15 : 0] b_temp = 16'h0000;
-    reg [15 : 0] w_temp = 16'h0000;
-    reg [8 : 0] temp_ovf_r = 9'b000000000;
-    reg [8 : 0] temp_ovf_b = 9'b000000000;
-    reg [8 : 0] temp_ovf_g = 9'b000000000;
-    // wire [7:0] b_plus;
-    // wire [7:0] r_plus;
-    // wire [7:0] b_minus;
-    // wire [7:0] r_minus;
-    //reg [7 : 0] w = 8'b00000000;
-    reg [7 : 0] lint_sig = 8'b00000000;
+    reg [7 : 0] r = 8'b00000000; // the generated RED (hue)
+    reg [7 : 0] g = 8'b00000000; // the generated GREEN (hue)
+    reg [7 : 0] b = 8'b00000000; // the generated BLUE (hue)
+    reg [7 : 0] buff_white = 8'b00000000; // buffer the white and avoid glithes in a single color cycle
+    reg [15 : 0] r_temp = 16'h0000; // to handle overflows when applying the luminosity factor
+    reg [15 : 0] g_temp = 16'h0000; // to handle overflows when applying the luminosity factor
+    reg [15 : 0] b_temp = 16'h0000; // to handle overflows when applying the luminosity factor
+    reg [15 : 0] w_temp = 16'h0000; // to handle overflows when applying the luminosity factor
+    reg [8 : 0] temp_ovf_r = 9'b000000000; // to handle overflows when applying the tint (white) factor
+    reg [8 : 0] temp_ovf_b = 9'b000000000; // to handle overflows when applying the tint (white) factor
+    reg [8 : 0] temp_ovf_g = 9'b000000000; // to handle overflows when applying the tint (white) factor
+    reg [7 : 0] buff_light_intst = 8'b00000000;
     reg [7 : 0] thr = 8'b00000000;
     reg [7 : 0] counter = 8'b00000000;
-    reg [7 : 0] mode_latch = 8'b00000000;
-    // reg [2:0] lint_comp = 3'b000;
+
 
     reg [4 : 0] state = 5'd0;
-
-    // assign b_plus = b + 8'b00000111;
-    // assign b_minus = b - 8'b00000111;
-    // assign r_plus = r + 8'b00000111;
-    // assign r_minus = r - 8'b00000111;
 
     always @(posedge clk)
     begin
@@ -101,44 +93,37 @@ module colorGen
         begin
             state <= init;
             thr <= 8'b00000000;
-            lint_sig <= 8'b00000000;
+            buff_light_intst <= 8'b00000000;
             counter <= 8'b00000000;
             r <= 8'b00000000;
             g <= 8'b00000000;
             b <= 8'b00000000;
-            //w <= 8'b00000000;
-            mode_latch <= 8'b00000000;
-            whiteOut <= 8'h00;
-            redOut <= 8'h00;
-            greenOut <= 8'h00;
-            blueOut <= 8'h00;
+            buff_light_intst <= 8'b00000000;
+            white_out_reg <= 8'h00;
+            red_out_reg <= 8'h00;
+            green_out_reg <= 8'h00;
+            blue_out_reg <= 8'h00;
             ld <= 1'b0;
             mult1 <= 8'h00;
             mult2 <= 8'h00;
-            // lint_comp <= 3'b000;
         end
         else
         begin
-            // mult_ok_latch <= mult_ok;
-            // buff_white <= whiteIn;
-
             case (state)
             init: begin
                 r <= 8'b00000000;
                 g <= 8'b00000000;
                 b <= 8'b00000000;
-                //w <= 8'b00000000;
-                thr <= colorIdx;
-                lint_sig <= lint;
-                //mode_latch <= mode;
-                buff_white <= whiteIn;
+                thr <= color_idx;
+                buff_light_intst <= lint;
+                buff_white <= white_in;
                 counter <= 8'b00000001;
-                if (mode == 8'h21)
+                if (mode == 8'h21)  // no need to buffer as it is cheched only at the first step of the color state machine
                 begin
-                    whiteOut <= whiteIn;
-                    redOut <= redIn;
-                    greenOut <= greenIn;
-                    blueOut <= blueIn;
+                    white_out_reg <= white_in;
+                    red_out_reg <= red_in;
+                    green_out_reg <= green_in;
+                    blue_out_reg <= blue_in;
                     state <= init;
                 end
                 else if (mode == 8'ha4)
@@ -153,7 +138,6 @@ module colorGen
             end
 
             pre_thr1: begin
-            /* this pre_* state is purely to have the correct sync in a pure sequential logic. it increase the clock cycles to compute a color */
             if (temp_ovf_b[8] == 1'b1) begin // overflow
                     b <= 8'hff;
                 end 
@@ -365,53 +349,7 @@ module colorGen
                 end
             end
 
-            // thr7: begin
-            //     temp_ovf_b = b + 8'b00000111;
-            //     if (temp_ovf_b[8] == 1'b1) begin // overflow
-            //         b = 8'hff;
-            //     end 
-            //     else begin
-            //         b = temp_ovf_b[7:0]; 
-            //     end           
-            //     r = 8'b11111111;
-            //     g = 8'b00000000;
-            //     temp_ovf_b = 9'b000000000;
-            //     counter = counter + 1;
-            //     if (counter < thr)
-            //     begin
-            //         if (counter <= 8'hff)
-            //         begin
-            //             state <= thr7;
-            //         end
-            //         else
-            //         begin
-            //             state <= whiteSat;
-            //         end
-            //     end
-            //     else
-            //     begin
-            //         state <= whiteSat;
-            //     end
-            // end
-
-            // thr7: begin
-            //     r <= 8'b11111111;
-            //     g <= 8'b00000000;
-            //     b <= 8'b00000000;
-            //     state <= whiteSat;
-            // end
-
             whiteSat: begin
-
-                // if ((r + whiteIn[15:8]) > 8'b11111111) r <= 8'hFF;
-                // else r <= r + whiteIn[15:8]; //no w, optimized
-
-                // if ((g + whiteIn[15:8]) > 8'b11111111) g <= 8'hFF;
-                // else g <= g + whiteIn[15:8];
-
-                // if ((b + whiteIn[15:8]) > 8'b11111111) b <= 8'hFF;
-                // else b <= b + whiteIn[15:8];
-                // temp_ovf = r + whiteIn[15:8];
 
                 // Assign values based on overflow check
                 if ({1'b0, r} + {1'b0, buff_white} >= 9'b100000000) 
@@ -440,11 +378,6 @@ module colorGen
                     begin  
                         b <= b + buff_white;
                     end
-                // if (g[7] == whiteIn[15] == temp_ovf_g[8] == 1'b1) g = 8'hff;
-                // else g = temp_ovf_g;
-                // //temp_ovf = b + whiteIn[15:8];
-                // if (b[7] == whiteIn[15] == temp_ovf_b[8] == 1'b1) b = 8'hff;
-                // else b = temp_ovf_b;
 
                 state <= stateApply;
                 ld <= 1'b0;
@@ -452,11 +385,12 @@ module colorGen
 
             stateApply: begin
 
-                // Shift the result right by 8 to fit it within 8 bits
-                // whiteOut <= (temp_result >> 8);
-                mult1 <= lint_sig;
+                mult1 <= buff_light_intst;
                 mult2 <= buff_white;
-                if (mult_ok == 1'b0 && ld == 1'b0) // because i needed to be sure it was 0 and to put the rising edge only when mult ok was 0, meaning  the multiplicator was back in initial state. optimiziable, but i am in rush
+                if (mult_ok == 1'b0 && ld == 1'b0) // because i needed to be sure it was 0 
+                                                   // and to put the rising edge only when   
+                                                   // mult ok was 0, meaning  the multiplicator 
+                                                   // was back in initial state. 
                 begin
                     ld <= 1'b1;
                 end
@@ -468,15 +402,10 @@ module colorGen
                     ld <= 1'b0;
                     w_temp <= mult_res;
                 end
-
-                // w_temp = (lint_sig * whiteIn);
             end
 
             stateApply_R: begin
-                // redOut = (lint_sig * r);
-                // r_temp = (lint_sig * r);
-                // state <= stateApply_G;
-                mult1 <= lint_sig;
+                mult1 <= buff_light_intst;
                 mult2 <= r;
                 if (mult_ok == 1'b0 && ld == 1'b0)
                 begin
@@ -493,9 +422,7 @@ module colorGen
             end
 
             stateApply_G: begin
-                // g_temp = (lint_sig * g);
-                // state <= stateApply_B;
-                mult1 <= lint_sig;
+                mult1 <= buff_light_intst;
                 mult2 <= g;
                 if (mult_ok == 1'b0 && ld == 1'b0)
                 begin
@@ -509,24 +436,11 @@ module colorGen
                     ld <= 1'b0;
                     g_temp <= mult_res;
                 end
-
-                // if (lint_sig[0]) g_temp = g_temp + (g << 0);
-                // if (lint_sig[1]) g_temp = g_temp + (g << 1);
-                // if (lint_sig[2]) g_temp = g_temp + (g << 2);
-                // if (lint_sig[3]) g_temp = g_temp + (g << 3);
-                // if (lint_sig[4]) g_temp = g_temp + (g << 4);
-                // if (lint_sig[5]) g_temp = g_temp + (g << 5);
-                // if (lint_sig[6]) g_temp = g_temp + (g << 6);
-                // if (lint_sig[7]) g_temp = g_temp + (g << 7);
             end
 
             stateApply_B: begin
-                // b_temp = (lint_sig * b);
 
-                //          state <= applyOut;
-                //    end
-
-                mult1 <= lint_sig;
+                mult1 <= buff_light_intst;
                 mult2 <= b;
                 if (mult_ok == 1'b0 && ld == 1'b0)
                 begin
@@ -544,10 +458,10 @@ module colorGen
 
             applyOut: begin
 
-                whiteOut <= w_temp[15:8];// >> 8;
-                redOut <= r_temp[15:8];// >> 8;
-                greenOut <= g_temp[15:8];// >> 8;
-                blueOut <= b_temp[15:8];// >> 8;
+                white_out_reg <= w_temp[15:8];  // >> 8;
+                red_out_reg <= r_temp[15:8];    // >> 8;
+                green_out_reg <= g_temp[15:8];  // >> 8;
+                blue_out_reg <= b_temp[15:8];   // >> 8;
 
                 state <= init;
             end

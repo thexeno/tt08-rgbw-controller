@@ -114,10 +114,12 @@ async def user_project(dut):
     dut.rst_n.value = 0
     dut.ui_in.value = 0 # reset the clock gen
     dut.uio_in.value = 6; # 6
+    await ClockCycles(dut.clk, 10)
+    dut.ui_in.value = dut.ui_in.value | (0x1 << 6) # set the test pin
     await ClockCycles(dut.clk, 1000)
     #assert (dut.uo_out.value[7]) == (0)
     dut.ena.value = 1
-    dut.ui_in.value = 0
+    dut.ui_in.value = dut.ui_in.value | (0x1 << 6) # set the test pin
     dut.rst_n.value = 1
 
     await ClockCycles(dut.clk, 100)
@@ -139,7 +141,8 @@ async def user_project(dut):
     await ClockCycles(dut.clk, 10)
     await SPI_send(dut, 0xAA)
     await ClockCycles(dut.clk, 10)
-
+    dut.ui_in.value = dut.ui_in.value & ~(0x1 << 6) # reset the test pin
+    await ClockCycles(dut.clk, 1000)
 
 
     dut._log.info("Test project behavior")
