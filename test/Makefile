@@ -7,11 +7,11 @@ TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
 PROJECT_SOURCES = rgbw_lamp.v
 PROJECT_SOURCES += clock_prescaler.v
-PROJECT_SOURCES += color_gen.v
+PROJECT_SOURCES += color_wheel_processor.v
 PROJECT_SOURCES += mult8x8.v
 PROJECT_SOURCES += pwm_gen.v
 PROJECT_SOURCES += spi_slave.v
-PROJECT_SOURCES += main_data_dispenser.v
+PROJECT_SOURCES += data_dispatcher.v
 
 ifneq ($(GATES),yes)
 
