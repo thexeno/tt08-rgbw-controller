@@ -94,6 +94,10 @@ always @(posedge clk)
          clk_state <= active;
          reset_out <= 1;
       end
+
+      default:
+      clk_state <= init;
+      
       endcase
       end
    end
