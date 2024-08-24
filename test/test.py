@@ -112,8 +112,7 @@ async def user_project(dut):
     dut._log.info("Reset")
     dut.ena.value = 0
     dut.rst_n.value = 0
-    dut.ui_in.value = 0 # reset the clock gen
-    dut.uio_in.value = 6; # 6
+    dut.ui_in.value = 0 # reset 
     await ClockCycles(dut.clk, 10)
     dut.ui_in.value = dut.ui_in.value | (0x1 << 6) # set the test pin
     await ClockCycles(dut.clk, 1000)
@@ -121,8 +120,7 @@ async def user_project(dut):
     dut.ena.value = 1
     dut.ui_in.value = dut.ui_in.value | (0x1 << 6) # set the test pin
     dut.rst_n.value = 1
-
-    await ClockCycles(dut.clk, 100)
+    await ClockCycles(dut.clk, 130) # more than the reset delay count of the clk_prescaler
     dut.ui_in.value = dut.ui_in.value & ~(0x1 << 7) # reset the clock gen
     await ClockCycles(dut.clk, 10)
     dut.ui_in.value = dut.ui_in.value | (0x1 << 7) # activate the clock gen
