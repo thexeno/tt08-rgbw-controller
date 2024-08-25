@@ -62,8 +62,8 @@ module tt_um_thexeno_rgbw_controller (
     wire load;
     wire m_rdy;
     //wire clk_div_en;
-    wire clk_sys_shared;
-    wire controlled_reset;
+    //wire clk_sys_shared;
+    //wire controlled_reset;
 
 
     // List all unused inputs to prevent warnings
@@ -151,7 +151,7 @@ module tt_um_thexeno_rgbw_controller (
         //.clk_half(clk),
         .reset(reset),
         .rdy(rdy),
-        .clk(clk_sys_shared),
+        .clk(clk),
         .lint_spi_out(lint_spi_w),
         .red_spi_out(red_spi_w),
         .green_spi_out(green_spi_w),
