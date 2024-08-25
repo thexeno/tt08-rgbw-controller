@@ -18,7 +18,7 @@ module data_dispatcher_module (
     input wire reset,
     input wire rdy,
     input wire clk,
-    input wire clk_half,
+    //input wire clk_half,
     output wire [7:0] lint_spi_out,
     output wire [7:0] red_spi_out,
     output wire [7:0] green_spi_out,

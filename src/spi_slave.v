@@ -14,7 +14,7 @@
 
 module spi_slave_module (
   input sck,
-  input clk_half,
+  //input clk_half,
   input cs,
   input clk,
   input mosi,

@@ -110,7 +110,7 @@ module tt_um_thexeno_rgbw_controller (
 
     pwm_gen_module pwm (
         .clk(clk),
-        .clk_half(clk),
+        //.clk_half(clk),
         .reset(reset),
         .duty0(r_duty_w),
         .duty1(g_duty_w),
@@ -124,7 +124,7 @@ module tt_um_thexeno_rgbw_controller (
 
     color_wheel_processor color (
         .clk(clk),
-        .clk_half(clk),
+        //.clk_half(clk),
         .reset(reset),
         .mult1(a),
         .mult2(b),
@@ -148,7 +148,7 @@ module tt_um_thexeno_rgbw_controller (
 
     data_dispatcher_module deserializer (
         .buff_rx_spi(rx_byte_spi),
-        .clk_half(clk),
+        //.clk_half(clk),
         .reset(reset),
         .rdy(rdy),
         .clk(clk_sys_shared),
@@ -165,7 +165,7 @@ module tt_um_thexeno_rgbw_controller (
         .sck(sck),
         .cs(cs), 
         .clk(clk),
-        .clk_half(clk),
+        //.clk_half(clk),
         .mosi(mosi),
         .reset(reset),
         .rdy(rdy),

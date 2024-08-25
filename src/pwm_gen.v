@@ -21,7 +21,7 @@
 
 module pwm_gen_module (
 input   clk,
-input   clk_half,
+//input   clk_half,
 input   reset,
 input [7:0]  duty0,
 input [7:0]  duty1,

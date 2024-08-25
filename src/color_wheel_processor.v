@@ -16,7 +16,7 @@
 module color_wheel_processor
     (
         input wire clk,
-        input wire clk_half,
+        //input wire clk_half,
         input wire reset,
         input wire mult_ok,
         output reg [7 : 0] mult1,
