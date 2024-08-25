@@ -26,6 +26,7 @@ module spi_slave_module (
 reg     [3:0] bit_counter;
 reg     [7:0] data_byte  = 8'h00;  
 reg     rdy_sig;
+reg     cs_sig;
 reg     sck_latch; 
 reg     sck_prev ;
 reg     mosi_latch;
@@ -35,10 +36,9 @@ assign rdy = rdy_sig;
 
 always @(posedge clk)
    begin
-   //if (clk_half == 1'b0)
-   //begin
-      reset_sig <= reset;   
-      if (reset_sig == 1'b 0 || cs == 1'b 1)
+      reset_sig <= reset;  
+      cs_sig <= cs; 
+      if (reset_sig == 1'b 0)
          begin
          bit_counter <= 0;   
          data_byte <= 8'h00;   
@@ -46,10 +46,12 @@ always @(posedge clk)
          rdy_sig <= 1'b 0;   
          sck_prev <= 1'b 0;   
          sck_latch <= 1'b 0;   
-         mosi_latch <= 1'b 0;   
+         mosi_latch <= 1'b 0;
+         cs_sig <= 1'b 0;   
          end
       else
          begin
+         if (cs_sig == 1'b 0) begin
          sck_prev <= sck_latch;   
          sck_latch <= sck;   
          mosi_latch <= mosi;
@@ -73,7 +75,17 @@ always @(posedge clk)
             end
 
          end
-      //end
+         else 
+         begin
+            bit_counter <= 0;   
+            data_byte <= 8'h00;   
+            data <= 8'h00;   
+            rdy_sig <= 1'b 0;   
+            sck_prev <= 1'b 0;   
+            sck_latch <= 1'b 0;   
+            mosi_latch <= 1'b 0;
+         end
+      end
    end
 
 endmodule // module spiSlave

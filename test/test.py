@@ -52,8 +52,8 @@ async def test_colorwheel(dut):
 
 async def test_rgb(dut):
     dataPayload = [0x55, 0xff, 0x24, 0x00, 0xff, 0x00, 0xaa, 0xa4]
-    dataPayload[R_POS] = 0x00
-    dataPayload[G_POS] = 0x00
+    dataPayload[R_POS] = 0x1
+    dataPayload[G_POS] = 0xff
     dataPayload[B_POS] = 0x7f
     dataPayload[W_POS] = 0x15
     dataPayload[INT_POS] = 0x00
@@ -149,6 +149,13 @@ async def user_project(dut):
 
     # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
+
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 10)
+    dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 130)
+    await test_colorwheel(dut)
+    await ClockCycles(dut.clk, 10000)
 
     # The following assersion is just an example of how to check the output values.
     # Change it to match the actual expected output of your module:
