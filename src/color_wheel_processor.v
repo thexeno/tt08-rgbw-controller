@@ -71,10 +71,10 @@ module color_wheel_processor
     reg [7 : 0] g = 8'b00000000; // the generated GREEN (hue)
     reg [7 : 0] b = 8'b00000000; // the generated BLUE (hue)
     reg [7 : 0] buff_white = 8'b00000000; // buffer the white and avoid glithes in a single color cycle
-    reg [7 : 0] r_temp // to handle overflows when applying the luminosity factor
-    reg [7 : 0] g_temp // to handle overflows when applying the luminosity factor
-    reg [7 : 0] b_temp // to handle overflows when applying the luminosity factor
-    reg [7 : 0] w_temp // to handle overflows when applying the luminosity factor
+    reg [7 : 0] r_temp; // to handle overflows when applying the luminosity factor
+    reg [7 : 0] g_temp; // to handle overflows when applying the luminosity factor
+    reg [7 : 0] b_temp; // to handle overflows when applying the luminosity factor
+    reg [7 : 0] w_temp; // to handle overflows when applying the luminosity factor
     reg [8 : 0] temp_ovf_r = 9'b000000000; // to handle overflows when applying the tint (white) factor
     reg [8 : 0] temp_ovf_b = 9'b000000000; // to handle overflows when applying the tint (white) factor
     reg [8 : 0] temp_ovf_g = 9'b000000000; // to handle overflows when applying the tint (white) factor
