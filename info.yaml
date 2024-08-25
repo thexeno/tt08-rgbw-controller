@@ -18,7 +18,7 @@ project:
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
     - "rgbw_lamp.v"
-    - "clock_prescaler.v"
+    #- "clock_prescaler.v"
     - "pwm_gen.v"
     - "spi_slave.v"
     - "data_dispatcher.v"

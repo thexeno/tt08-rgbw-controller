@@ -89,18 +89,18 @@ module tt_um_thexeno_rgbw_controller (
 
     // Components instantiation
     
-    clock_prescaler_module clock_halver (
-        .clk(clk),
-        .clk_presc(clk_sys_shared),
-        .reset(rst_n),
-        .reset_out(controlled_reset)
-    );
+    // clock_prescaler_module clock_halver (
+    //     .clk(clk),
+    //     .clk_presc(clk_sys_shared),
+    //     .reset(rst_n),
+    //     .reset_out(controlled_reset)
+    // );
 
 
 
     mult8x8_module mult (
         .clk(clk),
-        .reset(controlled_reset),
+        .reset(reset),
         .ld(load),
         .mult_rdy(m_rdy),
         .a(a),
@@ -109,9 +109,9 @@ module tt_um_thexeno_rgbw_controller (
     );
 
     pwm_gen_module pwm (
-        .clk(clk_sys_shared),
-        .clk_half(clk_sys_shared),
-        .reset(controlled_reset),
+        .clk(clk),
+        .clk_half(clk),
+        .reset(reset),
         .duty0(r_duty_w),
         .duty1(g_duty_w),
         .duty2(b_duty_w),
@@ -123,9 +123,9 @@ module tt_um_thexeno_rgbw_controller (
     );
 
     color_wheel_processor color (
-        .clk(clk_sys_shared),
-        .clk_half(clk_sys_shared),
-        .reset(controlled_reset),
+        .clk(clk),
+        .clk_half(clk),
+        .reset(reset),
         .mult1(a),
         .mult2(b),
         .mult_res(result),
@@ -148,8 +148,8 @@ module tt_um_thexeno_rgbw_controller (
 
     data_dispatcher_module deserializer (
         .buff_rx_spi(rx_byte_spi),
-        .clk_half(clk_sys_shared),
-        .reset(controlled_reset),
+        .clk_half(clk),
+        .reset(reset),
         .rdy(rdy),
         .clk(clk_sys_shared),
         .lint_spi_out(lint_spi_w),
@@ -164,10 +164,10 @@ module tt_um_thexeno_rgbw_controller (
     spi_slave_module spi_rx (
         .sck(sck),
         .cs(cs), 
-        .clk(clk_sys_shared),
-        .clk_half(clk_sys_shared),
+        .clk(clk),
+        .clk_half(clk),
         .mosi(mosi),
-        .reset(controlled_reset),
+        .reset(reset),
         .rdy(rdy),
         .data(rx_byte_spi)
     ) ;
