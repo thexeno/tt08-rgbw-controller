@@ -17,6 +17,7 @@ When bypass mode is not active (color wheel mode), then there is a latency propo
 
 The system block diagram is as follow:
 
+
 # SPI protocol
 
 SPI is Mode 0 as shown in this timing diagram, highlighting the preable and first byte transfer:
@@ -37,12 +38,27 @@ Which contains:
 7. white: 0x00 - 0xFF
 8. bypass mode: 0xA4 for the color generation, 0x21 bypass
 
-Not that in between each byte is mandatory to toggle the CS signal, since in reality a full transaction is interpreted as a 8 individual single byte transactions
+Not that in between each byte is mandatory to toggle the CS signal, since in reality a full transaction is interpreted as a 8 individual single byte transactions.
 
 ## How to test
 
-Explain how to use your project
+Source code for an STM32 MCU is provided in the folder "test". A python script will be provided to comminicate with the MCU over serial, which will convert the serial command into the SPI transaction. Is just a demo to help starting to use the color controller, but you can manually send SPI commands or edit the scripts.
+Steps:
+1. adapt the code to any MCU (with STM32 is easier to jsut port it)
+2. Connect the MCU UART to a serial emulator
+3. Run the script.
+4. If using Linux: it is tested in Windows, so the only change is the serial port path in the python script
+
+# What to expect on the outputs
+- This is the output "color equation" without bypass:
+Given the HUE ternary (r,g,b) processed from the index, where only 2 colors max are active at a time, i.e. no white, the final color is
+RGBW = ((r,g,b)+w)*intensity
+
+- This is the output "color equation" with bypass:
+RGBW = spi(red, green, blue, white)
+NO intensity, NO automatic white.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+The MCU I used to test it are STM32, here I used 3 variants to help with flexibility: bluepill (STM32F103), the llll
+Each project is in the test folder.
