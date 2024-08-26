@@ -56,7 +56,7 @@ module data_dispatcher_module (
 
 always @(posedge clk) 
 begin
-  if (clk_en == 1'b1)
+  if (clk_en == 1'b0)
   begin
     if (reset == 1'b0)  begin
                 lint_spi_out_reg <= 8'b00000000;
