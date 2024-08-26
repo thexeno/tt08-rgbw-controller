@@ -72,7 +72,7 @@ always @(posedge clk)
          end
       
          
-            if (prescaler_cnt == 8'h 2) // simply divide by 2 in this implementation
+            if (prescaler_cnt == 8'h 0) // simply divide by 2 in this implementation
             begin
             if (clk_presc_sig == 1) begin
             clk_presc_sig <= 0;
@@ -90,7 +90,7 @@ always @(posedge clk)
 
 
       active: begin
-            if (prescaler_cnt == 8'h 2) // simply divide by 2 in this implementation
+            if (prescaler_cnt == 8'h 0) // simply divide by 2 in this implementation
             begin
             if (clk_presc_sig == 1) begin
             clk_presc_sig <= 0;
