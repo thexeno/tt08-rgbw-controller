@@ -34,15 +34,15 @@ output reg    d3);
  
 
  
-reg     [7:0] counter = 8'h00;
-reg     [7:0] duty0_buff = 8'h00;
-reg     [7:0] duty1_buff = 8'h00;
-reg     [7:0] duty2_buff = 8'h00;
-reg     [7:0] duty3_buff = 8'h00;
-reg     d0_sig = 1'b0;
-reg     d1_sig = 1'b0;
-reg     d2_sig = 1'b0;
-reg     d3_sig = 1'b0;
+reg     [7:0] counter ;
+reg     [7:0] duty0_buff ;
+reg     [7:0] duty1_buff ;
+reg     [7:0] duty2_buff ;
+reg     [7:0] duty3_buff ;
+reg     d0_sig;
+reg     d1_sig;
+reg     d2_sig;
+reg     d3_sig;
 
 
 always @(posedge clk)
