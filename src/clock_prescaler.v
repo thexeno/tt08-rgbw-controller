@@ -15,19 +15,20 @@
 
 module clock_prescaler_module (
    clk,
-   clk_presc,
+   clk_presc_pulse,
    reset,
    reset_out);
  
 
 input   clk; 
-output wire  clk_presc; 
+output wire  clk_presc_pulse; 
 output reg reset_out;
 input   reset; 
 
 reg     [7:0] prescaler_cnt;
 reg     [7:0] reset_cnt;
 reg     clk_presc_sig;
+reg      pulse_sig;
 
 reg [4 : 0] clk_state;
 
@@ -35,7 +36,7 @@ localparam init = 5'd0;
 localparam startup = 5'd1;
 localparam active = 5'd2;
 
-assign   clk_presc = clk_presc_sig;   
+assign   clk_presc_pulse = clk_presc_sig;   
 
 always @(posedge clk)
    begin : mainprocess
@@ -46,6 +47,7 @@ always @(posedge clk)
       clk_presc_sig <= 1'b 0;
       clk_state <= 0;   
       reset_out <= 0;
+      pulse_sig <= 0;
       end
    else
       begin
@@ -57,6 +59,7 @@ always @(posedge clk)
          clk_presc_sig <= 1'b 0;
          clk_state <= startup;
          reset_out <= 0;
+         pulse_sig <= 0;
       end
 
       startup: begin
@@ -70,32 +73,46 @@ always @(posedge clk)
             reset_cnt <= reset_cnt + 1;
             reset_out <= 0;
          end
+      
          
          if (prescaler_cnt == 8'h 00) // simply divide by 2 in this implementation
             begin
-            clk_presc_sig <= ~clk_presc_sig;   
-            prescaler_cnt <= {8{1'b 0}};   
+            if (pulse_sig == 1) begin
+            clk_presc_sig <= 1;
+            pulse_sig <= 0;
+            end
+            else begin
+               clk_presc_sig <= 0;
+               pulse_sig <= 1;
+               prescaler_cnt <= {8{1'b 0}};   
+            end
             end
          else
             begin
             prescaler_cnt <= prescaler_cnt + 8'h 01;   
             end
-      end      
+         end      
+
+
       active: begin
-      if (prescaler_cnt == 8'h 00) // simply divide by 2 in this implementation
-         begin
-         clk_presc_sig <= ~clk_presc_sig;   
-         prescaler_cnt <= {8{1'b 0}};   
-         end
-      else
-         begin
-         prescaler_cnt <= prescaler_cnt + 8'h 01;   
-         end
-         clk_state <= active;
-         reset_out <= 1;
+            if (prescaler_cnt == 8'h 00) // simply divide by 2 in this implementation
+            begin
+            if (pulse_sig == 1) begin
+            clk_presc_sig <= 1;
+            pulse_sig <= 0;
+            end
+            else begin
+               clk_presc_sig <= 0;
+               pulse_sig <= 1;
+               prescaler_cnt <= {8{1'b 0}};   
+            end
+            end
+         else
+            begin
+            prescaler_cnt <= prescaler_cnt + 8'h 01;   
+            end
       end
-      default:
-      clk_state <= init;
+      default: clk_state <= init;
       endcase
       end
    end

@@ -16,7 +16,7 @@
 module color_wheel_processor
     (
         input wire clk,
-        //input wire clk_half,
+        input wire clk_en,
         input wire reset,
         input wire mult_ok,
         output reg [7 : 0] mult1,
@@ -71,10 +71,10 @@ module color_wheel_processor
     reg [7 : 0] g = 8'b00000000; // the generated GREEN (hue)
     reg [7 : 0] b = 8'b00000000; // the generated BLUE (hue)
     reg [7 : 0] buff_white = 8'b00000000; // buffer the white and avoid glithes in a single color cycle
-    reg [7 : 0] r_temp; // to handle overflows when applying the luminosity factor
-    reg [7 : 0] g_temp; // to handle overflows when applying the luminosity factor
-    reg [7 : 0] b_temp; // to handle overflows when applying the luminosity factor
-    reg [7 : 0] w_temp; // to handle overflows when applying the luminosity factor
+    reg [15 : 0] r_temp = 16'h0000; // to handle overflows when applying the luminosity factor
+    reg [15 : 0] g_temp = 16'h0000; // to handle overflows when applying the luminosity factor
+    reg [15 : 0] b_temp = 16'h0000; // to handle overflows when applying the luminosity factor
+    reg [15 : 0] w_temp = 16'h0000; // to handle overflows when applying the luminosity factor
     reg [8 : 0] temp_ovf_r = 9'b000000000; // to handle overflows when applying the tint (white) factor
     reg [8 : 0] temp_ovf_b = 9'b000000000; // to handle overflows when applying the tint (white) factor
     reg [8 : 0] temp_ovf_g = 9'b000000000; // to handle overflows when applying the tint (white) factor
@@ -87,8 +87,8 @@ module color_wheel_processor
 
     always @(posedge clk)
     begin
-  //  if (clk_half == 1'b0)
-   // begin
+    if (clk_en == 1'b0)
+    begin
         if (reset == 1'b0)
         begin
             state <= init;
@@ -458,10 +458,10 @@ module color_wheel_processor
 
             applyOut: begin
 
-                white_out_reg <= w_temp;  // >> 8;
-                red_out_reg <= r_temp;    // >> 8;
-                green_out_reg <= g_temp;  // >> 8;
-                blue_out_reg <= b_temp;   // >> 8;
+                white_out_reg <= w_temp[15:8];  // >> 8;
+                red_out_reg <= r_temp[15:8];    // >> 8;
+                green_out_reg <= g_temp[15:8];  // >> 8;
+                blue_out_reg <= b_temp[15:8];   // >> 8;
 
                 state <= init;
             end
@@ -470,6 +470,6 @@ module color_wheel_processor
 
             endcase
         end
-   // end
+    end
     end
 endmodule

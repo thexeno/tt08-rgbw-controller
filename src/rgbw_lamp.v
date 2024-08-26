@@ -62,8 +62,8 @@ module tt_um_thexeno_rgbw_controller (
     wire load;
     wire m_rdy;
     //wire clk_div_en;
-    //wire clk_sys_shared;
-    //wire controlled_reset;
+    wire clk_enable;
+    wire controlled_reset;
 
 
     // List all unused inputs to prevent warnings
@@ -89,18 +89,18 @@ module tt_um_thexeno_rgbw_controller (
 
     // Components instantiation
     
-    // clock_prescaler_module clock_halver (
-    //     .clk(clk),
-    //     .clk_presc(clk_sys_shared),
-    //     .reset(rst_n),
-    //     .reset_out(controlled_reset)
-    // );
+    clock_prescaler_module clock_halver (
+        .clk(clk),
+        .clk_presc_pulse(clk_enable),
+        .reset(rst_n),
+        .reset_out(controlled_reset)
+    );
 
 
 
     mult8x8_module mult (
         .clk(clk),
-        .reset(reset),
+        .reset(controlled_reset),
         .ld(load),
         .mult_rdy(m_rdy),
         .a(a),
@@ -110,8 +110,8 @@ module tt_um_thexeno_rgbw_controller (
 
     pwm_gen_module pwm (
         .clk(clk),
-        //.clk_half(clk),
-        .reset(reset),
+        .clk_en(clk_enable),
+        .reset(controlled_reset),
         .duty0(r_duty_w),
         .duty1(g_duty_w),
         .duty2(b_duty_w),
@@ -124,8 +124,8 @@ module tt_um_thexeno_rgbw_controller (
 
     color_wheel_processor color (
         .clk(clk),
-        //.clk_half(clk),
-        .reset(reset),
+        .clk_en(clk_enable),
+        .reset(controlled_reset),
         .mult1(a),
         .mult2(b),
         .mult_res(result),
@@ -148,8 +148,8 @@ module tt_um_thexeno_rgbw_controller (
 
     data_dispatcher_module deserializer (
         .buff_rx_spi(rx_byte_spi),
-        //.clk_half(clk),
-        .reset(reset),
+        .clk_en(clk_enable),
+        .reset(controlled_reset),
         .rdy(rdy),
         .clk(clk),
         .lint_spi_out(lint_spi_w),
@@ -165,9 +165,9 @@ module tt_um_thexeno_rgbw_controller (
         .sck(sck),
         .cs(cs), 
         .clk(clk),
-        //.clk_half(clk),
+        .clk_en(clk_enable),
         .mosi(mosi),
-        .reset(reset),
+        .reset(controlled_reset),
         .rdy(rdy),
         .data(rx_byte_spi)
     ) ;

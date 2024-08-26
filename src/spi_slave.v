@@ -14,7 +14,7 @@
 
 module spi_slave_module (
   input sck,
-  //input clk_half,
+  input clk_en,
   input cs,
   input clk,
   input mosi,
@@ -36,6 +36,8 @@ assign rdy = rdy_sig;
 
 always @(posedge clk)
    begin
+   if (clk_en == 1'b0)
+    begin
       reset_sig <= reset;  
       cs_sig <= cs; 
       if (reset_sig == 1'b 0)
@@ -86,6 +88,7 @@ always @(posedge clk)
             mosi_latch <= 1'b 0;
          end
       end
+   end
    end
 
 endmodule // module spiSlave
