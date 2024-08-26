@@ -21,11 +21,11 @@ The system block diagram is as follow:
 # SPI protocol
 
 SPI is Mode 0 as shown in this timing diagram, highlighting the preable and first byte transfer:
-![alt text]([http://url/to/img.png](https://github.com/thexeno/tt08-rgbw-controller/blob/main/docs/bit_transaction.png)
+![alt text]([http://url/to/img.png](https://github.com/thexeno/tt08-rgbw-controller/blob/main/docs/bit_transaction.png))
 
 While a whole packet must be compliant with the following diagram:
 
-![alt text]([http://url/to/img.png](https://github.com/thexeno/tt08-rgbw-controller/blob/main/docs/byte_transaction.png)
+![alt text]([http://url/to/img.png](https://github.com/thexeno/tt08-rgbw-controller/blob/main/docs/byte_transaction.png))
 
 Which contains: 
 
