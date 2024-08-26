@@ -28,7 +28,6 @@ input   reset;
 reg     [7:0] prescaler_cnt;
 reg     [7:0] reset_cnt;
 reg     clk_presc_sig;
-reg      pulse_sig;
 
 reg [4 : 0] clk_state;
 
@@ -47,7 +46,6 @@ always @(posedge clk)
       clk_presc_sig <= 1'b 0;
       clk_state <= 0;   
       reset_out <= 0;
-      pulse_sig <= 0;
       end
    else
       begin
@@ -59,7 +57,6 @@ always @(posedge clk)
          clk_presc_sig <= 1'b 0;
          clk_state <= startup;
          reset_out <= 0;
-         pulse_sig <= 0;
       end
 
       startup: begin
@@ -77,14 +74,12 @@ always @(posedge clk)
          
          if (prescaler_cnt == 8'h 2) // simply divide by 2 in this implementation
             begin
-            if (pulse_sig == 1) begin
+            if (clk_presc_sig == 0) begin
             clk_presc_sig <= 1;
-            pulse_sig <= 0;
             end
             else begin
                clk_presc_sig <= 0;
-               pulse_sig <= 1;
-               prescaler_cnt <= {8{1'b 0}};   
+               prescaler_cnt <= 0;   
             end
             end
          else
@@ -97,14 +92,12 @@ always @(posedge clk)
       active: begin
             if (prescaler_cnt == 8'h 2) // simply divide by 2 in this implementation
             begin
-            if (pulse_sig == 1) begin
+            if (clk_presc_sig == 0) begin
             clk_presc_sig <= 1;
-            pulse_sig <= 0;
             end
             else begin
                clk_presc_sig <= 0;
-               pulse_sig <= 1;
-               prescaler_cnt <= {8{1'b 0}};   
+               prescaler_cnt <= 0;   
             end
             end
          else
