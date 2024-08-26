@@ -47,7 +47,7 @@ reg     d3_sig;
 
 always @(posedge clk)
    begin : maincounter
-   if (clk_en == 1'b0)
+   if (clk_en == 1'b1)
    begin
    if (reset == 1'b0)
       begin
