@@ -36,7 +36,7 @@ assign rdy = rdy_sig;
 
 always @(posedge clk)
    begin
-   if (clk_en == 1'b0)
+   if (clk_en == 1'b1)
     begin
       reset_sig <= reset;  
       cs_sig <= cs; 
