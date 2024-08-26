@@ -16,14 +16,28 @@ This payload is unpacked in different data: red, green, blue, white, bypass mode
 When bypass mode is not active (color wheel mode), then there is a latency proportional to the "rotation" of the color wheel, i.e. lower the number lower the latency. This is the laterncy of the color wheel processor unit (CwPU)
 
 The system block diagram is as follow:
-![alt text](http://url/to/img.png)
 
 # SPI protocol
 
 SPI is Mode 0 as shown in this timing diagram, highlighting the preable and first byte transfer:
+![alt text]([http://url/to/img.png](https://github.com/thexeno/tt08-rgbw-controller/blob/main/docs/bit_transaction.png)
 
+While a whole packet must be compliant with the following diagram:
 
+![alt text]([http://url/to/img.png](https://github.com/thexeno/tt08-rgbw-controller/blob/main/docs/byte_transaction.png)
 
+Which contains: 
+
+1. preamble: 0x55
+2. intensity: 0x00 - 0xFF
+3. color index: 0x00 - 0xFF
+4. red: 0x00 - 0xFF
+5. green: 0x00 - 0xFF
+6. blue: 0x00 - 0xFF
+7. white: 0x00 - 0xFF
+8. bypass mode: 0xA4 for the color generation, 0x21 bypass
+
+Not that in between each byte is mandatory to toggle the CS signal, since in reality a full transaction is interpreted as a 8 individual single byte transactions
 
 ## How to test
 
