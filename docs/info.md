@@ -11,19 +11,29 @@ You can also include images in this folder and reference them in the markdown. E
 Color generator for RGBW LEDs, with generation of hue, tint and intensity based on a color index. Is also a direct SPI to 4 PWM channels converter, making it flexible to any different kind of use.
 
 It is an SPI slave in Mode 0, with SPI protocol consisting of 8 byte long command, discriminated with a preamble sequence (see Protocol and Test for the description).
-This payload is unpacked in different data: red, green, blue, white, bypass mode, intensity, color index. This data is then provided to the color wheel processor. It the bypass mode is activated, the RGBW info from the red, green, blue and white SPI bytes is directly provided as a PWM output in the respective channels. If bypass mode is not active, only the white, intensity and color index are considered, from which the hue (RGB data) is generated based on the index, then a tint (hue + white) and then the intensity is applied, forming the final color. This is then applied to the PWM outpus to the respective channels. 
 
-When bypass mode is not active (color wheel mode), then there is a latency proportional to the "rotation" of the color wheel, i.e. lower the number lower the latency. This is the laterncy of the color wheel processoig unit (CwPU).
+This payload is unpacked in different data: red, green, blue, white, bypass mode, intensity, color index. This data is then provided to the color wheel processor. It the bypass mode is activated, the RGBW info from the red, green, blue and white SPI bytes is directly provided as a PWM output in the respective channels.
+
+If bypass mode is not active, only the white, intensity and color index are considered, from which the hue (RGB data) is generated based on the index, then a tint (hue + white) and then the intensity is applied, forming the final color. This is then applied to the PWM outpus to the respective channels. 
+
+When bypass mode is not active (color wheel mode), then there is a latency proportional to the "rotation" of the color wheel, i.e. lower the number lower the latency. This is the laterncy of the color wheel processing unit (CwPU).
 
 The system block diagram is as follow:
 
-
+![block diagram image](./block_diagram.png "RGBW controller block diagram")
 
 # Color wheel processor
 
+The logic datapath of the CwPU is shown below:
+
+![SCwPU datapath](./cwpu_datapath.png "cwpu_datapath")
+
 The CwPU has all the data width of 8 bit, and is active when non in bypass mode. When active will take the index. Starting from zero, increments the hue progression ahd compare against this index (i.e. rotates the color wheel) to process at run time with no LUT, the corresponding requested hue. During the rotation, the RGB internal values will also change, increasing and decreasing to sweep all the combinations before matching the requested one. The final value will be used for the next step, which is the tint.
+
 The next step is the sum of the white component, generating a tint, a white adjusted color. It will sum the white up to a maximum value, and the value is output to the intensity multiplier. Also the white is output to the multiplier.
+
 The multiplication takes place with a single multiplicator unit, hence the local control takes care od the data load and synchonization, with 2 clock cycles per operation. Also the white is mutiplied. After this step, the output data of each component (R, G, B and W) are 16bit, but the 8 LSB are truncated, generating a final 24 bit color information and 8 bit white.
+
 This data is used by the 4 channel PWM modulator.
 
 When in bypass mode, the CwPU will only replicate the same RGBW info in input to the PWM modulator input in one clock cycle.
@@ -31,11 +41,12 @@ When in bypass mode, the CwPU will only replicate the same RGBW info in input to
 # SPI protocol
 
 SPI is Mode 0 as shown in this timing diagram, highlighting the preable and first byte transfer:
-![alt text]([http://url/to/img.png](https://github.com/thexeno/tt08-rgbw-controller/blob/main/docs/bit_transaction.png))
+
+![SPI transaction image, bit detail](./bit_transaction.png "SPI transaction, bit detail")
 
 While a whole packet must be compliant with the following diagram:
 
-![alt text]([http://url/to/img.png](https://github.com/thexeno/tt08-rgbw-controller/blob/main/docs/byte_transaction.png))
+![SPI transaction image, whole packet structure](./full_transaction.png "SPI transaction, packet structure")
 
 Which contains: 
 
