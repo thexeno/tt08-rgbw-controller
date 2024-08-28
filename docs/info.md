@@ -8,31 +8,36 @@ You can also include images in this folder and reference them in the markdown. E
 -->
 
 ## How it works
-Color generator for RGBW LEDs, with generation of hue, tint and intensity based on a color index. Is also a direct SPI to 4 PWM channels converter, making it flexible to any different kind of use.
+Color generator for RGBW LEDs, with generation of hue, tint and intensity based on a color index. Is also a direct SPI to 4 PWM channels converter, making it flexible to any different kind of use. The system block diagram is as follow:
+
+![block diagram image](./block_diagram.PNG "RGBW controller block diagram")
 
 It is an SPI slave in Mode 0, with SPI protocol consisting of 8 byte long command, discriminated with a preamble sequence (see Protocol and Test for the description).
 
-This payload is unpacked in different data: red, green, blue, white, bypass mode, intensity, color index. This data is then provided to the color wheel processor. It the bypass mode is activated, the RGBW info from the red, green, blue and white SPI bytes is directly provided as a PWM output in the respective channels.
+This payload is unpacked in different data: red, green, blue, white, bypass mode, intensity, color index. This data is then provided to the color wheel processor. If the bypass mode is activated, the RGBW info from the red, green, blue and white SPI bytes is directly provided as a PWM output in the respective channels.
 
 If bypass mode is not active, only the white, intensity and color index are considered, from which the hue (RGB data) is generated based on the index, then a tint (hue + white) and then the intensity is applied, forming the final color. This is then applied to the PWM outpus to the respective channels. 
 
 When bypass mode is not active (color wheel mode), then there is a latency proportional to the "rotation" of the color wheel, i.e. lower the number lower the latency. This is the laterncy of the color wheel processing unit (CwPU).
 
-The system block diagram is as follow:
+A debug enable pin, when asserted, will output on the uio pins different internal signals of the CwPU while in operation. This is just to check the internal signals in case the tapeout goes wrong, and for curiosity purposes for fidelity against the gate level simulation.
 
-![block diagram image](./block_diagram.png "RGBW controller block diagram")
+The PWM modulator has a period of t_pwm = t_clk_presc * 256, and a resolution of 1/256 steps. The t_clk_presc is the prescaled clock, t_clk_presc = t_clk * 2
+
+The clock and reset manager will issue a precaled clock to the whole system, except for the multiplicator, which has to run twice as fast w.r.t. the system.
+
 
 # Color wheel processor
 
 The logic datapath of the CwPU is shown below:
 
-![SCwPU datapath](./cwpu_datapath.png "cwpu_datapath")
+![SCwPU datapath](./cwpu_datapath.PNG "cwpu_datapath")
 
-The CwPU has all the data width of 8 bit, and is active when non in bypass mode. When active will take the index. Starting from zero, increments the hue progression ahd compare against this index (i.e. rotates the color wheel) to process at run time with no LUT, the corresponding requested hue. During the rotation, the RGB internal values will also change, increasing and decreasing to sweep all the combinations before matching the requested one. The final value will be used for the next step, which is the tint.
+The CwPU has all the data width of 8 bit, and the energy intensive color discrimination path is active when non in bypass mode only. When active will take the index. Starting from zero, increments the hue progression and compares against this index (i.e. rotates the color wheel) to process at run time with no LUT, the corresponding requested hue. During the rotation, the RGB internal values will also change, increasing and decreasing the hue components to sweep all the combinations to match the requested one. The final value will be used for the next step, which is the tint.
 
-The next step is the sum of the white component, generating a tint, a white adjusted color. It will sum the white up to a maximum value, and the value is output to the intensity multiplier. Also the white is output to the multiplier.
+The next step is the sum of the white component, generating a tint, a white adjusted color. It will sum the white up to the maximum value, and the value is output to the intensity multiplier. Also the white is output to the multiplier. This is to not only output an RGB to emualate the white, but to increase the color rendering index (CRI) by allowing to use a single output that can be connected to a pure white generator/phosphor based white LED.
 
-The multiplication takes place with a single multiplicator unit, hence the local control takes care od the data load and synchonization, with 2 clock cycles per operation. Also the white is mutiplied. After this step, the output data of each component (R, G, B and W) are 16bit, but the 8 LSB are truncated, generating a final 24 bit color information and 8 bit white.
+The multiplication for the intensity then takes place with a single multiplicator unit, hence the local control takes care of the data load and synchonization, with 2 clock cycles per operation. Since the multiplicator goes twice as fast, the CwPU has not additional wait states, resulting in 1 CwPU clock cycle delay. Also the white is multiplied. After this step, the output data of each component (R, G, B and W) are 16bit, but the 8 LSB are truncated, generating a final 24 bit color information and 8 bit white.
 
 This data is used by the 4 channel PWM modulator.
 
@@ -72,14 +77,21 @@ Steps:
 
 # What to expect on the outputs
 - This is the output "color equation" without bypass:
-Given the HUE ternary (r,g,b) processed from the index, where only 2 colors max are active at a time, i.e. no white, the final color is
+Given the HUE ternary (r,g,b) processed from the index by the CwPU, the final color is
 RGBW = ((r,g,b)+w)*intensity
+So the white and intensity have a direct impact regardless the hue generated.
 
 - This is the output "color equation" with bypass:
 RGBW = spi(red, green, blue, white)
 NO intensity, NO automatic white.
+The data provided via SPI is the data taken by the PWM modulator.
 
+
+   
 ## External hardware
 
-The MCU I used to test it are STM32, here I used 3 variants to help with flexibility: bluepill (STM32F103), the llll
-Each project is in the test folder.
+The MCU I used to test it are STM32, here I used 3 variants to help with flexibility: bluepill (STM32F103), the
+Each project is in the test folder. Just open it or copy the code to start. Beware to follow the pinout correctly.
+
+The firmware simply converts the UART data to SPI, while the content is provided by the script. Another suggested output is to try with 4x individual LED controllers to connect to the output of the PWM channels, like 4x of these: [tindie.com/products/aleadesigns](https://www.tindie.com/products/aleadesigns/glighter-a-40w-hysteretic-led-driver)
+or anything that can take a digital input.
