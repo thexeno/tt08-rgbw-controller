@@ -26,7 +26,7 @@ A debug enable pin, when asserted, will output on the uio pins different interna
 
 ### PWM modulator
 
-The PWM modulator has a period of t_pwm = t_clk_presc * 256, and a resolution of 1/256 steps. The t_clk_presc is the prescaled clock, t_clk_presc = t_clk * 2
+The PWM modulator has a period of t_pwm = t_clk_presc * 256, and a resolution of 1/256 steps. The t_clk_presc is the prescaled clock, t_clk_presc = t_clk * 2.
 Each update is synchronous to the period, hence any change in the duty cycle will happens to the next PWM period without generating artifacts.
 
 ### Clock and reset maanger
