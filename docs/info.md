@@ -18,16 +18,27 @@ This payload is unpacked in different data: red, green, blue, white, bypass mode
 
 If bypass mode is not active, only the white, intensity and color index are considered, from which the hue (RGB data) is generated based on the index, then a tint (hue + white) and then the intensity is applied, forming the final color. This is then applied to the PWM outpus to the respective channels. 
 
-When bypass mode is not active (color wheel mode), then there is a latency proportional to the "rotation" of the color wheel, i.e. lower the number lower the latency. This is the laterncy of the color wheel processing unit (CwPU).
+When bypass mode is not active (color wheel mode), then there is a latency proportional to the "rotation" of the color wheel, i.e. lower the number lower the latency. This is the laterncy of the color wheel processing unit (CwPU), after which the desired complete color is output on the PWM channels.
+
+### Debug pins
 
 A debug enable pin, when asserted, will output on the uio pins different internal signals of the CwPU while in operation. This is just to check the internal signals in case the tapeout goes wrong, and for curiosity purposes for fidelity against the gate level simulation.
 
+### PWM modulator
+
 The PWM modulator has a period of t_pwm = t_clk_presc * 256, and a resolution of 1/256 steps. The t_clk_presc is the prescaled clock, t_clk_presc = t_clk * 2
+Each update is synchronous to the period, hence any change in the duty cycle will happens to the next PWM period without generating artifacts.
 
-The clock and reset manager will issue a precaled clock to the whole system, except for the multiplicator, which has to run twice as fast w.r.t. the system.
+### Clock and reset maanger
+
+The clock and reset manager will issue a precaled clock to the whole system by a factor of 2, except for the multiplicator, which has to run twice as fast w.r.t. the system. A toggle on the reset pin will reset the whole system at the next reset _release_. Meaning, to reset the system, the reset (active low) must go to LOW, then it must be deasserted to HIGH. By doing this, the clock must be always present (sync reset). 
+
+When reset is deasserted (HIGH), the manager will start and will keep the rest of the system in reset state for the next 128 t_clk cycles (main clock from the pin). This will guarantee that the whole system will be correctly initialized.
+
+Therefore any SPI transaction can take place after at least 128 clock cycles after reset condition is deasserted, otherwise one SPI packed would be lost.
 
 
-# Color wheel processor
+### Color wheel processor
 
 The logic datapath of the CwPU is shown below:
 
@@ -43,7 +54,7 @@ This data is used by the 4 channel PWM modulator.
 
 When in bypass mode, the CwPU will only replicate the same RGBW info in input to the PWM modulator input in one clock cycle.
 
-# SPI protocol
+### SPI protocol
 
 SPI is Mode 0 as shown in this timing diagram, highlighting the preable and first byte transfer:
 
@@ -64,7 +75,8 @@ Which contains:
 7. white: 0x00 - 0xFF
 8. bypass mode: 0xA4 for the color generation, 0x21 bypass
 
-Not that in between each byte is mandatory to toggle the CS signal, since in reality a full transaction is interpreted as a 8 individual single byte transactions.
+Note that in between each byte is mandatory to toggle the CS signal, since in reality a full transaction is interpreted as a 8 individual single byte transactions.
+Therefore, if the bus gets corrupted, sending any data without preamble with more than 8 bytes, will ensure a clean bus state ready to be synchronized again. Otherwise a reset is an alternative.
 
 ## How to test
 
