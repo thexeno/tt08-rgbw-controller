@@ -10,3 +10,7 @@ test/sim_build
 test/__pycache__/
 test/results.xml
 test/gate_level_netlist.v
+docs/info.html
+docs/info.jpeg
+docs/info.pdf
+docs/info.png
