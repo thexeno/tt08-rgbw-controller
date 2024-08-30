@@ -80,10 +80,10 @@ module tt_um_thexeno_rgbw_controller (
     assign uo_out[3] = white_pin;
     // ui
     assign reset = rst_n;
-    assign sck = ui_in[5];
-    assign mosi = ui_in[3];
-    assign cs = ui_in[4];
-    assign test_pin = ui_in[6];
+    assign sck = ui_in[5]; // pico sck spi0 gpio18
+    assign mosi = ui_in[6]; // pico mosi spi0 gpio19
+    assign cs = ui_in[4]; // pico cs spi0 gpio17
+    assign test_pin = ui_in[3];
     //assign clk_div_en = ui_in[7];
 
 

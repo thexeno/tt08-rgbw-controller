@@ -19,7 +19,7 @@ PREAMB_POS = 0
 
 PIN_CS = 4
 PIN_SCK = 5
-PIN_MOSI = 3
+PIN_MOSI = 6
 
 async def clear_input(dut, b: int):
         global ui_in
