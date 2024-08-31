@@ -33,10 +33,10 @@ pinout:
   ui[0]: ""
   ui[1]: ""
   ui[2]: ""
-  ui[3]: "mosi" # ui[3]: "MOSI"
+  ui[3]: "test_pin" # test pin to output some CwPU internal states
   ui[4]: "cs_n" # ui[4]: "#CS (from external master)"
   ui[5]: "sck" # ui[5]: "SPI SCK (from external master)"
-  ui[6]: "test"
+  ui[6]: "mosi" # ui[6]: "MOSI"
   ui[7]: "clk_div_en"
 
   # Outputs
