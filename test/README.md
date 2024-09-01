@@ -3,7 +3,7 @@
 This testbench uses [cocotb](https://docs.cocotb.org/en/stable/) to drive the DUT and check the outputs.
 See below to get started or for more information, check the [website](https://tinytapeout.com/hdl/testing/).
 
-## What is testing
+## Testbench
 
 This testbench runs a sequence between different color modes, and outputs 4 PWM sequences as a result. Data is not automatically asserted, but waveforms were inspected manually in this first implementation.
 The RTL waveforms (in .vcd format) are always tested against the flattened gate-level (hardened) design to evaluate the correctness of the design.
@@ -12,12 +12,13 @@ For more info in the design, check [the documentation](docs/info.md).
 
 Here below a quick run up of the flow if needed to interact with the testbench.
 
-## Setting up
+## Silicon test with the TT08 Demoboard
 
-1. Edit [Makefile](Makefile) and modify `PROJECT_SOURCES` to point to your Verilog files.
-2. Edit [tb.v](tb.v) and replace `tt_um_example` with your module name.
+To test the design with the TT08 Demoboard, simply connect the board on the USB port, connect to a terminal to run Micropython on the mounted RP2040, then copy in the terminal the script [script from here](./bringup_test_pico.py). It will run a sequence of the RGB color wheel. Each color is generated locally by the color processors as a response of the color ID, tint and intensity desired.
 
-## How to run
+A starting point on how to use the demoboard with the TT08 chip containing the RGBW Controller ASIC, check the [official website of the demoboard](https://tinytapeout.com/guides/get-started-demoboard/) of the TinyTapeout project.
+
+## How to run the testbench
 
 ### To run the RTL simulation:
 
