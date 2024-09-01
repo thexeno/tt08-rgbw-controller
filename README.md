@@ -1,8 +1,8 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
 
-# Tiny Tapeout Verilog Project Template
+# Welcome to my TinyTapeout TT08 supported ASIC RGBW Controller
 
-- [Read the documentation for project](docs/info.md)
+- [Read the documentation for what it is and how to play with it with your tt08 chip!](docs/info.md)
 
 ## What is Tiny Tapeout?
 
@@ -10,7 +10,9 @@ Tiny Tapeout is an educational project that aims to make it easier and cheaper t
 
 To learn more and get started, visit https://tinytapeout.com.
 
-## Set up your Verilog project
+## This project was brought up by following this flow:
+
+### Set up your Verilog project
 
 1. Add your Verilog files to the `src` folder.
 2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
@@ -19,7 +21,7 @@ To learn more and get started, visit https://tinytapeout.com.
 
 The GitHub action will automatically build the ASIC files using [OpenLane](https://www.zerotoasiccourse.com/terminology/openlane/).
 
-## Enable GitHub actions to build the results page
+### Enable GitHub actions to build the results page
 
 - [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
 
