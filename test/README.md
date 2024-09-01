@@ -8,7 +8,7 @@ See below to get started or for more information, check the [website](https://ti
 This testbench runs a sequence between different color modes, and outputs 4 PWM sequences as a result. Data is not automatically asserted, but waveforms were inspected manually in this first implementation.
 The RTL waveforms (in .vcd format) are always tested against the flattened gate-level (hardened) design to evaluate the correctness of the design.
 
-For more info in the design, check [the documentation](docs/info.md).
+For more info in the design, check [the documentation](../docs/info.md).
 
 Here below a quick run up of the flow if needed to interact with the testbench.
 
