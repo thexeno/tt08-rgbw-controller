@@ -9,7 +9,7 @@ from ttboard.demoboard import DemoBoard
 #from pio_spi import PIOSPI
 
 tt = DemoBoard()
-tt.shuttle.module tt_um_thexeno_rgbw_controller.enable()
+tt.shuttle.tt_um_thexeno_rgbw_controller.enable()
 
 
 R_POS = 3
