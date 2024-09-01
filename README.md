@@ -1,8 +1,12 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
 
-# Welcome to my TinyTapeout TT08 supported ASIC RGBW Controller
+# Welcome to my TinyTapeout TT08 ASIC RGBW Controller
 
-- [Read the documentation for what it is and how to play with it with your tt08 chip!](docs/info.md)
+An RGBW controller made out of academic curiosity which involves different designs "beautifully" synchronized together to have an SPI to 4 channel PWM to control red, green, blue and white LEDs, to achieve a user requested color by generating sequentially the hue, tint and intensity.
+
+![](/docs/layout_bw_edited.png) 
+
+- [Read the documentation for the diagrams and how to play with it with your tt08 chip!](docs/info.md)
 
 ## What is Tiny Tapeout?
 
