@@ -14,9 +14,24 @@ Here below a quick run up of the flow if needed to interact with the testbench.
 
 ## Silicon test with the TT08 Demoboard
 
-To test the design with the TT08 Demoboard, simply connect the board on the USB port, connect to a terminal to run Micropython on the mounted RP2040, then copy in the terminal the script [script from here](./bringup_test_pico.py). It will run a sequence of the RGB color wheel. Each color is generated locally by the color processors as a response of the color ID, tint and intensity desired.
+To test the design with the TT08 Demoboard, simply connect the board on the USB port, connect to a terminal to run Micropython on the mounted RP2040, then copy in the terminal the script [script from here](./rp2040_demoboard/bringup_test_pico.py). It will run a sequence of the RGB color wheel. Each color is generated locally by the color processors as a response of the color ID, tint and intensity desired.
 
 A starting point on how to use the demoboard with the TT08 chip containing the RGBW Controller ASIC, check the [official website of the demoboard](https://tinytapeout.com/guides/get-started-demoboard/) of the TinyTapeout project.
+
+## Silicon test with an STM32
+
+To test with other MCUs, a tiny firmware to convert UART to SPI was implemented in STM32 board (specifically a B-L475E-IOT01). The firmware can be easily ported to any STMCubeIDE supported MCU/devboard. It is assumed that, if you prefer this way instead of the RP2040, you know how to copy/paste the project to another board so this step is skipped.
+
+This testing was done just to develop before having the RP2040, and is kept as a valid source in case to extend the RP2040 script on the demoboard. 
+
+Pinout: 
+UART TX = PB6
+UART RX = PB7
+CS = Arduino D8 header (PA2)
+MOSI = Arduino D11 header (PA7)
+SCK = Arduino D13 header (PA5)
+
+Then connect the board via the USB cable, and once the VCOM is correctly detected, run the [dedicated python script](./STM32/mcu_custom_serial_test.py). Remeber to adapt the VCOM address first.
 
 ## How to run the testbench
 
