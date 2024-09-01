@@ -80,30 +80,40 @@ Therefore, if the bus gets corrupted, sending any data without preamble with mor
 
 ## How to test
 
-Source code for an STM32 MCU is provided in the folder "test". A python script will be provided to comminicate with the MCU over serial, which will convert the serial command into the SPI transaction. Is just a demo to help starting to use the color controller, but you can manually send SPI commands or edit the scripts.
-Steps:
-1. adapt the code to any MCU (with STM32 is easier to jsut port it)
-2. Connect the MCU UART to a serial emulator
-3. Run the script.
-4. If using Linux: it is tested in Windows, so the only change is the serial port path in the python script
+This is normally tested with a micropython script to be interpreted directly from the REPL interface of the TT08 demoboard (see https://tinytapeout.com/guides/get-started-demoboard/).
+To test the design simply setup the demoboard, and run the script in [the test folder](../test/rp2040_demoboard). It means it can be simply copy/pasted into the REPL terminal.
+
+To see an output, is suggested to wire some LEDs to the output of the demoboard being careful to not overload the output pins. If you don't know what you are doing, then is better to get like 4x of these for the 4 LEDs [tindie.com/products/aleadesigns](https://www.tindie.com/products/aleadesigns/glighter-a-40w-hysteretic-led-driver) or any other LED controller that **won't load** more than 4mA on the TT08 chip output pads (see [pad spec here](https://tinytapeout.com/specs/gpio/)).
+
+*A custom PMOD will come soon to ease the LED test.*
+
+With the RP2040 no input wiring is needed, and the output will be:
+
+uo_out[0] -> Red LED
+
+uo_out[1] -> Green LED
+
+uo_out[2] -> BLue LED
+
+uo_out[3] -> White LED
+
 
 # What to expect on the outputs
-- This is the output "color equation" without bypass:
+
 Given the HUE ternary (r,g,b) processed from the index by the CwPU, the final color is
-RGBW = ((r,g,b)+w)*intensity
+*RGBW = ((r,g,b)+w)intensity*, having a PWM signal per each color channel.
+
 So the white and intensity have a direct impact regardless the hue generated.
 
-- This is the output "color equation" with bypass:
-RGBW = spi(red, green, blue, white)
-NO intensity, NO automatic white.
-The data provided via SPI is the data taken by the PWM modulator.
+The output "color equation" with bypass is
+*RGBW = spi(red, green, blue, white)* with NO intensity, NO automatic white.
+In this mode, the data provided via SPI is the data taken by the PWM modulator as is.
 
 
    
 ## External hardware
 
-The MCU I used to test it are STM32, here I used 3 variants to help with flexibility: bluepill (STM32F103), the
-Each project is in the test folder. Just open it or copy the code to start. Beware to follow the pinout correctly.
+While we're working at a PMOD right now, the external hardware are 4 LEDs, one per each color, connected to the outputs. Be aware that the outputs cannot take more than 4mA!!! So a dedicated circuit is needed (but will be provided soon). Stay tuned.
 
-The firmware simply converts the UART data to SPI, while the content is provided by the script. Another suggested output is to try with 4x individual LED controllers to connect to the output of the PWM channels, like 4x of these: [tindie.com/products/aleadesigns](https://www.tindie.com/products/aleadesigns/glighter-a-40w-hysteretic-led-driver)
-or anything that can take a digital input.
+To control the design, no external controller is needed since it uses the internal RP2040 of the demoboard, see the [documentation here](../test/README.md) of the test and the REPL [script here](../test/rp2040_demoboard/bringup_test_pico.py).
+Alternatively, a custom firmware and another dedicated python script is provided with the relative [STM32 based project](../test/stm32), briefly [documented here](../test/README.md).

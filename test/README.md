@@ -25,13 +25,19 @@ To test with other MCUs, a tiny firmware to convert UART to SPI was implemented 
 This testing was done just to develop before having the RP2040, and is kept as a valid source in case to extend the RP2040 script on the demoboard. 
 
 Pinout: 
+
 UART TX = PB6
+
 UART RX = PB7
+
 CS = Arduino D8 header (PA2)
+
 MOSI = Arduino D11 header (PA7)
+
 SCK = Arduino D13 header (PA5)
 
-Then connect the board via the USB cable, and once the VCOM is correctly detected, run the [dedicated python script](./STM32/mcu_custom_serial_test.py). Remeber to adapt the VCOM address first.
+
+Then connect the board via the USB cable, and once the VCOM is correctly detected, run the [dedicated python script](./stm32/mcu_custom_serial_test.py). Remeber to adapt the VCOM address first.
 
 ## How to run the testbench
 
