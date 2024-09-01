@@ -2,7 +2,7 @@
 
 # Welcome to my TinyTapeout TT08 ASIC RGBW Controller
 
-An RGBW controller made out of academic curiosity which involves different designs "beautifully" synchronized together to have an SPI to 4 channel PWM to control red, green, blue and white LEDs, to achieve a user requested color by generating sequentially the hue, tint and intensity.
+An RGBW controller made out of academic curiosity which involves different designs "beautifully" (well... as any digital design is) synchronized together to have an SPI to 4 channel PWM to control red, green, blue and white LEDs, to achieve a user requested color by generating sequentially the hue, tint and intensity.
 
 ![](/docs/layout_bw_edited.jpg) 
 
