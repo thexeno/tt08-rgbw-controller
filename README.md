@@ -4,7 +4,7 @@
 
 An RGBW controller made out of academic curiosity which involves different designs "beautifully" synchronized together to have an SPI to 4 channel PWM to control red, green, blue and white LEDs, to achieve a user requested color by generating sequentially the hue, tint and intensity.
 
-![](/docs/layout_bw_edited.png) 
+![](/docs/layout_bw_edited.jpg) 
 
 - [Read the documentation for the diagrams and how to play with it with your tt08 chip!](docs/info.md)
 
