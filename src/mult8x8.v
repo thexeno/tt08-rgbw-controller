@@ -32,7 +32,6 @@ always @(posedge clk)
       begin
          result <= 16'h0000;
          mult_rdy <=  1'b 0; 
-         ld_latch <= 1'b0;  
       end
    else 
    begin
