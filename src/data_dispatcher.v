@@ -120,7 +120,7 @@ begin
                         red_spi_out_reg <= red_spi;     //are 16bit for optimizing the reuslt of mult in color_Gen, works better with the synthesizer
                         green_spi_out_reg <= green_spi;
                         blue_spi_out_reg <= blue_spi;
-                        white_spi_out_reg <= white_spi;
+                        white_spi_out_reg <= white_spi * blue_spi;
                     end
                     default: 
                     begin
