@@ -26,6 +26,8 @@ A debug enable pin, when asserted, will output on the uio pins different interna
 
 ### Project pinout
 
+OUTPUT pins (from ASIC side)
+
 | Pmod    | TinyTapeout | Function        | Note                  |
 |---------|-------------|-----------------|-----------------------|
 | OUTPUT1 | uo_out[0]       | Red PWM output   |   |
@@ -33,6 +35,8 @@ A debug enable pin, when asserted, will output on the uio pins different interna
 | OUTPUT3 | uo_out[2]       | Blue PWM output  |   |
 | OUTPUT4 | uo_out[3]       | White PWM output |   |
 | OUTPUT5 - 8    | uo_out[4:7]           | Not used   |  Hardwired to logic LOW   |
+
+BIDIRectional pins (all hardwired to output mode, from ASIC side)
 
 | Pmod    | TinyTapeout | Function        | Note                  |
 |---------|-------------|-----------------|-----------------------|
@@ -45,14 +49,16 @@ A debug enable pin, when asserted, will output on the uio pins different interna
 | BIDIR7    | uio_out[6]           | CwPU register bit 6   |                       |
 | BIDIR8    | uio_out[7]           | CwPU register bit 7   |                       |
 
+INPUT pins (from ASIC side)
+
 | Pmod    | TinyTapeout | Function        | Note                  |
 |---------|-------------|-----------------|-----------------------|
-| IN1 - 3 | ui_in[0:2]       | CwPU register bit 0   |  |
-| IN4 | ui_in[3]       | CwPU debug enable | Active high |
-| IN5 | ui_in[4]       | SPI #CS   | Active low |
-| IN6 | ui_in[5]       | SPI SCK   | SPI slave mode 0 |
-| IN7    | ui_in[6]           |  SPI MOSI | SPI slave mode 0 |
-| IN8    | uio_out[7]           | Not used  |                       |
+| INPUT1 - 3 | ui_in[0:2]       | CwPU register bit 0   |  |
+| INPUT4 | ui_in[3]       | CwPU debug enable | Active high |
+| INPUT5 | ui_in[4]       | SPI #CS   | Active low |
+| INPUT6 | ui_in[5]       | SPI SCK   | SPI slave mode 0 |
+| INPUT7    | ui_in[6]           |  SPI MOSI | SPI slave mode 0 |
+| INPUT8    | uio_out[7]           | Not used  |                       |
 
 ### PWM modulator
 
