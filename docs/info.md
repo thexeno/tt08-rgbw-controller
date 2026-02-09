@@ -24,6 +24,36 @@ When bypass mode is not active (color wheel mode), then there is a latency propo
 
 A debug enable pin, when asserted, will output on the uio pins different internal signals of the CwPU while in operation. This is just to check the internal signals in case the tapeout goes wrong, and for curiosity purposes for fidelity against the gate level simulation.
 
+### Project pinout
+
+| Pmod    | TinyTapeout | Function        | Note                  |
+|---------|-------------|-----------------|-----------------------|
+| OUTPUT1 | uo_out[0]       | Red PWM output   |   |
+| OUTPUT2 | uo_out[1]       | Green PWM output |   |
+| OUTPUT3 | uo_out[2]       | Blue PWM output  |   |
+| OUTPUT4 | uo_out[3]       | White PWM output |   |
+| OUTPUT5 - 8    | uo_out[4:7]           | Not used   |  Hardwired to logic LOW   |
+
+| Pmod    | TinyTapeout | Function        | Note                  |
+|---------|-------------|-----------------|-----------------------|
+| BIDIR1 | uio_out[0]       | CwPU register bit 0   |  |
+| BIDIR2 | uio_out[1]       | CwPU register bit 1 | |
+| BIDIR3 | uio_out[2]       | CwPU register bit 2  | |
+| BIDIR4 | uio_out[3]       | CwPU register bit 3 | |
+| BIDIR5    | uio_out[4]           | CwPU register bit 4   |                       |
+| BIDIR6    | uio_out[5]           | CwPU register bit 5   |                       |
+| BIDIR7    | uio_out[6]           | CwPU register bit 6   |                       |
+| BIDIR8    | uio_out[7]           | CwPU register bit 7   |                       |
+
+| Pmod    | TinyTapeout | Function        | Note                  |
+|---------|-------------|-----------------|-----------------------|
+| IN1 - 3 | ui_in[0:2]       | CwPU register bit 0   |  |
+| IN4 | ui_in[3]       | CwPU debug enable | Active high |
+| IN5 | ui_in[4]       | SPI #CS   | Active low |
+| IN6 | ui_in[5]       | SPI SCK   | SPI slave mode 0 |
+| IN7    | ui_in[6]           |  SPI MOSI | SPI slave mode 0 |
+| IN8    | uio_out[7]           | Not used  |                       |
+
 ### PWM modulator
 
 The PWM modulator has a period of t_pwm = t_clk_presc * 256, and a resolution of 1/256 steps. The t_clk_presc is the prescaled clock, t_clk_presc = t_clk * 2.
